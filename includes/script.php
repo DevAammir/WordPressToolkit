@@ -63,7 +63,8 @@
         color: #777;
     }
 
-    .tab:hover, .tab.active {
+    .tab:hover,
+    .tab.active {
         background-color: #CCC !important;
         border-color: #AAA !important;
         color: #000;
@@ -105,5 +106,21 @@
 
     .hide {
         display: none !important;
+    }
+
+    div#loader {
+        display: table-cell;
+        position: absolute;
+        background: rgba(33, 33, 33, 0.5);
+        color: #FFF;
+        padding: 20px;
+        top: 15%;
+        left: 1%;
+        font-size: 50px;
+        width: 1100px;
+        height: 35rem;
+        text-align: center;
+        border: 2px dotted #EEE;
+        line-height: 550px;
     }
 </style>

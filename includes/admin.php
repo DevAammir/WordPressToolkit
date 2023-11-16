@@ -23,7 +23,8 @@ function wpt_admin_page()
 ?>
     <div id="admin_page" class="wrap">
         <h2>WordPress Toolkit</h2>
-        <div class="clearfix" id="target">&nbsp;</div>
+        <div class="clearfix">&nbsp;</div>
+
         <form method="post" action="#" id="wpt_save_settings_form">
             <ul class="tabs">
                 <li class="tab active" onclick="showContent('tab1', this);">Basic Settings</li>
@@ -59,6 +60,9 @@ function wpt_admin_page()
                 'class' => 'button button-primary',
             ]); ?>
         </form>
+        <div class="clearfix" id="target">
+            <div id="loader" style="display: none;">&nbsp;</div>
+        </div>
     </div>
     <?php include_once 'script.php'; ?>
 <?php
@@ -71,6 +75,7 @@ add_action("wp_ajax_wpt_save_settings", "wpt_save_settings");
 add_action("wp_ajax_nopriv_wpt_save_settings", "wpt_save_settings");
 function wpt_save_settings()
 {
+    ob_start();
     $wpt_settings = [];
     $wpt_socialmedia = [];
     foreach ($_POST as $key => $value) {
@@ -87,9 +92,13 @@ function wpt_save_settings()
     // update the options in one go
     update_option('wpt_settings', $wpt_settings);
     update_option('wpt_socialmedia', $wpt_socialmedia);
+?>
+    <div id="setting-error-settings_updated" class="notice notice-success settings-error is-dismissible">
+        <p><strong>Settings updated.</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>
+    </div>
+<?php
 
-
-    $result = ('Settings saved successfully!');
+    $result = ob_get_clean();
     $status = 1;
     $message = "success";
     $return = json_encode(array('result' => $result, 'Status' => $status, 'message' => $message, 'request' => $_REQUEST, 'args' => $args));

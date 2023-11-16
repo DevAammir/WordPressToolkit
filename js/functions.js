@@ -133,10 +133,15 @@ function _AJAX_function_1(target, admin_ajax_url, action, type, data, data_type)
         dataType: data_type,
         data: data,
         beforeSend: function (xhr) {
-            $(target).html('<div id="loading"> Loading, Please wait...! </div>');
-            $(target).find('div').attr('id', 'loader').show();
+            // debugger;
+            setTimeout(() => {
+                $(target).html('<div id="loading"> Please wait... </div>');
+                $(target).find('div').attr('id', 'loader').show();
+                $('input').attr('disabled', 'disabled');
+            }, 1000);
         },
     }).done(function (response) {
+        $('input').attr('disabled', false);
         $(target).html(response.result);
         // console.log(new Date());
         // loader.hide();

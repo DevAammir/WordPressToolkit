@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WordPress Toolkit
  * Description: WordPress Toolkit 
- * Version: 0.2
+ * Version: 0.3
  * Author: Aammir
  * Author URI: https://127.0.0.1
  * Text Domain: wpt
@@ -14,15 +14,11 @@ if (!defined('ABSPATH')) {
     die();
 }
 
-
 define('WPT_URL', plugin_dir_url(__FILE__)); // Get the plugin URL 
 define('WPT_DIR', dirname(__FILE__) . '/'); // Get the plugin directory path that is wp-content/plugins/wp-toolkit
 
-
 require_once WPT_DIR . 'includes/form-builder.php';
 require_once WPT_DIR . 'includes/config.php';
-
-
 
 function add_custom_script()
 {
@@ -36,11 +32,6 @@ function add_custom_script()
 
 // Hook the function to the admin head
 add_action('admin_head', 'add_custom_script', 10);
-
-
-
-
-// @ini_set('display_errors', 0);
 
 function active()
 {
@@ -61,13 +52,6 @@ function uninstall_func()
     die('something went wrong!');
 }
 register_uninstall_hook(__FILE__, 'uninstall_func');
-
-function pd($data)
-{
-    echo '<pre>';
-    print_r($data);
-    echo '</pre>';
-}
 
 require_once WPT_DIR . 'includes/admin.php';
 require_once WPT_DIR . 'includes/actions.php';
