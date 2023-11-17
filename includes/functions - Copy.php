@@ -103,13 +103,9 @@ function wpt_get_all_posts($atts = array())
             $post_type = isset($atts['post_type']) ? $atts['post_type'] : 'post';
         }
 
-        $per_page = isset($atts['per_page']) ? intval($atts['per_page']) : -1;
-        $paged = max(1, get_query_var('paged'));
-
         $args = array(
             'post_type'      => $post_type,
-            'posts_per_page' => $per_page,
-            'paged'          => $paged,
+            'posts_per_page' => -1,
         );
 
         $posts_query = new WP_Query($args);
@@ -137,7 +133,8 @@ function wpt_get_all_posts($atts = array())
                     </div>
 
                 </div>
-    <?php
+<?php
+
             }
             $posts = ob_get_clean();
             wp_reset_postdata();
@@ -156,7 +153,6 @@ function wpt_get_all_posts($atts = array())
         'result'  =>  $posts,
         'status'  => $status,
         'message' => $message,
-        'max_pages' => $posts_query->max_num_pages,
     ));
 
     // Send the response and exit
@@ -185,19 +181,11 @@ function wpt_all_posts_shortcode($atts)
     // Decode JSON string to an array
     $post_data = json_decode($post_data_json, true);
 
+    // dd($post_data);
     // Check if decoding was successful
     if ($post_data['status'] == 200) {
         // Loop through each post
         echo ($post_data['result']);
-
-        // Display pagination based on user preference
-        if ($post_data['max_pages'] > 1) {
-            echo '<div class="pagination">';
-            echo paginate_links(array(
-                'total' => $post_data['max_pages'],
-            ));
-            echo '</div>';
-        }
     } else {
         // decoding failed or posts are not present
         _e('<div class="error">Error: ' . $post_data['message'] . '.</div>', 'wpt');
@@ -205,7 +193,6 @@ function wpt_all_posts_shortcode($atts)
 
     return ob_get_clean();
 }
-
 
 ///////
 
@@ -218,94 +205,3 @@ function enqueue_custom_scripts()
 }
 
 add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
-
-
-
-
-////////////////////////////////////////////////
-
-// Custom pagination function in functions.php
-function custom_pagination()
-{
-    $paged = $_POST['page'];
-    $per_page = $_POST['per_page'];
-    $post_type = $_POST['post_type'];
-
-    $args = array(
-        'post_type' => $post_type,
-        'posts_per_page' => $per_page,
-        'paged' => $paged
-    );
-
-    $query = new WP_Query($args);
-
-    if ($query->have_posts()) :
-        while ($query->have_posts()) : $query->the_post();
-            // Output your post data here
-            echo '<h2>' . get_the_title() . '</h2>';
-            echo '<div>' . get_the_content() . '</div>';
-        // Add more fields as needed
-        endwhile;
-
-            echo '<div id="load-more-btn-container"><button id="load-more-btn">Load More</button></div>';
-    endif;
-
-    wp_die();
-}
-
-add_action('wp_ajax_custom_pagination', 'custom_pagination');
-add_action('wp_ajax_nopriv_custom_pagination', 'custom_pagination');
-
-// Inline script in wp_footer
-add_action('wp_footer', function () {
-    ?>
-    <script>
-        jQuery(function($) {
-            var page = 1;
-            var loading = false;
-            var perPage = 2; // Set your default value
-            var postType = 'post'; // Set your default value
-
-            function load_posts(paged) {
-                if (loading) return;
-                loading = true;
-
-                $.ajax({
-                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
-                    type: 'post',
-                    data: {
-                        action: 'custom_pagination',
-                        page: paged,
-                        per_page: perPage,
-                        post_type: postType,
-                    },
-                    beforeSend: function() {
-                        // $('#load-more-btn').hide();
-                        $('#ajax-posts').append('<div class="loader">Please wait...</div>');
-                    },
-                    success: function(response) {
-                        $('.loader').hide();
-                            $('#ajax-posts').append(response);
-                         loading = false;
-                    }
-                });
-            }
-
-            function load_more_posts() {
-                page++;
-                load_posts(page);
-            }
-
-            // Load posts initially
-            load_posts(page);
-
-            // Load more button click event
-            $(document).on('click', '#load-more-btn', function(e) {
-                e.preventDefault();
-                $(this).hide();
-                load_more_posts();
-            });
-        });
-    </script>
-<?php
-});

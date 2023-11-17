@@ -1,5 +1,5 @@
 <script>
-    admin_ajax_url = "<?php echo admin_url('admin-ajax.php'); ?>";
+    admin_ajax_url = "<?php echo WPT_AJAX; ?>";
 
 
     (function($) {
@@ -21,6 +21,7 @@
                     $('#social_media_tab_content').hide();
                 }
             });
+
 
         });
     })(jQuery);

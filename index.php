@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 
 define('WPT_URL', plugin_dir_url(__FILE__)); // Get the plugin URL 
 define('WPT_DIR', dirname(__FILE__) . '/'); // Get the plugin directory path that is wp-content/plugins/wp-toolkit
-
+define ('WPT_AJAX', admin_url('admin-ajax.php'));
 require_once WPT_DIR . 'includes/form-builder.php';
 require_once WPT_DIR . 'includes/config.php';
 

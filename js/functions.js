@@ -141,10 +141,13 @@ function _AJAX_function_1(target, admin_ajax_url, action, type, data, data_type)
             }, 1000);
         },
     }).done(function (response) {
-        $('input').attr('disabled', false);
-        $(target).html(response.result);
-        // console.log(new Date());
-        // loader.hide();
+
+        if (response.status == 200) {
+            $('input').attr('disabled', false);
+            $(target).html(response.result);
+        } else {
+            $(target).html('<div class="error">'+response.message+"</div>");
+        }
     }); //ajax done
 }
 
