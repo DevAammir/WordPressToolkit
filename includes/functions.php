@@ -125,7 +125,7 @@ function wpt_get_all_posts($atts = array())
     ?>
                 <div class="post post-<?php echo get_the_ID(); ?>  post-<?php echo $post->post_name; ?> <?php echo $post_categories . ' ' . $post_tags; ?> ">
 
-                    <h3> <?php echo esc_html__(get_the_title(), 'wpt'); ?></h3>
+                    <h3> <?php echo __(get_the_title(), 'wpt'); ?></h3>
                     <div class="post_body">
                         <div class="post_meta">
                             <span class="post_author"><?php _e('Author:', 'wpt'); ?> <?php echo get_the_author(); ?></span>
@@ -149,7 +149,7 @@ function wpt_get_all_posts($atts = array())
     } catch (Exception $e) {
         $result =  _e($e->getMessage(), 'wpt');
         $status = 500;
-        $message = esc_html__('<div class="error generated">Error: ' . $e->getMessage() . '</div>', 'wpt');
+        $message = __('<div class="error generated">Error: ' . $e->getMessage() . '</div>', 'wpt');
     }
 
     $response = json_encode(array(
@@ -247,7 +247,7 @@ function custom_pagination()
         // Add more fields as needed
         endwhile;
 
-            echo '<div id="load-more-btn-container"><button id="load-more-btn">Load More</button></div>';
+        echo '<div id="load-more-btn-container"><button id="load-more-btn">Load More</button></div>';
     endif;
 
     wp_die();
@@ -285,8 +285,8 @@ add_action('wp_footer', function () {
                     },
                     success: function(response) {
                         $('.loader').hide();
-                            $('#ajax-posts').append(response);
-                         loading = false;
+                        $('#ajax-posts').append(response);
+                        loading = false;
                     }
                 });
             }
@@ -309,3 +309,7 @@ add_action('wp_footer', function () {
     </script>
 <?php
 });
+
+include_once 'functions/get_post_by_id.php';
+// include_once 'functions/get_post_by_name.php';
+

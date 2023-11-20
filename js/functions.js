@@ -258,3 +258,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+/******
+ * HELPER FUNCTIONS
+ * *******/
+function wpt_get_post_by_id(postId, return_type, target) {
+    // AJAX request
+    $.ajax({
+        url: 'wp-admin/admin-ajax.php',
+        dataType: 'html',
+        type: 'POST',
+        data: {
+            action: 'wpt_get_post_by_id_endpoint',
+            id: postId, 
+            return_type: return_type
+        },
+        beforeSend: function(xhr) {
+            // Update the content of the target div
+            $(target).html('<div id="loading"> Please wait... </div>');
+        },
+        success: function(response) {
+            // Update the content of the target div
+            $(target).html(response);
+        },
+        error: function(error) {
+            console.error('Request failed: ', error);
+        }
+    });
+}
