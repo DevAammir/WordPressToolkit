@@ -1,0 +1,37 @@
+
+/*
+GET 
+    1. post by id, 
+    2. all posts,
+	3. posts by ids
+	4. post by postmeta
+	5. posts by postmeta
+    6. postmeta,
+    7. user by id,
+    8. all users,
+	9. users by ids
+	10.user by usermeta 
+	11.users by usermeta
+    12.usermeta
+	13.get post by category
+	14.get posts by categories
+	15.get all catagories
+	16.get post categories by post id
+	17.get option by id
+	18. get post by name/slug
+	19. get posts by author
+*/
+/*POST
+1. create post
+2. create post with postmeta
+3. add postmeta
+4. add user
+5. add user with usermeta
+6. add usermeta
+7. delet post
+8. delete postmeta
+9. delete user
+10. delete usermeta
+11. add/update option
+12. delete option
+*/

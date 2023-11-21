@@ -84,232 +84,48 @@ function dd($data, $exit = null)
     }
 }
 
-/* * *
- *  AJAX GET ALL POSTS
- * * */
-add_action('wp_ajax_wpt_get_all_posts', 'wpt_get_all_posts');
-add_action('wp_ajax_nopriv_wpt_get_all_posts', 'wpt_get_all_posts');
-add_shortcode('wpt_all_posts', 'wpt_all_posts_shortcode');
 
-function wpt_get_all_posts($atts = array())
-{
-    $result = '';
-    $message = '';
-
-    try {
-        if (isset($_REQUEST['post_type'])) {
-            $post_type = $_REQUEST['post_type'];
-        } else {
-            $post_type = isset($atts['post_type']) ? $atts['post_type'] : 'post';
-        }
-
-        $per_page = isset($atts['per_page']) ? intval($atts['per_page']) : -1;
-        $paged = max(1, get_query_var('paged'));
-
-        $args = array(
-            'post_type'      => $post_type,
-            'posts_per_page' => $per_page,
-            'paged'          => $paged,
-        );
-
-        $posts_query = new WP_Query($args);
-
-        if ($posts_query->have_posts()) {
-            ob_start();
-            while ($posts_query->have_posts()) {
-                $posts_query->the_post();
-                global $post;
-                $post_categories = implode('  ', wp_list_pluck(get_the_category(), 'name'));
-                $post_tags = implode(' ', wp_list_pluck(get_the_tags(), 'name'));
-
-    ?>
-                <div class="post post-<?php echo get_the_ID(); ?>  post-<?php echo $post->post_name; ?> <?php echo $post_categories . ' ' . $post_tags; ?> ">
-
-                    <h3> <?php echo __(get_the_title(), 'wpt'); ?></h3>
-                    <div class="post_body">
-                        <div class="post_meta">
-                            <span class="post_author"><?php _e('Author:', 'wpt'); ?> <?php echo get_the_author(); ?></span>
-                            <span class="post_date"><?php _e('Date:', 'wpt'); ?> <?php echo get_the_date(); ?></span>
-                            <span class="post_categories"><?php _e('Categories:', 'wpt'); ?><?php echo get_the_category_list(', '); ?></span>
-                            <span class="post_tags"><?php _e('Tags:', 'wpt'); ?> <?php echo get_the_tag_list('', ', '); ?></span>
-                        </div>
-                        <div class="post_content"><?php _e(get_the_content(), 'wpt'); ?> </div>
-                    </div>
-
-                </div>
-    <?php
-            }
-            $posts = ob_get_clean();
-            wp_reset_postdata();
-            $status = 200;
-        } else {
-            throw new Exception(_e('<div class="error empty no-posts">No posts found.</div>', 'wpt'));
-            $status = 500;
-        }
-    } catch (Exception $e) {
-        $result =  _e($e->getMessage(), 'wpt');
-        $status = 500;
-        $message = __('<div class="error generated">Error: ' . $e->getMessage() . '</div>', 'wpt');
-    }
-
-    $response = json_encode(array(
-        'result'  =>  $posts,
-        'status'  => $status,
-        'message' => $message,
-        'max_pages' => $posts_query->max_num_pages,
-    ));
-
-    // Send the response and exit
-    if (defined('DOING_AJAX') && DOING_AJAX) {
-        echo $response;
-        wp_die();
-    } else {
-        return $response;
-    }
-}
-
-/**
- * Generates a shortcode to display all posts.
- *
- * @param array $atts The attributes passed to the shortcode.
- * @throws Exception If there is an error fetching the posts.
- * @return string The HTML representation of the posts.
- */
-function wpt_all_posts_shortcode($atts)
-{
-    ob_start();
-
-    // Get post data as a JSON string
-    $post_data_json = wpt_get_all_posts($atts);
-
-    // Decode JSON string to an array
-    $post_data = json_decode($post_data_json, true);
-
-    // Check if decoding was successful
-    if ($post_data['status'] == 200) {
-        // Loop through each post
-        echo ($post_data['result']);
-
-        // Display pagination based on user preference
-        if ($post_data['max_pages'] > 1) {
-            echo '<div class="pagination">';
-            echo paginate_links(array(
-                'total' => $post_data['max_pages'],
-            ));
-            echo '</div>';
-        }
-    } else {
-        // decoding failed or posts are not present
-        _e('<div class="error">Error: ' . $post_data['message'] . '.</div>', 'wpt');
-    }
-
-    return ob_get_clean();
-}
-
-
-///////
-
-
-// Enqueue scripts and styles
-function enqueue_custom_scripts()
-{
-    // Enqueue custom script
-    wp_enqueue_script('JS-functions', WPT_URL . 'js/functions.js', array('jquery'), '1.0', true);
-}
-
-add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
-
-
-
-
-////////////////////////////////////////////////
-
-// Custom pagination function in functions.php
-function custom_pagination()
-{
-    $paged = $_POST['page'];
-    $per_page = $_POST['per_page'];
-    $post_type = $_POST['post_type'];
-
-    $args = array(
-        'post_type' => $post_type,
-        'posts_per_page' => $per_page,
-        'paged' => $paged
-    );
-
-    $query = new WP_Query($args);
-
-    if ($query->have_posts()) :
-        while ($query->have_posts()) : $query->the_post();
-            // Output your post data here
-            echo '<h2>' . get_the_title() . '</h2>';
-            echo '<div>' . get_the_content() . '</div>';
-        // Add more fields as needed
-        endwhile;
-
-        echo '<div id="load-more-btn-container"><button id="load-more-btn">Load More</button></div>';
-    endif;
-
-    wp_die();
-}
-
-add_action('wp_ajax_custom_pagination', 'custom_pagination');
-add_action('wp_ajax_nopriv_custom_pagination', 'custom_pagination');
-
-// Inline script in wp_footer
+/*
+// to test
 add_action('wp_footer', function () {
-    ?>
+
+
+    //echo wpt_get_post_by_id(78, 'html');
+    // echo wpt_get_post_by_name('lorem','html', 'work'); 
+
+    // Example: Retrieve a custom post type named 'my_custom_post_type' as HTML
+    // $content = wpt_get_post_by_name('shrieker', 'html', 'test');
+    // echo $content;
+    ?><div id="test-321"></div>
     <script>
-        jQuery(function($) {
-            var page = 1;
-            var loading = false;
-            var perPage = 2; // Set your default value
-            var postType = 'post'; // Set your default value
 
-            function load_posts(paged) {
-                if (loading) return;
-                loading = true;
+		
+        (function($) {
+            $(document).ready(function() {
+                
+                // Trigger the AJAX request on document click
+                // $(document).on('click', function() {
+                    // wpt_get_post_by_id(78,  '#test', '<?php //echo WPT_AJAX;?>');
+					// wpt_get_post_by_name('home', 'page', '#test', '<?php //echo WPT_AJAX;?>');
+					// wpt_get_posts(per_page, post_type, size, target,wpt_ajax_url);
+					wpt_get_posts('-1', 'post','0','#test-321', '<?php echo WPT_AJAX;?>');
+				
+                // });
 
-                $.ajax({
-                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
-                    type: 'post',
-                    data: {
-                        action: 'custom_pagination',
-                        page: paged,
-                        per_page: perPage,
-                        post_type: postType,
-                    },
-                    beforeSend: function() {
-                        // $('#load-more-btn').hide();
-                        $('#ajax-posts').append('<div class="loader">Please wait...</div>');
-                    },
-                    success: function(response) {
-                        $('.loader').hide();
-                        $('#ajax-posts').append(response);
-                        loading = false;
-                    }
-                });
-            }
-
-            function load_more_posts() {
-                page++;
-                load_posts(page);
-            }
-
-            // Load posts initially
-            load_posts(page);
-
-            // Load more button click event
-            $(document).on('click', '#load-more-btn', function(e) {
-                e.preventDefault();
-                $(this).hide();
-                load_more_posts();
             });
-        });
+        })(jQuery);
     </script>
 <?php
 });
+*/
 
+
+
+
+
+// include_once 'functions/custom-pagination-beta.php';
+// include_once 'functions/wp_ajax_wpt_get_all_posts-beta.php';
 include_once 'functions/get_post_by_id.php';
-// include_once 'functions/get_post_by_name.php';
+include_once 'functions/get_post_by_name.php';
+include_once 'functions/get_all_posts.php';
 

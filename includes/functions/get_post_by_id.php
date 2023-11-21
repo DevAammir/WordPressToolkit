@@ -1,12 +1,15 @@
 <?php
 
-function wpt_get_post_by_id($id, $return_type = 'html')
+function wpt_get_post_by_id($args = array())
 {
-
-    $post = get_post($id);
+    $args = array(
+        'id'    => $args['id'], 
+        'return_type'   => $args['return_type']
+    );
+    $post = get_post($args['id']);
 
     if (!$post) {
-        if ($return_type === 'html') {
+        if ($args['return_type'] === 'html') {
             $response = '<div class="error">Post not found</div>';
         } else {
             $response = json_encode(array(
@@ -21,7 +24,7 @@ function wpt_get_post_by_id($id, $return_type = 'html')
         $status = 200;
         $message = 'success';
 
-        if ($return_type === 'html') {
+        if ($args['return_type'] === 'html') {
             $category = get_the_category($post->ID);
             $category_class = $category ? ($category[0]->slug) : '';
             ob_start();
@@ -55,11 +58,11 @@ function wpt_get_post_by_id($id, $return_type = 'html')
                     endif; ?>
                 </div>
             </div>
-    <?php
+<?php
 
             $content = ob_get_clean();
             $response = $content;
-        } elseif ($return_type === 'json') {
+        } elseif ($args['return_type'] === 'json') {
             $response = json_encode(array(
                 'result'  => $post,
                 'status'  => $status,
@@ -74,8 +77,13 @@ function wpt_get_post_by_id($id, $return_type = 'html')
 function wpt_get_post_by_id_endpoint()
 {
     $id = $_REQUEST['id'];
-    $return_type = $_REQUEST['return_type'];  // Default value
-    echo  wpt_get_post_by_id($id, $return_type);
+    $return_type = 'html';
+
+    $args = array(
+        'id'    => $_REQUEST['id'], //  
+        'return_type'   => 'html'
+    );
+    echo  wpt_get_post_by_id($args);
     die();
 }
 add_action('wp_ajax_wpt_get_post_by_id_endpoint', 'wpt_get_post_by_id_endpoint');
@@ -85,10 +93,9 @@ add_shortcode('get_post_by_id', 'get_post_by_id_shortcode');
 
 function get_post_by_id_shortcode($atts)
 {
-    $id = $atts['id'];
-    $return_type = 'html';  // Default value
-    return wpt_get_post_by_id($id, $return_type);
+    $args = array(
+        'id'    => $atts['id'], //  
+        'return_type'   => 'html'
+    );
+    return wpt_get_post_by_id($args);
 }
-
-
-

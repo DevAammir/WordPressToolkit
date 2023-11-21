@@ -261,16 +261,16 @@ document.addEventListener('DOMContentLoaded', function () {
 /******
  * HELPER FUNCTIONS
  * *******/
-function wpt_get_post_by_id(postId, return_type, target) {
+/* Corresponding to wpt_get_post_by_id()*/
+function wpt_get_post_by_id(postId, target,wpt_ajax_url) {
     // AJAX request
     $.ajax({
-        url: 'wp-admin/admin-ajax.php',
+        url: wpt_ajax_url,
         dataType: 'html',
         type: 'POST',
         data: {
             action: 'wpt_get_post_by_id_endpoint',
             id: postId, 
-            return_type: return_type
         },
         beforeSend: function(xhr) {
             // Update the content of the target div
@@ -282,6 +282,62 @@ function wpt_get_post_by_id(postId, return_type, target) {
         },
         error: function(error) {
             console.error('Request failed: ', error);
+        }
+    });
+}
+/* Corresponding to wpt_get_post_by_name()*/
+function wpt_get_post_by_name(post_name, post_type,target,wpt_ajax_url) {
+    // AJAX request
+    $.ajax({
+        url: wpt_ajax_url,
+        dataType: 'html',
+        type: 'POST',
+        data: {
+            action: 'wpt_get_post_by_name_endpoint',
+            post_name: post_name, 
+            post_type: post_type
+        },
+        beforeSend: function(xhr) {
+            // Update the content of the target div
+            $(target).html('<div id="loading"> Please wait... </div>');
+        },
+        success: function(response) {
+            // Update the content of the target div
+            $(target).html(response);
+        },
+        error: function(error) {
+            console.error('Request failed: ', error);
+        }
+    });
+}
+/* Corresponding to wpt_get_posts()*/
+function wpt_get_posts(post_type, size, target, wpt_ajax_url) {
+    // AJAX request
+    $.ajax({
+        url: wpt_ajax_url,
+        dataType: 'html',
+        type: 'POST',
+        data: {
+            action: 'wpt_get_posts_endpoint',
+            // per_page: per_page,
+            post_type: post_type,
+            size: size
+        },
+        beforeSend: function (xhr) {
+            // Update the content of the target div
+            $(target).html('<div id="loading"> Please wait... </div>');
+        },
+        success: function (response) {
+            // Update the content of the target div
+            $(target).html(response);
+        },
+        error: function (error) {
+            console.error('Request failed: ', error);
+        },
+        complete: function (xhr, status) {
+            // Log additional information in the console
+            console.log('Status:', status);
+            console.log('Response:', xhr.responseText);
         }
     });
 }

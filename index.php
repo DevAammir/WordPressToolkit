@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WordPress Toolkit
  * Description: WordPress Toolkit 
- * Version: 0.4
+ * Version: 0.5
  * Author: Aammir
  * Author URI: https://127.0.0.1
  * Text Domain: wpt
@@ -32,6 +32,17 @@ function add_custom_script()
 
 // Hook the function to the admin head
 add_action('admin_head', 'add_custom_script', 10);
+
+/* * *
+ *  Enqueue scripts and styles
+ * * */
+function enqueue_custom_scripts()
+{
+    // Enqueue custom script
+    wp_enqueue_script('JS-functions', WPT_URL . 'js/functions.js', array('jquery'), '1.0', true);
+}
+
+add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
 
 function active()
 {
