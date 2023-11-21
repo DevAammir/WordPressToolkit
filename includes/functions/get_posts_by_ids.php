@@ -1,30 +1,34 @@
 <?php
 
-function wpt_get_posts($params = array())
-{
-    $default_params = array(
-        'per_page'    => -1,
-        'post_type'   => 'post',
-        'return_type' => 'html',
-        'size'  => '',
-    );
 
-    $params = wp_parse_args($params, $default_params);
+
+function wpt_get_posts_by_ids($params = array())
+{
+
+
     $size = empty($params['size']) ?  0 : $params['size'];
 
 
 
+    $posts_ids  = $params['posts_ids'];
+    if (is_array($posts_ids)) {
+        $posts_ids_array = $posts_ids;
+    } else {
+        $posts_ids_array = array_map('trim', explode(',', $posts_ids));
+    }
 
 
     $args = array(
-        'post_type'      => $params['post_type'],
-        'posts_per_page' => empty($params['per_page']) ?  -1 : $params['per_page'],
+        'post_type'      => 'any',
+        'post__in'       => $posts_ids_array,
+        'posts_per_page' => empty($params['per_page']) ?  '-1' : $params['per_page'],
         'paged'          => get_query_var('paged') ? get_query_var('paged') : 1,
-        'orderby'        => 'date',
-        'order'          => 'DESC',
+        'orderby'        => 'post__in',
         'post_status'    => 'publish',
         'excerpt_length' => empty($params['size']) ?  0 : $params['size'],
     );
+
+    // dd($args,true);
 
     $query = new WP_Query($args);
 
@@ -49,11 +53,15 @@ function wpt_get_posts($params = array())
                 $post_slug = esc_attr(get_post_field('post_name', get_the_ID()));
                 $category = get_the_category();
                 $category_class = $category ? esc_attr($category[0]->slug) : '';
+
+                $the_post_type = get_post_type();
+                $post_type_class = 'post-type-' . esc_attr($the_post_type);
+
                 if (!empty($params['size']) && $params['size'] != "full") {
                     $excerpt = wp_trim_words(get_the_excerpt(), $params['size']);
                 }
 ?>
-                <div class="post-wrapper <?php echo $category_class; ?> pos-<?php echo $num; ?> post-<?php echo get_the_ID(); ?> <?php echo $post_slug; ?>">
+                <div class="post-wrapper <?php echo $category_class; ?> pos-<?php echo $num; ?> post-<?php echo get_the_ID(); ?> <?php echo $post_slug; ?> <?php echo $post_type_class; ?>">
                     <h3><a href="<?php the_permalink(); ?>"><?php echo get_the_title(); ?></a></h3>
                     <div class="featuerd-image-wrapper">
                         <a href="<?php the_permalink(); ?>"><?php the_post_thumbnail('full', array('class' => 'featuerd-image')); ?></a>
@@ -121,28 +129,30 @@ function wpt_get_posts($params = array())
 }
 
 
-function wpt_get_posts_endpoint()
+function wpt_get_posts_by_ids_endpoint()
 {
-    echo  wpt_get_posts([
+    $args = [
         'per_page'    => -1,
-        'post_type'   => $_REQUEST['post_type'],
+        'posts_ids'   => $_REQUEST['posts_ids'],
         'return_type' => 'html',
         'size' =>   $_REQUEST['size'],
-    ]);
+    ];
+    echo  wpt_get_posts_by_ids($args);
     die();
 }
 
-add_action('wp_ajax_wpt_get_posts_endpoint', 'wpt_get_posts_endpoint');
-add_action('wp_ajax_nopriv_wpt_get_posts_endpoint', 'wpt_get_posts_endpoint');
+add_action('wp_ajax_wpt_get_posts_by_ids_endpoint', 'wpt_get_posts_by_ids_endpoint');
+add_action('wp_ajax_nopriv_wpt_get_posts_by_ids_endpoint', 'wpt_get_posts_by_ids_endpoint');
 
-add_shortcode('wpt_get_posts', 'wpt_get_posts_shortcode');
+add_shortcode('wpt_get_posts_by_ids', 'wpt_get_posts_by_ids_shortcode');
 
-function wpt_get_posts_shortcode($atts)
+function wpt_get_posts_by_ids_shortcode($atts)
 {
-    return wpt_get_posts([
+    $args = [
         'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
-        'post_type'   => $atts['post_type'],
+        'posts_ids'   => $atts['posts_ids'],
         'return_type' => 'html',
-        'size' =>   $atts['size'],
-    ]);
+        'size' =>   $atts['size']
+    ];
+    return wpt_get_posts_by_ids($args);
 }

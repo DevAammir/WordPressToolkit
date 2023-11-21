@@ -128,4 +128,5 @@ add_action('wp_footer', function () {
 include_once 'functions/get_post_by_id.php';
 include_once 'functions/get_post_by_name.php';
 include_once 'functions/get_all_posts.php';
+include_once 'functions/get_posts_by_ids.php';
 

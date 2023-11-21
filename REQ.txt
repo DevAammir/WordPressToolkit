@@ -1,11 +1,11 @@
 
 /*
 GET 
-    1. post by id, 
-    2. all posts,
-	3. posts by ids
-	4. post by postmeta
-	5. posts by postmeta
+    1. post by id, = 1
+    2. all posts, = 1
+	3. posts by ids 
+	4. posts by names = x
+	5. posts by postmeta 
     6. postmeta,
     7. user by id,
     8. all users,
@@ -20,6 +20,7 @@ GET
 	17.get option by id
 	18. get post by name/slug
 	19. get posts by author
+	20. user by role
 */
 /*POST
 1. create post
