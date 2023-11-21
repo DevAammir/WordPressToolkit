@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WordPress Toolkit
  * Description: WordPress Toolkit 
- * Version: 0.6
+ * Version: 0.7
  * Author: Aammir
  * Author URI: https://127.0.0.1
  * Text Domain: wpt
@@ -24,7 +24,7 @@ function add_custom_script()
 {
     // Check if we are in the admin section
     if (is_admin()) {
-        echo '<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>';
+        //  echo '<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>';
         echo '<script src="' . esc_url(WPT_URL . 'js/functions.js') . '"></script>';
         echo '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/all.min.css">';
     }

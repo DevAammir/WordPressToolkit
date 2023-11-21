@@ -372,3 +372,35 @@ function wpt_get_posts_by_ids(post_ids, size, target, wpt_ajax_url) {
         }
     });
 }
+/* Corresponding to wpt_get_posts_by_meta()*/
+function wpt_get_posts_by_meta(meta_key, meta_value, size, target, wpt_ajax_url) {
+    // AJAX request
+    $.ajax({
+        url: wpt_ajax_url,
+        dataType: 'html',
+        type: 'POST',
+        data: {
+            action: 'wpt_get_posts_by_meta_endpoint',
+            // per_page: per_page,
+            meta_key: meta_key,
+            meta_value: meta_value,
+            size: size
+        },
+        beforeSend: function (xhr) {
+            // Update the content of the target div
+            $(target).html('<div id="loading"> Please wait... </div>');
+        },
+        success: function (response) {
+            // Update the content of the target div
+            $(target).html(response);
+        },
+        error: function (error) {
+            console.error('Request failed: ', error);
+        },
+        complete: function (xhr, status) {
+            // Log additional information in the console
+            console.log('Status:', status);
+            console.log('Response:', xhr.responseText);
+        }
+    });
+}

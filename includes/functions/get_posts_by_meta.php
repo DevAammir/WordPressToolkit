@@ -1,34 +1,28 @@
 <?php
 
-
-
-function wpt_get_posts_by_ids($params = array())
+function wpt_get_posts_by_meta($params = array())
 {
-
-
     $size = empty($params['size']) ?  0 : $params['size'];
-
-
-
-    $posts_ids  = $params['posts_ids'];
-    if (is_array($posts_ids)) {
-        $posts_ids_array = $posts_ids;
-    } else {
-        $posts_ids_array = array_map('trim', explode(',', $posts_ids));
-    }
-
 
     $args = array(
         'post_type'      => 'any',
-        'post__in'       => $posts_ids_array,
-        'posts_per_page' => empty($params['per_page']) ?  '-1' : $params['per_page'],
+        'posts_per_page' => empty($params['per_page']) ?  -1 : $params['per_page'],
         'paged'          => get_query_var('paged') ? get_query_var('paged') : 1,
-        'orderby'        => 'post__in',
+        // 'orderby'        => 'date',
+        // 'order'          => 'DESC',
         'post_status'    => 'publish',
         'excerpt_length' => empty($params['size']) ?  0 : $params['size'],
     );
 
-    // dd($args,true);
+    if (!empty($params['meta_key'])) {
+        $args['meta_key'] = $params['meta_key'];
+    }
+
+    if (!empty($params['meta_value'])) {
+        $args['meta_value'] = $params['meta_value'];
+    }
+
+    // dd($args);
 
     $query = new WP_Query($args);
 
@@ -49,10 +43,9 @@ function wpt_get_posts_by_ids($params = array())
             ob_start();
             $num = 0; ?>
             <!-------wpt-posts-wrapper--------->
-            <div class='wpt-posts-wrapper by-ids'>
+            <div class='wpt-posts-wrapper by-meta'>
                 <div class='wpt-results-total'> <?php echo $query->found_posts; ?> results found</div>
-                <?php
-                while ($query->have_posts()) : $query->the_post();
+                <?php while ($query->have_posts()) : $query->the_post();
                     $num++;
                     $post_slug = esc_attr(get_post_field('post_name', get_the_ID()));
                     $category = get_the_category();
@@ -65,7 +58,7 @@ function wpt_get_posts_by_ids($params = array())
                         $excerpt = wp_trim_words(get_the_excerpt(), $params['size']);
                     }
                 ?>
-                    <div class="post-wrapper <?php echo $category_class; ?> pos-<?php echo $num; ?> post-<?php echo get_the_ID(); ?> <?php echo $post_slug; ?> <?php echo $post_type_class; ?>">
+                    <div class="post-wrapper <?php echo $category_class; ?> pos-<?php echo $num; ?> post-<?php echo get_the_ID(); ?> <?php echo $post_slug; ?>  <?php echo $post_type_class; ?>">
                         <h3><a href="<?php the_permalink(); ?>"><?php echo get_the_title(); ?></a></h3>
                         <div class="featuerd-image-wrapper">
                             <a href="<?php the_permalink(); ?>"><?php the_post_thumbnail('full', array('class' => 'featuerd-image')); ?></a>
@@ -134,30 +127,30 @@ function wpt_get_posts_by_ids($params = array())
     }
 
 
-    function wpt_get_posts_by_ids_endpoint()
+    function wpt_get_posts_by_meta_endpoint()
     {
-        $args = [
+        echo  wpt_get_posts_by_meta([
             'per_page'    => -1,
-            'posts_ids'   => $_REQUEST['posts_ids'],
             'return_type' => 'html',
             'size' =>   $_REQUEST['size'],
-        ];
-        echo  wpt_get_posts_by_ids($args);
+            'meta_key' =>   @$_REQUEST['meta_key'],
+            'meta_value' =>   @$_REQUEST['meta_value'],
+        ]);
         die();
     }
 
-    add_action('wp_ajax_wpt_get_posts_by_ids_endpoint', 'wpt_get_posts_by_ids_endpoint');
-    add_action('wp_ajax_nopriv_wpt_get_posts_by_ids_endpoint', 'wpt_get_posts_by_ids_endpoint');
+    add_action('wp_ajax_wpt_get_posts_by_meta_endpoint', 'wpt_get_posts_by_meta_endpoint');
+    add_action('wp_ajax_nopriv_wpt_get_posts_by_meta_endpoint', 'wpt_get_posts_by_meta_endpoint');
 
-    add_shortcode('wpt_get_posts_by_ids', 'wpt_get_posts_by_ids_shortcode');
+    add_shortcode('wpt_get_posts_by_meta', 'wpt_get_posts_by_meta_shortcode');
 
-    function wpt_get_posts_by_ids_shortcode($atts)
+    function wpt_get_posts_by_meta_shortcode($atts)
     {
-        $args = [
+        return wpt_get_posts_by_meta([
             'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
-            'posts_ids'   => $atts['posts_ids'],
             'return_type' => 'html',
-            'size' =>   $atts['size']
-        ];
-        return wpt_get_posts_by_ids($args);
+            'size' =>   $atts['size'],
+            'meta_key' =>   @$atts['meta_key'],
+            'meta_value' =>   @$atts['meta_value'],
+        ]);
     }
