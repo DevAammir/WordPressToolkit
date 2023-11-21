@@ -130,4 +130,6 @@ include_once 'functions/get_post_by_name.php';
 include_once 'functions/get_all_posts.php';
 include_once 'functions/get_posts_by_ids.php';
 include_once 'functions/get_posts_by_meta.php';
+include_once 'functions/get_posts_by_categories.php';
+include_once 'functions/get_posts_by_author.php';
 

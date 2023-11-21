@@ -3,9 +3,9 @@
 GET 
     1. post by id, = 1
     2. all posts, = 1
-	3. posts by ids 
+	3. posts by ids =1
 	4. posts by names = x
-	5. posts by postmeta 
+	5. posts by postmeta  = 1
     6. postmeta,
     7. user by id,
     8. all users,
@@ -13,13 +13,13 @@ GET
 	10.user by usermeta 
 	11.users by usermeta
     12.usermeta
-	13.get post by category
-	14.get posts by categories
+	13.get post by category = x
+	14.get posts by categories = BETA MUST CHECK FOR MULTIPLE CATE NAMES
 	15.get all catagories
 	16.get post categories by post id
 	17.get option by id
-	18. get post by name/slug
-	19. get posts by author
+	18. get post by name/slug = 1
+	19. get posts by author = BETA VERSION NEED TO CHECK
 	20. user by role
 */
 /*POST
@@ -35,4 +35,78 @@ GET
 10. delete usermeta
 11. add/update option
 12. delete option
+13. update postmeta
+14. update usermeta
 */
+
+
+
+
+
+  here are more scenarios that you might consider incorporating into your custom reusable functions:
+
+**GET:**
+1. Get a specific user by username.
+2. Get posts by a specific author.
+3. Get posts by date range.
+4. Get posts by a specific post type.
+5. Get posts by a specific status (published, draft, etc.).
+6. Get users by email.
+7. Get posts with a certain tag.
+8. Get posts by custom taxonomy.
+9. Get posts by a custom field value.
+10. Get users by role and status.
+11. Get all comments for a specific post.
+12. Get comments by user.
+13. Get comments by date range.
+14. Get comments by status (approved, pending, etc.).
+15. Get post revisions for a specific post.
+
+**POST:**
+1. Create a user with custom role.
+2. Create a new category.
+3. Create a new tag.
+4. Create a comment for a specific post.
+5. Add a taxonomy term to a post.
+6. Add a term to a custom taxonomy.
+7. Add a media attachment to a post.
+8. Add a featured image to a post.
+9. Add a custom post type.
+10. Add a custom post status.
+11. Add a custom field to a post.
+12. Add a term to a custom taxonomy for a user.
+13. Add a term to a custom taxonomy for a post.
+14. Add a term to a custom taxonomy for a comment.
+15. Add a term to a custom taxonomy for a media attachment.
+
+**DELETE:**
+1. Delete a specific user by ID.
+2. Delete a post by ID.
+3. Delete a comment by ID.
+4. Delete a category by ID.
+5. Delete a tag by ID.
+6. Delete a custom taxonomy term by ID.
+7. Delete a custom post type by ID.
+8. Delete a term from a custom taxonomy for a user.
+9. Delete a term from a custom taxonomy for a post.
+10. Delete a term from a custom taxonomy for a comment.
+11. Remove a custom field from a post.
+12. Remove a featured image from a post.
+
+**UPDATE:**
+1. Update user information.
+2. Update post content.
+3. Update post status.
+4. Update post title.
+5. Update post author.
+6. Update post category.
+7. Update post tags.
+8. Update user role.
+9. Update post metadata.
+10. Update user metadata.
+11. Update post terms in a custom taxonomy.
+12. Update user terms in a custom taxonomy.
+13. Update comment content.
+14. Update comment status.
+
+These scenarios cover a wide range of operations that you might find useful in a WordPress development context. Depending on your specific use case, you can choose which of these scenarios are most relevant to your needs and implement them as reusable functions.

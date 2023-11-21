@@ -337,7 +337,7 @@ function wpt_get_posts(post_type, size, target, wpt_ajax_url) {
         complete: function (xhr, status) {
             // Log additional information in the console
             console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
+            // console.log('Response:', xhr.responseText);
         }
     });
 }
@@ -368,7 +368,7 @@ function wpt_get_posts_by_ids(post_ids, size, target, wpt_ajax_url) {
         complete: function (xhr, status) {
             // Log additional information in the console
             console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
+            // console.log('Response:', xhr.responseText);
         }
     });
 }
@@ -400,7 +400,39 @@ function wpt_get_posts_by_meta(meta_key, meta_value, size, target, wpt_ajax_url)
         complete: function (xhr, status) {
             // Log additional information in the console
             console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
+            // console.log('Response:', xhr.responseText);
+        }
+    });
+}
+
+/* Corresponding to wpt_get_posts_by_categories()*/
+function wpt_get_posts_by_categories(category, post_type, size, target, wpt_ajax_url) {
+    // AJAX request
+    $.ajax({
+        url: wpt_ajax_url,
+        dataType: 'html',
+        type: 'POST',
+        data: {
+            action: 'wpt_get_posts_by_categories_endpoint', 
+            category: category,
+            size: size,
+            post_type: post_type
+        },
+        beforeSend: function (xhr) {
+            // Update the content of the target div
+            $(target).html('<div id="loading"> Please wait... </div>');
+        },
+        success: function (response) {
+            // Update the content of the target div
+            $(target).html(response);
+        },
+        error: function (error) {
+            console.error('Request failed: ', error);
+        },
+        complete: function (xhr, status) {
+            // Log additional information in the console
+            console.log('Status:', status);
+            // console.log('Response:', xhr.responseText);
         }
     });
 }

@@ -1,27 +1,59 @@
 <?php
 
-function wpt_get_posts($params = array())
+function wpt_get_posts_by_categories($params = array())
 {
-    $default_params = array(
-        'per_page'    => -1,
-        'post_type'   => 'post',
-        'return_type' => 'html',
-        'size'  => '',
-    );
 
-    $params = wp_parse_args($params, $default_params);
     $size = empty($params['size']) ?  0 : $params['size'];
 
     $args = array(
         'post_type'      => $params['post_type'],
         'posts_per_page' => empty($params['per_page']) ?  -1 : $params['per_page'],
         'paged'          => get_query_var('paged') ? get_query_var('paged') : 1,
-        'orderby'        => 'date',
-        'order'          => 'DESC',
+        // 'orderby'        => 'date',
+        // 'order'          => 'DESC',
         'post_status'    => 'publish',
-        'excerpt_length' => empty($params['size']) ?  0 : $params['size'],
+        'excerpt_length' => empty($params['size']) ?  0 : $params['size']
     );
 
+    if (!empty($params['category'])) {
+        $category = $params['category'];
+
+        // Check if it's a comma-separated list
+        if (strpos($category, ',') !== false) {
+            $category = array_map('trim', explode(',', $category));
+            $args['category__in'] = $category;
+            
+        } else {
+            // Check if it's numeric (ID) or a string (name)
+            if (is_numeric($category)) {
+                $args['cat'] = $category; // Use 'cat' for category ID
+            } else {
+                $args['category_name'] = $category; // Use 'category_name' for category name
+            }
+        }
+    }
+
+
+    if (!empty($params['categories'])) {
+        $categories = $params['categories'];
+
+        // Check if it's a comma-separated list
+        if (strpos($categories, ',') !== false) {
+            $categories = array_map('trim', explode(',', $categories));
+            $args['category_name'] = $categories; // Use 'category_name' for category names
+        } else {
+            // Check if it's numeric (ID) or a string (name)
+            if (is_numeric($categories)) {
+                $args['cat'] = $categories; // Use 'cat' for category ID
+            } else {
+                $args['category_name'] = $categories; // Use 'category_name' for a single category name
+            }
+        }
+    }
+
+
+
+     dd($args);
     $query = new WP_Query($args);
 
     if (!$query->have_posts()) {
@@ -121,28 +153,32 @@ function wpt_get_posts($params = array())
     }
 
 
-    function wpt_get_posts_endpoint()
+    function wpt_get_posts_by_categories_endpoint()
     {
-        echo  wpt_get_posts([
+        // dd($_REQUEST);
+        echo  wpt_get_posts_by_categories([
             'per_page'    => -1,
             'post_type'   => $_REQUEST['post_type'],
             'return_type' => 'html',
             'size' =>   $_REQUEST['size'],
+            'category'  => $_REQUEST['category'],
         ]);
         die();
     }
 
-    add_action('wp_ajax_wpt_get_posts_endpoint', 'wpt_get_posts_endpoint');
-    add_action('wp_ajax_nopriv_wpt_get_posts_endpoint', 'wpt_get_posts_endpoint');
+    add_action('wp_ajax_wpt_get_posts_by_categories_endpoint', 'wpt_get_posts_by_categories_endpoint');
+    add_action('wp_ajax_nopriv_wpt_get_posts_by_categories_endpoint', 'wpt_get_posts_by_categories_endpoint');
 
-    add_shortcode('wpt_get_posts', 'wpt_get_posts_shortcode');
+    add_shortcode('wpt_get_posts_by_categories', 'wpt_get_posts_by_categories_shortcode');
 
-    function wpt_get_posts_shortcode($atts)
+    function wpt_get_posts_by_categories_shortcode($atts)
     {
-        return wpt_get_posts([
+        // dd($atts);
+        return wpt_get_posts_by_categories([
             'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
             'post_type'   => $atts['post_type'],
             'return_type' => 'html',
             'size' =>   $atts['size'],
+            'category'  => $atts['category'],
         ]);
     }
