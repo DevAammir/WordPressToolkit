@@ -1,6 +1,16 @@
 <?php
-
-function get_posts_by_author($params = array())
+/**
+ * Retrieves posts by author based on the given parameters.
+ *
+ * @param array $params An array of parameters for the query.
+ *                      - post_type (string): The post type to filter by.
+ *                      - per_page (int): The number of posts per page.
+ *                      - size (int): The length of the excerpt.
+ *                      - author (string|int): The author's username or ID.
+ * @throws Some_Exception_Class If the query fails.
+ * @return mixed The response based on the return_type parameter.
+ */
+function wpt_get_posts_by_author($params = array())
 {
     $size = empty($params['size']) ?  0 : $params['size'];
 
@@ -21,6 +31,7 @@ function get_posts_by_author($params = array())
             $args['author'] = $params['author'];
         }
     }
+    // dd($args);
     $query = new WP_Query($args);
 
     if (!$query->have_posts()) {
@@ -40,10 +51,17 @@ function get_posts_by_author($params = array())
     return $response;
     }
 
-
-    function get_posts_by_author_endpoint()
+    /**
+     * Retrieves posts by author using the WordPress API endpoint.
+     *
+     * @throws Exception Thrown when the 'post_type', 'size', or 'author' parameters are missing.
+     * @return string The HTML representation of the retrieved posts.
+     */
+    add_action('wp_ajax_wpt_get_posts_by_author_endpoint', 'wpt_get_posts_by_author_endpoint');
+    add_action('wp_ajax_nopriv_wpt_get_posts_by_author_endpoint', 'wpt_get_posts_by_author_endpoint');
+    function wpt_get_posts_by_author_endpoint()
     {
-        echo  get_posts_by_author([
+        echo  wpt_get_posts_by_author([
             'per_page'    => -1,
             'post_type'   => $_REQUEST['post_type'],
             'return_type' => 'html',
@@ -53,14 +71,24 @@ function get_posts_by_author($params = array())
         die();
     }
 
-    add_action('wp_ajax_get_posts_by_author_endpoint', 'get_posts_by_author_endpoint');
-    add_action('wp_ajax_nopriv_get_posts_by_author_endpoint', 'get_posts_by_author_endpoint');
 
-    add_shortcode('get_posts_by_author', 'get_posts_by_author_shortcode');
+    /**
+     * Generates a shortcode that retrieves posts by author.
+     *
+     * @param array $atts An associative array of shortcode attributes.
+     *   - per_page (int) The number of posts to display per page.
+     *   - post_type (string) The post type to retrieve.
+     *   - return_type (string) The type of output to return.
+     *   - size (string) The size of the output.
+     *   - author (string) The author to retrieve posts for.
+     * @throws Some_Exception_Class A description of the exception that may be thrown.
+     * @return Some_Return_Value The generated output.
+     */
+    add_shortcode('wpt_get_posts_by_author', 'wpt_get_posts_by_author_shortcode');
 
-    function get_posts_by_author_shortcode($atts)
+    function wpt_get_posts_by_author_shortcode($atts)
     {
-        return get_posts_by_author([
+        return wpt_get_posts_by_author([
             'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
             'post_type'   => $atts['post_type'],
             'return_type' => 'html',

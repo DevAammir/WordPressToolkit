@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * Retrieves a post by its name.
+ *
+ * @param array $args An array of arguments:
+ *     - post_name (string): The name of the post.
+ *     - post_type (string): The type of the post.
+ *     - return_type (string): The type of the response (html or json).
+ * @return string The response containing the post information.
+ */
 function wpt_get_post_by_name($args = array())
 {
 
@@ -76,6 +84,18 @@ function wpt_get_post_by_name($args = array())
     // wp_die();
 }
 
+/**
+ * Retrieves a post by its name using the WordPress REST API.
+ *
+ * @param array $args The arguments for retrieving the post.
+ *                    - post_name (string): The name of the post.
+ *                    - post_type (string): The type of the post.
+ *                    - return_type (string): The type of the return value.
+ * @throws None
+ * @return string The retrieved post in HTML format.
+ */
+add_action('wp_ajax_wpt_get_post_by_name_endpoint', 'wpt_get_post_by_name_endpoint');
+add_action('wp_ajax_nopriv_wpt_get_post_by_name_endpoint', 'wpt_get_post_by_name_endpoint');
 function wpt_get_post_by_name_endpoint()
 {
     $args = array(
@@ -86,9 +106,16 @@ function wpt_get_post_by_name_endpoint()
     echo  wpt_get_post_by_name($args);
     die();
 }
-add_action('wp_ajax_wpt_get_post_by_name_endpoint', 'wpt_get_post_by_name_endpoint');
-add_action('wp_ajax_nopriv_wpt_get_post_by_name_endpoint', 'wpt_get_post_by_name_endpoint');
 
+/**
+ * Get a post by name using a shortcode.
+ *
+ * @param array $atts An associative array of attributes.
+ *                    - post_name (string): The name of the post.
+ *                    - post_type (string): The type of the post.
+ * @throws Some_Exception_Class Description of exception (if any).
+ * @return string The HTML representation of the post.
+ */
 add_shortcode('get_post_by_name', 'get_post_by_name_shortcode');
 
 function get_post_by_name_shortcode($atts)

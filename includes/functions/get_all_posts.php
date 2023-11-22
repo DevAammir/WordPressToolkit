@@ -56,6 +56,14 @@ function wpt_get_posts($params = array())
     return $response;
 }
 
+/**
+ * Retrieves the posts endpoint and returns the HTML content.
+ *
+ * @throws Some_Exception_Class An exception that may occur during the execution of the function.
+ * @return Some_Return_Value The HTML content of the posts endpoint.
+ */
+add_action('wp_ajax_wpt_get_posts_endpoint', 'wpt_get_posts_endpoint');
+add_action('wp_ajax_nopriv_wpt_get_posts_endpoint', 'wpt_get_posts_endpoint');
 function wpt_get_posts_endpoint()
 {
     echo  wpt_get_posts([
@@ -67,9 +75,17 @@ function wpt_get_posts_endpoint()
     die();
 }
 
-add_action('wp_ajax_wpt_get_posts_endpoint', 'wpt_get_posts_endpoint');
-add_action('wp_ajax_nopriv_wpt_get_posts_endpoint', 'wpt_get_posts_endpoint');
 
+/**
+ * Retrieves a list of posts using the WordPress get_posts function and returns them as HTML.
+ *
+ * @param array $atts An array of attributes passed to the shortcode function.
+ *   - per_page (int) The number of posts to retrieve per page. Default is -1 (retrieve all posts).
+ *   - post_type (string) The type of posts to retrieve. Required.
+ *   - return_type (string) The type of data to return. Default is 'html'.
+ *   - size (string) The size of the posts to retrieve. Required.
+ * @return string The HTML representation of the retrieved posts.
+ */
 add_shortcode('wpt_get_posts', 'wpt_get_posts_shortcode');
 
 function wpt_get_posts_shortcode($atts)

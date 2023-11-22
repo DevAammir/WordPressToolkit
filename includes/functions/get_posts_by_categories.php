@@ -1,5 +1,16 @@
 <?php
-
+/**
+ * Retrieves posts from the WordPress database based on specified categories.
+ *
+ * @param array $params An array of parameters for retrieving the posts.
+ *              - 'size' (int): The size of the posts to retrieve. Default is 0.
+ *              - 'post_type' (string): The type of posts to retrieve.
+ *              - 'per_page' (int): The number of posts to retrieve per page. Default is -1.
+ *              - 'category' (string): The category or categories to filter the posts by.
+ *              - 'return_type' (string): The type of response to return. Either 'html' or 'json'.
+ * @return mixed The response based on the specified return type.
+ * @throws Some_Exception_Class A description of the exception that can be thrown.
+ */
 function wpt_get_posts_by_categories($params = array())
 {
 
@@ -70,7 +81,18 @@ function wpt_get_posts_by_categories($params = array())
     wp_reset_postdata();
     return $response;
     }
-
+    /**
+     * Retrieves posts by categories using an endpoint.
+     *
+     * @param array $atts The attributes passed to the shortcode.
+     *                    - per_page (int): The number of posts to retrieve per page. Defaults to -1 (all).
+     *                    - post_type (string): The post type to retrieve.
+     *                    - size (string): The size of the posts.
+     *                    - category (string): The category of the posts.
+     * @return string The HTML representation of the retrieved posts.
+     */
+    add_action('wp_ajax_wpt_get_posts_by_categories_endpoint', 'wpt_get_posts_by_categories_endpoint');
+    add_action('wp_ajax_nopriv_wpt_get_posts_by_categories_endpoint', 'wpt_get_posts_by_categories_endpoint');
 
     function wpt_get_posts_by_categories_endpoint()
     {
@@ -85,9 +107,16 @@ function wpt_get_posts_by_categories($params = array())
         die();
     }
 
-    add_action('wp_ajax_wpt_get_posts_by_categories_endpoint', 'wpt_get_posts_by_categories_endpoint');
-    add_action('wp_ajax_nopriv_wpt_get_posts_by_categories_endpoint', 'wpt_get_posts_by_categories_endpoint');
-
+    /**
+     * Retrieves posts by categories using a shortcode.
+     *
+     * @param array $atts The attributes passed to the shortcode.
+     *                    - per_page (int): The number of posts to retrieve per page. Defaults to -1 (all).
+     *                    - post_type (string): The post type to retrieve.
+     *                    - size (string): The size of the posts.
+     *                    - category (string): The category of the posts.
+     * @return string The HTML representation of the retrieved posts.
+     */
     add_shortcode('wpt_get_posts_by_categories', 'wpt_get_posts_by_categories_shortcode');
 
     function wpt_get_posts_by_categories_shortcode($atts)

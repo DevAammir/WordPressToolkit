@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Retrieves posts based on meta data.
  *
@@ -51,33 +52,46 @@ function wpt_get_posts_by_meta($params = array())
 
     wp_reset_postdata();
     return $response;
-    }
+}
+/**
+ * Retrieves posts based on meta data.
+ *
+ *                      - size (int): The size of the excerpt.
+ *                      - meta_key (string): The meta key to filter by.
+ *                      - meta_value (string): The meta value to filter by.
+ */
+add_action('wp_ajax_wpt_get_posts_by_meta_endpoint', 'wpt_get_posts_by_meta_endpoint');
+add_action('wp_ajax_nopriv_wpt_get_posts_by_meta_endpoint', 'wpt_get_posts_by_meta_endpoint');
+function wpt_get_posts_by_meta_endpoint()
+{
+    echo  wpt_get_posts_by_meta([
+        'per_page'    => -1,
+        'return_type' => 'html',
+        'size' =>   $_REQUEST['size'],
+        'meta_key' =>   @$_REQUEST['meta_key'],
+        'meta_value' =>   @$_REQUEST['meta_value'],
+    ]);
+    die();
+}
 
 
-    function wpt_get_posts_by_meta_endpoint()
-    {
-        echo  wpt_get_posts_by_meta([
-            'per_page'    => -1,
-            'return_type' => 'html',
-            'size' =>   $_REQUEST['size'],
-            'meta_key' =>   @$_REQUEST['meta_key'],
-            'meta_value' =>   @$_REQUEST['meta_value'],
-        ]);
-        die();
-    }
+/**
+ * A function that gets posts by meta using a shortcode.
+ *
+ *                      - size (int): The size of the excerpt.
+ *                      - per_page (int): The number of posts to display per page.
+ *                      - meta_key (string): The meta key to filter by.
+ *                      - meta_value (string): The meta value to filter by.
+ */
+add_shortcode('wpt_get_posts_by_meta', 'wpt_get_posts_by_meta_shortcode');
 
-    add_action('wp_ajax_wpt_get_posts_by_meta_endpoint', 'wpt_get_posts_by_meta_endpoint');
-    add_action('wp_ajax_nopriv_wpt_get_posts_by_meta_endpoint', 'wpt_get_posts_by_meta_endpoint');
-
-    add_shortcode('wpt_get_posts_by_meta', 'wpt_get_posts_by_meta_shortcode');
-
-    function wpt_get_posts_by_meta_shortcode($atts)
-    {
-        return wpt_get_posts_by_meta([
-            'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
-            'return_type' => 'html',
-            'size' =>   $atts['size'],
-            'meta_key' =>   @$atts['meta_key'],
-            'meta_value' =>   @$atts['meta_value'],
-        ]);
-    }
+function wpt_get_posts_by_meta_shortcode($atts)
+{
+    return wpt_get_posts_by_meta([
+        'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
+        'return_type' => 'html',
+        'size' =>   $atts['size'],
+        'meta_key' =>   @$atts['meta_key'],
+        'meta_value' =>   @$atts['meta_value'],
+    ]);
+}

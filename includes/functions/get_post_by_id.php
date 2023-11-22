@@ -85,6 +85,16 @@ function wpt_get_post_by_id($args = array())
     // wp_die();
 }
 
+/**
+ * Retrieves a post by its ID from the WordPress database and returns it.
+ *
+ * @param int $id The ID of the post to retrieve.
+ * @param string $return_type The format in which the post should be returned. Defaults to 'html'.
+ * @throws None
+ * @return string The post content in the specified format.
+ */
+add_action('wp_ajax_wpt_get_post_by_id_endpoint', 'wpt_get_post_by_id_endpoint');
+add_action('wp_ajax_nopriv_wpt_get_post_by_id_endpoint', 'wpt_get_post_by_id_endpoint');
 function wpt_get_post_by_id_endpoint()
 {
     $id = $_REQUEST['id'];
@@ -97,9 +107,15 @@ function wpt_get_post_by_id_endpoint()
     echo  wpt_get_post_by_id($args);
     die();
 }
-add_action('wp_ajax_wpt_get_post_by_id_endpoint', 'wpt_get_post_by_id_endpoint');
-add_action('wp_ajax_nopriv_wpt_get_post_by_id_endpoint', 'wpt_get_post_by_id_endpoint');
 
+/**
+ * Retrieves a post by its ID using a shortcode.
+ *
+ * @param array $atts The attributes passed to the shortcode.
+ *                    - 'id': The ID of the post to retrieve.
+ * @throws Exception If the post cannot be found.
+ * @return string The HTML content of the retrieved post.
+ */
 add_shortcode('get_post_by_id', 'get_post_by_id_shortcode');
 
 function get_post_by_id_shortcode($atts)

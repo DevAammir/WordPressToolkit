@@ -27,9 +27,12 @@ function wpt_disable_gutenburg_everywhere()
     add_filter('gutenberg_can_edit_post', '__return_false');
 }
 
-/* * *
- * WOOCOMMERECE SUPPORT 
- * */
+    /**
+     * Adds WooCommerce support to the theme.
+     *
+     * @throws Some_Exception_Class description of exception
+     * @return void
+     */
 function wpt_woocommerce_support()
 {
     function add_woo_support()
@@ -39,9 +42,12 @@ function wpt_woocommerce_support()
     add_action('after_setup_theme', 'add_woo_support');
 }
 
-/* * *
- * ADD CSS CLASSES TO BODY 
- * */
+/**
+ * Generates the CSS classes to be added to the body element.
+ *
+ * @param array $classes The array of existing CSS classes for the body element.
+ * @return array The modified array of CSS classes with the added post slug.
+ */
 function wpt_add_css_classes_to_body()
 {
     function wpt_body_classes($classes)
@@ -55,9 +61,11 @@ function wpt_add_css_classes_to_body()
     add_filter('body_class', 'wpt_body_classes');
 }
 
-/* * *
- * ERROR REPORTING ON 
- * */
+/**
+ * Enable error reporting and display in PHP.
+ *
+ * @throws Exception If there is an error enabling error reporting.
+ */
 function E_ON()
 {
     ini_set('display_errors', 1);
@@ -66,9 +74,14 @@ function E_ON()
 }
 
 
-/* * *
- *  DUMP DATA
- * * */
+ /**
+ * Dump and die function for debugging purposes.
+ *
+ * @param mixed $data The data to be dumped.
+ * @param mixed|null $exit Optional. If provided, the script execution will be terminated after dumping the data.
+ * @throws None
+ * @return None
+ */
 function dd($data, $exit = null)
 {
 ?>
@@ -83,6 +96,18 @@ function dd($data, $exit = null)
         exit;
     }
 }
+
+// include_once 'functions/custom-pagination-beta.php';
+// include_once 'functions/wp_ajax_wpt_get_all_posts-beta.php';
+
+include_once 'functions/_common_functions.php';
+include_once 'functions/get_post_by_id.php';
+include_once 'functions/get_post_by_name.php';
+include_once 'functions/get_all_posts.php';
+include_once 'functions/get_posts_by_ids.php';
+include_once 'functions/get_posts_by_meta.php';
+include_once 'functions/get_posts_by_categories.php';
+include_once 'functions/get_posts_by_author.php';
 
 
 /*
@@ -118,20 +143,3 @@ add_action('wp_footer', function () {
 <?php
 });
 */
-
-
-
-
-
-// include_once 'functions/custom-pagination-beta.php';
-// include_once 'functions/wp_ajax_wpt_get_all_posts-beta.php';
-
-include_once 'functions/_common_functions.php';
-include_once 'functions/get_post_by_id.php';
-include_once 'functions/get_post_by_name.php';
-include_once 'functions/get_all_posts.php';
-include_once 'functions/get_posts_by_ids.php';
-include_once 'functions/get_posts_by_meta.php';
-include_once 'functions/get_posts_by_categories.php';
-include_once 'functions/get_posts_by_author.php';
-
