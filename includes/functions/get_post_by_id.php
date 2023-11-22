@@ -1,5 +1,16 @@
 <?php
-
+/**
+ * Retrieves a post by its ID and returns it in the specified format.
+ *
+ * @param array $args {
+ *     Optional. An array of arguments for retrieving the post.
+ *
+ *     @type int    $id           The ID of the post to retrieve. Default is empty.
+ *     @type string $return_type  The format in which to return the post. Default is empty.
+ * }
+ * @throws None
+ * @return string The retrieved post in the specified format.
+ */
 function wpt_get_post_by_id($args = array())
 {
     $args = array(

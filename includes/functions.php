@@ -126,7 +126,7 @@ add_action('wp_footer', function () {
 // include_once 'functions/custom-pagination-beta.php';
 // include_once 'functions/wp_ajax_wpt_get_all_posts-beta.php';
 
-include_once 'functions/common_functions.php';
+include_once 'functions/_common_functions.php';
 include_once 'functions/get_post_by_id.php';
 include_once 'functions/get_post_by_name.php';
 include_once 'functions/get_all_posts.php';

@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WordPress Toolkit
  * Description: WordPress Toolkit 
- * Version: 0.8.2
+ * Version: 0.8.3
  * Author: Aammir
  * Author URI: https://127.0.0.1
  * Text Domain: wpt
@@ -66,5 +66,4 @@ register_uninstall_hook(__FILE__, 'uninstall_func');
 
 require_once WPT_DIR . 'includes/admin.php';
 require_once WPT_DIR . 'includes/actions.php';
-
 
