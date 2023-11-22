@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WordPress Toolkit
  * Description: WordPress Toolkit 
- * Version: 0.8.1
+ * Version: 0.8.2
  * Author: Aammir
  * Author URI: https://127.0.0.1
  * Text Domain: wpt

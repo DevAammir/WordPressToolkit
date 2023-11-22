@@ -15,45 +15,43 @@ function wpt_get_posts_by_categories($params = array())
         'excerpt_length' => empty($params['size']) ?  0 : $params['size']
     );
 
+
     if (!empty($params['category'])) {
         $category = $params['category'];
-
+    
         // Check if it's a comma-separated list
         if (strpos($category, ',') !== false) {
-            $category = array_map('trim', explode(',', $category));
-            $args['category__in'] = $category;
             
+            $categories = array_map('trim', explode(',', $category));
+    
+            // Initialize arrays for category__in and tax_query
+            $args['category__in'] = array();
+            $args['tax_query'] = array('relation' => 'OR');
+    
+            foreach ($categories as $single) {
+                if (is_numeric($single)) {
+                    
+                    $args['category__in'][] = $single; // Use 'category__in' for multiple category IDs
+                } else {
+                    $args['tax_query'][] = array(
+                        'taxonomy' => 'category',
+                        'field' => 'name',
+                        'terms' => $single,
+                    );
+                }
+            }
+    
         } else {
             // Check if it's numeric (ID) or a string (name)
             if (is_numeric($category)) {
-                $args['cat'] = $category; // Use 'cat' for category ID
+                $args['cat'] = $category; // Use 'cat' for a single category ID
             } else {
-                $args['category_name'] = $category; // Use 'category_name' for category name
+                $args['category_name'] = $category; // Use 'category_name' for a single category name
             }
         }
     }
-
-
-    if (!empty($params['categories'])) {
-        $categories = $params['categories'];
-
-        // Check if it's a comma-separated list
-        if (strpos($categories, ',') !== false) {
-            $categories = array_map('trim', explode(',', $categories));
-            $args['category_name'] = $categories; // Use 'category_name' for category names
-        } else {
-            // Check if it's numeric (ID) or a string (name)
-            if (is_numeric($categories)) {
-                $args['cat'] = $categories; // Use 'cat' for category ID
-            } else {
-                $args['category_name'] = $categories; // Use 'category_name' for a single category name
-            }
-        }
-    }
-
-
-
-     dd($args);
+        
+    // dd($args);
     $query = new WP_Query($args);
 
     if (!$query->have_posts()) {
