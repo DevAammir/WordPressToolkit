@@ -467,3 +467,34 @@ function wpt_get_posts_by_author(author, post_type, size, target, wpt_ajax_url) 
         }
     });
 }
+
+/* Corresponding to wpt_get_postmeta_by_id()*/
+function wpt_get_posts_by_author(id, return_type, target, wpt_ajax_url) {
+    // AJAX request
+    $.ajax({
+        url: wpt_ajax_url,
+        dataType: 'html',
+        type: 'POST',
+        data: {
+            action: 'wpt_get_postmeta_by_id_endpoint', 
+            id: id,
+            return_type: return_type
+        },
+        beforeSend: function (xhr) {
+            // Update the content of the target div
+            $(target).html('<div id="loading"> Please wait... </div>');
+        },
+        success: function (response) {
+            // Update the content of the target div
+            $(target).html(response);
+        },
+        error: function (error) {
+            console.error('Request failed: ', error);
+        },
+        complete: function (xhr, status) {
+            // Log additional information in the console
+            console.log('Status:', status);
+            // console.log('Response:', xhr.responseText);
+        }
+    });
+}
