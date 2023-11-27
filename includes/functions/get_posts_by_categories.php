@@ -13,7 +13,20 @@
  */
 function wpt_get_posts_by_categories($params = array())
 {
+    if(empty($params) || 
+    $params['post_type']=='' || 
+    $params['size']=='' || 
+    empty($params['category']) ||
+    $params['category']=='' || 
+    empty($params['return_type']) || 
+    !isset($params['return_type']) || 
+    $params['return_type']==''){
+        echo "<div class='error'>Please provide all the required parameters: post_type, size, category and return_type</div>";
+        die();
+    } 
 
+    $return_type = empty($params['return_type']) || !isset($params['return_type']) ?  'html' : $params['return_type'];
+   
     $size = empty($params['size']) ?  0 : $params['size'];
 
     $args = array(
@@ -75,6 +88,8 @@ function wpt_get_posts_by_categories($params = array())
             $response = _wpt_generate_html_response($query, $params);
         } elseif ($params['return_type'] === 'json') {
             $response = _wpt_generate_json_response($query, $status, $message);
+        }elseif ($return_type === 'array') {
+            $response = _wpt_generate_array_response($query, $status, $message);
         }
     }
 

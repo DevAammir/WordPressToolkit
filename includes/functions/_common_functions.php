@@ -78,6 +78,68 @@ function _wpt_generate_json_response($query, $status, $message)
 }
 
 
+
+/**
+ * Generates an array response for the given query, status, and message.
+ *
+ * @param mixed $query The query to generate the response for.
+ * @param mixed $status The status of the response.
+ * @param mixed $message The message of the response.
+ * @return array The generated array response.
+ */
+function _wpt_generate_array_response($query, $status, $message)
+{
+    $num = 0;
+    $posts = array();
+
+    while ($query->have_posts()) : $query->the_post();
+        $num++;
+        $post_data = array(
+            'position'    => $num,
+            'id'           => get_the_ID(),
+            'title'        => get_the_title(),
+            'permalink'    => get_permalink(),
+            'post_date'    => get_the_date('F j, Y'),
+            'author'       => get_the_author_meta('display_name'),
+            'categories'   => get_the_category_list(', '),
+            'tags'         => get_the_tag_list('', ', '),
+        );
+
+        if (!empty($params['size']) && $params['size'] == 'full') {
+            $post_data['content'] = get_the_content();
+        } elseif (!empty($params['size'])) {
+            $post_data['excerpt'] = wp_trim_words(get_the_excerpt(), $params['size']);
+        }
+
+        // Additional meta information
+        $postmeta = get_post_meta(get_the_ID());
+        $meta_data = array();
+        if (!empty($postmeta)) {
+            foreach ($postmeta as $key => $val) {
+                $meta_data[] = array(
+                    'key'   => $key,
+                    'value' => $val[0],
+                );
+            }
+        }
+        $post_data['meta_data'] = $meta_data;
+
+        $posts[] = $post_data;
+    endwhile;
+
+
+    $content = array(
+        'total_posts' => $query->found_posts,
+        'post_data'   => $posts
+    );
+
+    return array(
+        'result'  => $content,
+        'status'  => $status,
+        'message' => $message
+    );
+}
+
  /**
  * Generates an HTML response for the given query and parameters.
  *

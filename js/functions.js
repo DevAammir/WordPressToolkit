@@ -469,7 +469,7 @@ function wpt_get_posts_by_author(author, post_type, size, target, wpt_ajax_url) 
 }
 
 /* Corresponding to wpt_get_postmeta_by_id()*/
-function wpt_get_posts_by_author(id, return_type, target, wpt_ajax_url) {
+function wpt_get_postmeta_by_id(id, return_type, target, wpt_ajax_url) {
     // AJAX request
     $.ajax({
         url: wpt_ajax_url,

@@ -12,6 +12,9 @@
  */
 function wpt_get_postmeta_by_id($id, $return_type = 'json') {
     // Get post meta
+    if(empty($id) || $id == ''){
+        die('<div class="error">Please provide id</div>');
+    }
     $postmeta = get_post_meta($id);
     $postmeta_arr = [];
     // Check if get_post_meta failed

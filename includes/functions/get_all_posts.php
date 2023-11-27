@@ -17,6 +17,7 @@
 
 function wpt_get_posts($params = array())
 {
+    
     $default_params = array(
         'per_page'    => -1,
         'post_type'   => 'post',
@@ -49,6 +50,8 @@ function wpt_get_posts($params = array())
             $response = _wpt_generate_html_response($query, $params);
         } elseif ($params['return_type'] === 'json') {
             $response = _wpt_generate_json_response($query, $status, $message);
+        }elseif ($return_type === 'array') {
+            $response = _wpt_generate_array_response($query, $status, $message);
         }
     }
 

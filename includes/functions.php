@@ -154,7 +154,13 @@ add_action('wp_footer', function () {
 
 
 
-
+    /**
+     * A description of the entire PHP function.
+     *
+     * @param array $params The array of parameters.
+     * @throws Some_Exception_Class description of exception
+     * @return void
+     */
 
 /**
  * Updates the user meta data with the provided arguments.
@@ -316,7 +322,7 @@ function wpt_create_post($args)
     // Set default values for optional arguments
     $defaults = array(
         'post_excerpt' => '',
-        'post_categories' => array(),
+        'post_categories' => '',
         'tags' => array(),
         'post_author' => get_current_user_id(),
         'post_date' => current_time('mysql'),
@@ -332,22 +338,17 @@ function wpt_create_post($args)
     $post_categories = array();
 
     if (!empty($args['post_categories'])) {
-        if (!is_array($args['post_categories'])) {
-            // Convert comma-separated values to array
-            $categories_input = array_map('trim', explode(',', $args['post_categories']));
-            $categories_input = array_filter($categories_input, 'strlen'); // Remove empty values
+        // Convert comma-separated values to array
+        $categories_input = array_map('trim', explode(',', $args['post_categories']));
+        $categories_input = array_filter($categories_input, 'strlen'); // Remove empty values
 
-            // Convert category names to IDs
-            foreach ($categories_input as $category) {
-                $category_id = get_cat_ID($category);
+        // Convert category names to IDs
+        foreach ($categories_input as $category) {
+            $category_id = get_cat_ID($category);
 
-                if ($category_id !== 0) {
-                    $post_categories[] = $category_id;
-                }
+            if ($category_id !== 0) {
+                $post_categories[] = $category_id;
             }
-        } else {
-            // Categories are already in array format
-            $post_categories = $args['post_categories'];
         }
     }
 
@@ -393,6 +394,7 @@ function wpt_create_post($args)
     // Return success
     return array('result' => 'success', 'status' => 201, 'message' => 'Post added successfully', 'post_id' => $post_id);
 }
+
 
 
 

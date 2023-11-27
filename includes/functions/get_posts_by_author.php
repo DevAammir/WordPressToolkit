@@ -12,6 +12,12 @@
  */
 function wpt_get_posts_by_author($params = array())
 {
+    if(empty($params) || $params['post_type']=='' || $params['size']=='' || $params['author']=='' || empty($params['return_type']) || !isset($params['return_type']) || $params['return_type']==''){
+        echo "<div class='error'>Please provide all the required parameters: post_type, size, author and return_type</div>";
+        die();
+    } 
+
+    $return_type = empty($params['return_type']) || !isset($params['return_type']) ?  'html' : $params['return_type'];
     $size = empty($params['size']) ?  0 : $params['size'];
 
     $args = array(
@@ -40,10 +46,12 @@ function wpt_get_posts_by_author($params = array())
         $status = 200;
         $message = 'success';
 
-        if ($params['return_type'] === 'html') {
+        if ($return_type === 'html') {
             $response = _wpt_generate_html_response($query, $params);
-        } elseif ($params['return_type'] === 'json') {
+        } elseif ($return_type === 'json') {
             $response = _wpt_generate_json_response($query, $status, $message);
+        }elseif ($return_type === 'array') {
+            $response = _wpt_generate_array_response($query, $status, $message);
         }
     }
 
@@ -65,8 +73,8 @@ function wpt_get_posts_by_author($params = array())
             'per_page'    => -1,
             'post_type'   => $_REQUEST['post_type'],
             'return_type' => 'html',
-            'size' =>   $_REQUEST['size'],
-            'author' =>   $_REQUEST['author'],
+            'size'      =>   $_REQUEST['size'],
+            'author'    =>   $_REQUEST['author'],
         ]);
         die();
     }
@@ -92,7 +100,7 @@ function wpt_get_posts_by_author($params = array())
             'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
             'post_type'   => $atts['post_type'],
             'return_type' => 'html',
-            'size' =>   $atts['size'],
-            'author' =>   $atts['author'],
+            'size'      =>   $atts['size'],
+            'author'    =>   $atts['author'],
         ]);
     }
