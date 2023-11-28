@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 /***
  * COMMON FUNCTIONS FOR WPT DATABASE QUERY RELATED FUNCTIONS
  * ****/
- /**
+/**
  * Generates a JSON response for a given query, status, and message.
  *
  * @param mixed $query The query to generate the JSON response for.
@@ -140,7 +140,7 @@ function _wpt_generate_array_response($query, $status, $message)
     );
 }
 
- /**
+/**
  * Generates an HTML response for the given query and parameters.
  *
  * @param mixed $query The query object.
@@ -152,64 +152,64 @@ function _wpt_generate_html_response($query, $params)
 {
     ob_start();
     $num = 0;
-    ?>
+?>
     <!-------wpt-posts-wrapper--------->
     <div class='wpt-posts-wrapper all'>
         <div class='wpt-results-total'> <?php echo $query->found_posts; ?> results found</div>
-      
+
         <?php while ($query->have_posts()) : $query->the_post();
-                    $num++;
-                    $post_slug = esc_attr(get_post_field('post_name', get_the_ID()));
-                    $category = get_the_category();
-                    $category_class = $category ? esc_attr($category[0]->slug) : '';
+            $num++;
+            $post_slug = esc_attr(get_post_field('post_name', get_the_ID()));
+            $category = get_the_category();
+            $category_class = $category ? esc_attr($category[0]->slug) : '';
 
-                    $the_post_type = get_post_type();
-                    $post_type_class = 'post-type-' . esc_attr($the_post_type);
+            $the_post_type = get_post_type();
+            $post_type_class = 'post-type-' . esc_attr($the_post_type);
 
-                    if (!empty($params['size']) && $params['size'] != "full") {
-                        $excerpt = wp_trim_words(get_the_excerpt(), $params['size']);
-                    }
-                ?>
-                    <div class="post-wrapper <?php echo $category_class; ?> pos-<?php echo $num; ?> post-<?php echo get_the_ID(); ?> <?php echo $post_slug; ?>  <?php echo $post_type_class; ?>">
-                        <h3><a href="<?php the_permalink(); ?>"><?php echo get_the_title(); ?></a></h3>
-                        <div class="featuerd-image-wrapper">
-                            <a href="<?php the_permalink(); ?>"><?php the_post_thumbnail('full', array('class' => 'featuerd-image')); ?></a>
-                        </div>
-                        <div class="meta-info">
-                            <p class="the-date">Date: <?php echo get_the_date('F j, Y'); ?></p>
-                            <p class="the-author">Author: <?php echo get_the_author_meta('display_name'); ?></p>
-                            <p class="the-categories">Categories: <?php echo get_the_category_list(', '); ?> </p>
-                            <p class="the-tags">Tags: <?php echo get_the_tag_list('', ', '); ?></p>
-                        </div>
+            if (!empty($params['size']) && $params['size'] != "full") {
+                $excerpt = wp_trim_words(get_the_excerpt(), $params['size']);
+            }
+        ?>
+            <div class="post-wrapper <?php echo $category_class; ?> pos-<?php echo $num; ?> post-<?php echo get_the_ID(); ?> <?php echo $post_slug; ?>  <?php echo $post_type_class; ?>">
+                <h3><a href="<?php the_permalink(); ?>"><?php echo get_the_title(); ?></a></h3>
+                <div class="featuerd-image-wrapper">
+                    <a href="<?php the_permalink(); ?>"><?php the_post_thumbnail('full', array('class' => 'featuerd-image')); ?></a>
+                </div>
+                <div class="meta-info">
+                    <p class="the-date">Date: <?php echo get_the_date('F j, Y'); ?></p>
+                    <p class="the-author">Author: <?php echo get_the_author_meta('display_name'); ?></p>
+                    <p class="the-categories">Categories: <?php echo get_the_category_list(', '); ?> </p>
+                    <p class="the-tags">Tags: <?php echo get_the_tag_list('', ', '); ?></p>
+                </div>
 
-                        <?php if ($params['size'] == 'full') : ?>
-                            <div class="post-content">
-                                <?php the_content(); ?>
-                            </div>
-                        <?php elseif (@$params['size'] == 0 || empty(@$params['size'])) : ?>
-                        <?php else : ?>
-                            <div class="post-excerpt">
-                                <?php echo $excerpt; ?><a href="<?php the_permalink(); ?>" class="read-more-inline">Read More</a>
-                            </div>
-                        <?php endif; ?>
-                        <div class="wpt-post-meta">
-                            <?php
-                            $postmeta = get_post_meta(get_the_ID());
-                            if (!empty($postmeta)) : $n = 0;
-                                foreach ($postmeta as $key => $val) : $n++;
-                            ?>
-                                    <p class="the-meta meta-<?php echo $key; ?> meta-<?php echo $n; ?>">
-                                        <span class="key" data-key="<?php echo $key; ?>"><?php echo $key; ?></span>
-                                        <span class="value" data-value="<?php echo $val[0]; ?>"><?php echo $val[0]; ?></span>
-                                    </p>
-                            <?php
-                                endforeach;
-                            endif; ?>
-                        </div>
-                        <a href="<?php the_permalink(); ?>" class="read-more">Read More</a>
+                <?php if ($params['size'] == 'full') : ?>
+                    <div class="post-content">
+                        <?php the_content(); ?>
                     </div>
-                <?php
-                endwhile;
+                <?php elseif (@$params['size'] == 0 || empty(@$params['size'])) : ?>
+                <?php else : ?>
+                    <div class="post-excerpt">
+                        <?php echo $excerpt; ?><a href="<?php the_permalink(); ?>" class="read-more-inline">Read More</a>
+                    </div>
+                <?php endif; ?>
+                <div class="wpt-post-meta">
+                    <?php
+                    $postmeta = get_post_meta(get_the_ID());
+                    if (!empty($postmeta)) : $n = 0;
+                        foreach ($postmeta as $key => $val) : $n++;
+                    ?>
+                            <p class="the-meta meta-<?php echo $key; ?> meta-<?php echo $n; ?>">
+                                <span class="key" data-key="<?php echo $key; ?>"><?php echo $key; ?></span>
+                                <span class="value" data-value="<?php echo $val[0]; ?>"><?php echo $val[0]; ?></span>
+                            </p>
+                    <?php
+                        endforeach;
+                    endif; ?>
+                </div>
+                <a href="<?php the_permalink(); ?>" class="read-more">Read More</a>
+            </div>
+        <?php
+        endwhile;
 
         if (!empty($params['per_page']) && $params['per_page'] !== -1) :
             // Pagination
@@ -225,7 +225,7 @@ function _wpt_generate_html_response($query, $params)
         endif;
         ?>
     </div> <!-- ends .wpt-posts-wrapper--->
-    <?php
+<?php
     $content = ob_get_clean();
     return $content;
 }
@@ -238,13 +238,130 @@ function _wpt_generate_html_response($query, $params)
  */
 function _wpt_handle_no_posts($params)
 {
-    if ($params['return_type'] === 'html') {
-        return '<div class="error">No posts found</div>';
-    } else {
-        return json_encode(array(
-            'result'  => 'No posts found',
-            'status'  => 404,
-            'message' => 'No posts found'
-        ));
-    }
+    if (isset($params['return_type'])) :
+        if ($params['return_type'] === 'html') {
+            echo '<div class="error">No posts found</div>';
+        } elseif ($params['return_type'] === 'json') {
+            echo json_encode(array(
+                'result'  => 'No posts found',
+                'status'  => 404,
+                'message' => 'No posts found'
+            ));
+        } elseif ($params['return_type'] === 'array') {
+            echo  array(
+                'result'  => 'No posts found',
+                'status'  => 404,
+                'message' => 'No posts found'
+            );
+        } else {
+            echo 'No post found';
+        }
+    else :
+        echo 'No post found';
+    endif;
+}
+
+/**
+ * Generates an HTML response for a single post.
+ *
+ * @param object $post The post object.
+ * @throws Some_Exception_Class If an error occurs.
+ * @return string The generated HTML response.
+ */
+function _wpt_generate_html_response_for_single_post($post)
+{
+    $category = get_the_category($post->ID);
+    $category_class = $category ? ($category[0]->slug) : '';
+    $the_post_type = get_post_type();
+    $post_type_class = 'post-type-' . esc_attr($the_post_type);
+    ob_start();
+?>
+    <div class="post-wrapper <?php echo $category_class . ' post-' . $post->ID; ?> <?php echo $post->post_name; ?> <?php echo $post_type_class; ?>">
+        <h3><?php echo $post->post_title; ?></h3>
+        <div class="featuerd-image-wrapper">
+            <img src="<?php echo get_the_post_thumbnail_url($post->ID, 'full'); ?>" class="featuerd-image" />
+        </div>
+        <div class="meta-info">
+            <p class="the-date">Date: <?php echo get_the_date('F j, Y', $post->ID); ?></p>
+            <p class="the-author">Author: <?php echo get_the_author_meta('display_name', $post->post_author); ?></p>
+            <p class="the-categories">Categories: <?php echo get_the_category_list(', ', '', $post->ID); ?> </p>
+            <p class="the-tags">Tags: <?php echo get_the_tag_list('', ', ', '', $post->ID); ?></p>
+        </div>
+        <div class="post-content">
+            <?php echo $post->post_content; ?>
+        </div>
+        <div class="wpt-post-meta">
+            <?php
+            echo wpt_get_postmeta_by_id($post->ID, 'html');
+            ?>
+        </div>
+    </div>
+<?php
+    $content = ob_get_clean();
+
+    return $content;
+}
+
+/**
+ * Generates a JSON response based on the given post.
+ *
+ * @param mixed $post The post to include in the response.
+ * @return string The JSON-encoded response.
+ */
+function _wpt_generate_json_response_for_single_post($post)
+{
+    $post_data = array(
+        'id'           => get_the_ID(),
+        'title'        => get_the_title(),
+        'permalink'    => get_permalink(),
+        'post_date'    => get_the_date('F j, Y'),
+        'author'       => get_the_author_meta('display_name'),
+        'categories'   => get_the_category_list(', '),
+        'tags'         => get_the_tag_list('', ', '),
+        'featured_image' => get_the_post_thumbnail_url(get_the_ID(), 'full')
+    );
+
+    $post_data['meta'] = wpt_get_postmeta_by_id(get_the_ID(), 'json');
+    $status = 200;
+    $message = 'success';
+
+    $response = json_encode([
+        'result'  => $post_data,
+        'status'  => $status,
+        'message' => $message
+    ]);
+
+    return $response;
+}
+
+/**
+ * Generates an array response for a single post.
+ *
+ * @param mixed $post The post data.
+ * @return array The generated response array.
+ */
+function _wpt_generate_array_response_for_single_post($post)
+{
+    $post_data = array(
+        'id'           => get_the_ID(),
+        'title'        => get_the_title(),
+        'permalink'    => get_permalink(),
+        'post_date'    => get_the_date('F j, Y'),
+        'author'       => get_the_author_meta('display_name'),
+        'categories'   => get_the_category_list(', '),
+        'tags'         => get_the_tag_list('', ', '),
+        'featured_image' => get_the_post_thumbnail_url(get_the_ID(), 'full')
+    );
+
+    $post_data['meta'] = wpt_get_postmeta_by_id(get_the_ID(), 'json');
+    $status = 200;
+    $message = 'success';
+
+    $response = [
+        'result'  => $post_data,
+        'status'  => $status,
+        'message' => $message
+    ];
+
+    return $response;
 }
