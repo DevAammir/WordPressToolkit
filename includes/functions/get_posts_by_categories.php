@@ -85,11 +85,11 @@ function wpt_get_posts_by_categories($params = array())
         $message = 'success';
 
         if ($params['return_type'] === 'html') {
-            $response = _wpt_generate_html_response($query, $params);
+            $response = _wpt_generate_html_response_for_posts($query, $params);
         } elseif ($params['return_type'] === 'json') {
-            $response = _wpt_generate_json_response($query, $status, $message);
+            $response = _wpt_generate_json_response_for_posts($query, $status, $message);
         }elseif ($return_type === 'array') {
-            $response = _wpt_generate_array_response($query, $status, $message);
+            $response = _wpt_generate_array_response_for_posts($query, $status, $message);
         }
     }
 

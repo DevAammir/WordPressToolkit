@@ -19,6 +19,8 @@ GET
 	16. get post by name/slug = 1
 	17. get posts by author = 1
 	18. user by role
+	19. get post thumbnail by post_id
+	20. get post thumbnail by thumbnail_id
 */
 /*POST
 1. create post
@@ -35,6 +37,7 @@ GET
 12. delete option = 1
 13. update postmeta = 1
 14. update usermeta  = 1
+15. add/replace post fetured image
 */
 
 

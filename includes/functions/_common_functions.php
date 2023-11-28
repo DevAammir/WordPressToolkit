@@ -12,7 +12,7 @@
  * @throws Some_Exception_Class Description of the exception.
  * @return string The JSON-encoded response.
  */
-function _wpt_generate_json_response($query, $status, $message)
+function _wpt_generate_json_response_for_posts($query, $status, $message)
 {
     $num = 0;
     $posts = array();
@@ -40,12 +40,7 @@ function _wpt_generate_json_response($query, $status, $message)
         $postmeta = get_post_meta(get_the_ID());
         $meta_data = array();
         if (!empty($postmeta)) {
-            foreach ($postmeta as $key => $val) {
-                $meta_data[] = array(
-                    'key'   => $key,
-                    'value' => $val[0],
-                );
-            }
+            $meta_data = wpt_get_postmeta_by_id(get_the_ID(), 'json');
         }
         $post_data['meta_data'] = $meta_data;
 
@@ -87,7 +82,7 @@ function _wpt_generate_json_response($query, $status, $message)
  * @param mixed $message The message of the response.
  * @return array The generated array response.
  */
-function _wpt_generate_array_response($query, $status, $message)
+function _wpt_generate_array_response_for_posts($query, $status, $message)
 {
     $num = 0;
     $posts = array();
@@ -115,12 +110,7 @@ function _wpt_generate_array_response($query, $status, $message)
         $postmeta = get_post_meta(get_the_ID());
         $meta_data = array();
         if (!empty($postmeta)) {
-            foreach ($postmeta as $key => $val) {
-                $meta_data[] = array(
-                    'key'   => $key,
-                    'value' => $val[0],
-                );
-            }
+            $meta_data = wpt_get_postmeta_by_id(get_the_ID(), 'array');
         }
         $post_data['meta_data'] = $meta_data;
 
@@ -148,7 +138,7 @@ function _wpt_generate_array_response($query, $status, $message)
  * @throws Exception Thrown if an error occurs.
  * @return string The generated HTML response.
  */
-function _wpt_generate_html_response($query, $params)
+function _wpt_generate_html_response_for_posts($query, $params)
 {
     ob_start();
     $num = 0;
@@ -195,15 +185,8 @@ function _wpt_generate_html_response($query, $params)
                 <div class="wpt-post-meta">
                     <?php
                     $postmeta = get_post_meta(get_the_ID());
-                    if (!empty($postmeta)) : $n = 0;
-                        foreach ($postmeta as $key => $val) : $n++;
-                    ?>
-                            <p class="the-meta meta-<?php echo $key; ?> meta-<?php echo $n; ?>">
-                                <span class="key" data-key="<?php echo $key; ?>"><?php echo $key; ?></span>
-                                <span class="value" data-value="<?php echo $val[0]; ?>"><?php echo $val[0]; ?></span>
-                            </p>
-                    <?php
-                        endforeach;
+                    if (!empty($postmeta)) :
+                        echo wpt_get_postmeta_by_id(get_the_ID(), 'html');
                     endif; ?>
                 </div>
                 <a href="<?php the_permalink(); ?>" class="read-more">Read More</a>
@@ -268,7 +251,7 @@ function _wpt_handle_no_posts($params)
  * @throws Some_Exception_Class If an error occurs.
  * @return string The generated HTML response.
  */
-function _wpt_generate_html_response_for_single_post($post)
+function _wpt_generate_html_response_for_posts_for_single_post($post)
 {
     $category = get_the_category($post->ID);
     $category_class = $category ? ($category[0]->slug) : '';
@@ -308,7 +291,7 @@ function _wpt_generate_html_response_for_single_post($post)
  * @param mixed $post The post to include in the response.
  * @return string The JSON-encoded response.
  */
-function _wpt_generate_json_response_for_single_post($post)
+function _wpt_generate_json_response_for_posts_for_single_post($post)
 {
     $post_data = array(
         'id'           => get_the_ID(),
@@ -340,7 +323,7 @@ function _wpt_generate_json_response_for_single_post($post)
  * @param mixed $post The post data.
  * @return array The generated response array.
  */
-function _wpt_generate_array_response_for_single_post($post)
+function _wpt_generate_array_response_for_posts_for_single_post($post)
 {
     $post_data = array(
         'id'           => get_the_ID(),
@@ -365,3 +348,73 @@ function _wpt_generate_array_response_for_single_post($post)
 
     return $response;
 }
+
+/**
+ * Generates a nested HTML table from the given data array.
+ *
+ * @param array $data The data array to generate the table from.
+ * @throws Exception If an error occurs during the generation process.
+ * @return string The generated HTML table.
+ */
+function _wpt_generate_nested_table($data) {
+    // Check if $data is an array
+    if (!is_array($data)) {
+        // If not an array, treat it as a string and return a single row table
+        return '<table class="table meta-table wpt_meta_table"><tr><td>' . $data . '</td></tr></table>';
+    }
+
+    $html_output = '<table class="table meta-table wpt_meta_table">';
+    $n = 0;
+
+    foreach ($data as $key => $value) {
+        $n++;
+        $html_output .= '<tr data-key="' . $key . '" data-value="' . $value . '" data-n="' . $n . '"><td>' . $key . '</td><td>';
+
+        // Check if the current $value is a serialized array
+        if (is_string($value) && ($unserialized_value = maybe_unserialize($value)) !== false) {
+            // If it is a serialized array, recursively call the function with the unserialized value
+            $html_output .= _wpt_generate_nested_table($unserialized_value);
+        } elseif (is_array($value)) {
+            // If it is an array (other than _product_attributes), recursively call the function with the array
+            $html_output .= _wpt_generate_nested_table($value);
+        } else {
+            // If it is not an array or _product_attributes, display the value
+            $html_output .= $value;
+        }
+
+        $html_output .= '</td></tr>';
+    }
+
+    $html_output .= '</table>';
+
+    return $html_output;
+}
+
+
+
+function _wpt_convert_to_nested_array($data) {
+    // Check if $data is an array
+    if (!is_array($data)) {
+        // If not an array, treat it as a string and return it
+        return $data;
+    }
+
+    $result = array();
+
+    foreach ($data as $key => $value) {
+        // Check if the current $value is a serialized array
+        if (is_string($value) && ($unserialized_value = maybe_unserialize($value)) !== false) {
+            // If it is a serialized array, recursively call the function with the unserialized value
+            $result[$key] = _wpt_convert_to_nested_array($unserialized_value);
+        } elseif (is_array($value)) {
+            // If it is an array, recursively call the function with the array
+            $result[$key] = _wpt_convert_to_nested_array($value);
+        } else {
+            // If it is not an array, simply assign the value
+            $result[$key] = $value;
+        }
+    }
+
+    return $result;
+}
+

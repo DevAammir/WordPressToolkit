@@ -47,11 +47,11 @@ function wpt_get_posts_by_author($params = array())
         $message = 'success';
 
         if ($return_type === 'html') {
-            $response = _wpt_generate_html_response($query, $params);
+            $response = _wpt_generate_html_response_for_posts($query, $params);
         } elseif ($return_type === 'json') {
-            $response = _wpt_generate_json_response($query, $status, $message);
+            $response = _wpt_generate_json_response_for_posts($query, $status, $message);
         }elseif ($return_type === 'array') {
-            $response = _wpt_generate_array_response($query, $status, $message);
+            $response = _wpt_generate_array_response_for_posts($query, $status, $message);
         }
     }
 

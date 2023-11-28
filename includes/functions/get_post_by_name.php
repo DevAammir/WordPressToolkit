@@ -31,13 +31,13 @@ function wpt_get_post_by_name($args = array())
     // Process the post based on return type
     switch ($args['return_type']) {
         case 'html':
-            return _wpt_generate_html_response_for_single_post($post);
+            return _wpt_generate_html_response_for_posts_for_single_post($post);
         case 'json':
-            return _wpt_generate_json_response_for_single_post($post);
+            return _wpt_generate_json_response_for_posts_for_single_post($post);
         case 'array':
-            return _wpt_generate_array_response_for_single_post($post);
+            return _wpt_generate_array_response_for_posts_for_single_post($post);
         default:
-            return _wpt_generate_json_response_for_single_post($args);
+            return _wpt_generate_json_response_for_posts_for_single_post($args);
     }
 }
 
