@@ -6,203 +6,147 @@ GET
 	3. posts by ids =1 
 	4. posts by postmeta  = 1
     5. postmeta by id = 1,
-    6. user by id,
-    7. all users,
-	8. users by ids
-	9. user by usermeta 
-	10. users by usermeta
-    11. usermeta
-	12. get posts by categories = 1
-	13. get all catagories 
-	14. get post categories by post id
-	15. get option by id
-	16. get post by name/slug = 1
-	17. get posts by author = 1
-	18. user by role
-	19. get post thumbnail by post_id
-	20. get post thumbnail by thumbnail_id
+    6. user by id =1
+    7. all users  ========= Later
+	8. users by ids  ========= Later
+	9. user by usermeta ======= X
+	10. users by usermeta = 1
+    11. get user id by username = 1
+    12. usermeta by userid  ======= X
+    13. usermeta by username  ======= X
+	14. get posts by categories = 1
+	15. get all catagories 
+	16. get post categories by post id ======= X
+	17. get post id by postname ======= X
+	18. get post categories by postname or postid ======= X
+	19. get post tags by postname or postid ======= X
+	20. get option by id ======= X
+	21. get post by name/slug = 1
+	22. get posts by author = 1
+	23. get users by role  = 1
+	24. get post thumbnail by post_id
+	25. get post thumbnail by thumbnail_id 
+	26. Get users by email. = 1
+	27. Get posts with a certain tag.
+	28. Get posts by custom taxonomy.
+	**WOO:**
+29. Get products by price range.
+30. Get products by stock status.
+31. Get orders by customer.
+32. Get orders by date range.
+33. Get orders by order status.
+34. Get customers by total spent.
+35. Get customers by registration date.
+36. Get product reviews by product.
+37. Get products with a certain attribute.
+38. Get product variations.
+39. Get shipping methods.
+40. Get payment gateways.
+41. Get coupon information.
+42. Get additional images for a product gallery.
+43. Retrieve customer reviews for a product.
 */
 /*POST
 1. create post
 2. create post with postmeta
 3. add postmeta = 1
-4. add user 
-5. add user with usermeta
-6. add usermeta  = 1
-7. delet post
-8. delete postmeta
-9. delete user
-10. delete usermeta 
-11. add/update option  = x 
-12. delete option = 1
-13. update postmeta = 1
-14. update usermeta  = 1
-15. add/replace post fetured image
+4. add replace post featured image
+5. add category to a post
+6. add tag to a post
+7. add custom taxonomy to a post
+8. Add a media attachment to a post.
+9. add user 
+10. add user with usermeta
+11. add usermeta  = 1
+12. add user gravatar
+13. delet post
+14. delete postmeta
+15. delete user
+16. delete usermeta 
+17. delete option = 1
+18. update postmeta = 1
+19. update usermeta  = 1 
+20. Create a custom user role.
+21. Create a user with custom role.
+22. Create a new category.
+23. Create a new tag. 
+24. Add a custom post status.
+25. Add a custom field to a post.
+**WOO:**
+26. Create a new product.
+27. Create a product variation.
+28. Create a new product category.
+29. Create a new product tag.
+30. Create a new order.
+31. Create a customer account.
+32. Create a coupon.
+33. Add a product to the cart.
+34. Add a product variation to the cart.
+35. Add a coupon to the cart.
+36. Add a custom field to a product.
+37. Add a custom field to an order.
+38. Add a custom field to a customer.
+39. Add a custom field to a coupon.
+40. Add a product to a wishlist.
+41. Set additional images for a product gallery.
+42. Manage customer reviews for a product.
+43. Set a schedule for when a product is available for purchase.
 */
 
 
+**UPDATE:**
+1. Update user information.
+2. Update user role.
+3. Update post content.
+4. Update post status.
+5. Update post title.
+6. Update post author.
+7. Update post category.
+8. Update post tags.
+**WOO:**
+9. Update product information.
+10. Update product price.
+11. Update product stock quantity.
+12. Update product category.
+13. Update product tags.
+14. Update order status.
+15. Update customer information.
+16. Update customer billing and shipping addresses.
+17. Update coupon information.
+18. Update product variations.
+19. Update product attributes.
+20. Update cart contents.
+21. Update product reviews.
+22. Update shipping information for an order.
+23. Update payment information for an order. 
 
 
-
-  here are more scenarios that you might consider incorporating into your custom reusable functions:
-
-**GET:**
-1. Get a specific user by username.
-2. Get posts by a specific author.
-3. Get posts by date range.
-4. Get posts by a specific post type.
-5. Get posts by a specific status (published, draft, etc.).
-6. Get users by email.
-7. Get posts with a certain tag.
-8. Get posts by custom taxonomy.
-9. Get posts by a custom field value.
-10. Get users by role and status.
-11. Get all comments for a specific post.
-12. Get comments by user.
-13. Get comments by date range.
-14. Get comments by status (approved, pending, etc.).
-15. Get post revisions for a specific post.
-
-**POST:**
-1. Create a user with custom role.
-2. Create a new category.
-3. Create a new tag.
-4. Create a comment for a specific post.
-5. Add a taxonomy term to a post.
-6. Add a term to a custom taxonomy.
-7. Add a media attachment to a post.
-8. Add a featured image to a post.
-9. Add a custom post type.
-10. Add a custom post status.
-11. Add a custom field to a post.
-12. Add a term to a custom taxonomy for a user.
-13. Add a term to a custom taxonomy for a post.
-14. Add a term to a custom taxonomy for a comment.
-15. Add a term to a custom taxonomy for a media attachment.
 
 **DELETE:**
 1. Delete a specific user by ID.
-2. Delete a post by ID.
-3. Delete a comment by ID.
-4. Delete a category by ID.
-5. Delete a tag by ID.
-6. Delete a custom taxonomy term by ID.
-7. Delete a custom post type by ID.
-8. Delete a term from a custom taxonomy for a user.
-9. Delete a term from a custom taxonomy for a post.
-10. Delete a term from a custom taxonomy for a comment.
-11. Remove a custom field from a post.
-12. Remove a featured image from a post.
+2. Delete a post by ID. 
+3. Delete a category by ID.
+4. Delete a tag by ID.
+5. Delete a custom taxonomy term by ID.  
+6. Remove a featured image from a post.
+**WOO:**
+7. Delete a product by ID.
+8. Delete a product variation by ID.
+9. Delete a product category by ID.
+10. Delete a product tag by ID.
+11. Delete an order by ID.
+12. Delete a customer by ID.
+13. Delete a coupon by ID.
+14. Remove a product from the cart.
+15. Remove a coupon from the cart.
+16. Delete a product from a wishlist.
+17. Delete a custom field from a product.
+18. Delete a custom field from an order.
+19. Delete a custom field from a customer.
+20. Delete a custom field from a coupon.
+21. Cancel an order.
 
-**UPDATE:**
-1. Update user information.
-2. Update post content.
-3. Update post status.
-4. Update post title.
-5. Update post author.
-6. Update post category.
-7. Update post tags.
-8. Update user role.
-9. Update post metadata.
-10. Update user metadata.
-11. Update post terms in a custom taxonomy.
-12. Update user terms in a custom taxonomy.
-13. Update comment content.
-14. Update comment status.
-
-These scenarios cover a wide range of operations that you might find useful in a WordPress development context. Depending on your specific use case, you can choose which of these scenarios are most relevant to your needs and implement them as reusable functions.
-
-
-
-
-Certainly! Here are some additional helpful/helper functions that could be added to WooCommerce based on the scenarios you provided:
-
-**GET:**
-1. Get products by category.
-2. Get products by tag.
-3. Get products by price range.
-4. Get products by stock status.
-5. Get orders by customer.
-6. Get orders by date range.
-7. Get orders by order status.
-8. Get customers by total spent.
-9. Get customers by registration date.
-10. Get product reviews by product.
-11. Get products with a certain attribute.
-12. Get product variations.
-13. Get shipping methods.
-14. Get payment gateways.
-15. Get coupon information.
-
-**POST:**
-1. Create a new product.
-2. Create a product variation.
-3. Create a new product category.
-4. Create a new product tag.
-5. Create a new order.
-6. Create a customer account.
-7. Create a coupon.
-8. Add a product to the cart.
-9. Add a product variation to the cart.
-10. Add a coupon to the cart.
-11. Add a custom field to a product.
-12. Add a custom field to an order.
-13. Add a custom field to a customer.
-14. Add a custom field to a coupon.
-15. Add a product to a wishlist.
-
-**DELETE:**
-1. Delete a product by ID.
-2. Delete a product variation by ID.
-3. Delete a product category by ID.
-4. Delete a product tag by ID.
-5. Delete an order by ID.
-6. Delete a customer by ID.
-7. Delete a coupon by ID.
-8. Remove a product from the cart.
-9. Remove a coupon from the cart.
-10. Delete a product from a wishlist.
-11. Delete a custom field from a product.
-12. Delete a custom field from an order.
-13. Delete a custom field from a customer.
-14. Delete a custom field from a coupon.
-15. Cancel an order.
-
-**UPDATE:**
-1. Update product information.
-2. Update product price.
-3. Update product stock quantity.
-4. Update product category.
-5. Update product tags.
-6. Update order status.
-7. Update customer information.
-8. Update customer billing and shipping addresses.
-9. Update coupon information.
-10. Update product variations.
-11. Update product attributes.
-12. Update cart contents.
-13. Update product reviews.
-14. Update shipping information for an order.
-15. Update payment information for an order.
-
-These functions cover a range of scenarios related to managing products, orders, customers, and other aspects of an e-commerce platform powered by WooCommerce.
-
-
-
-
-
-Certainly! Here are some additional meta or information that may be relevant for managing single products, the cart, and the checkout process in a WooCommerce environment:
-
-**Product Meta:**
-1. **Product Weight:** Retrieve or update the weight of a product.
-2. **Product Dimensions:** Get or set the dimensions (length, width, height) of a product.
-3. **Product Stock Status:** Check if a product is in stock or out of stock.
-4. **Product Sale Price:** Retrieve or update the sale price of a product.
-5. **Product Gallery Images:** Get or set additional images for a product gallery.
-6. **Product Upsells and Cross-Sells:** Retrieve or set related upsell and cross-sell products.
-7. **Product Attributes:** Manage custom attributes associated with a product.
-8. **Product Reviews:** Retrieve or manage customer reviews for a product.
-9. **Product Availability Schedule:** Set a schedule for when a product is available for purchase.
+===================================================================
 
 **Cart Meta:**
 1. **Cart Subtotal:** Retrieve the subtotal of items in the cart.
@@ -215,17 +159,15 @@ Certainly! Here are some additional meta or information that may be relevant for
 8. **Cart Session Data:** Access and modify additional data stored in the cart session.
 
 **Checkout Meta:**
-1. **Billing and Shipping Information:** Retrieve or update billing and shipping details during checkout.
-2. **Order Notes:** Add or retrieve notes associated with an order.
-3. **Payment Information:** Retrieve or update payment details for an order.
-4. **Shipping Methods:** Retrieve or set the available shipping methods during checkout.
-5. **Shipping Costs:** Get or set the calculated shipping costs for an order.
-6. **Tax Calculation:** Retrieve or update tax calculations for an order.
-7. **Coupon Application:** Apply or remove coupons during the checkout process.
-8. **Order Status:** Retrieve or update the status of an order.
-9. **Order Completion Date:** Get the date when an order is completed.
-10. **Customer Account Creation:** Manage customer account creation during the checkout process.
+9. **Billing and Shipping Information:** Retrieve or update billing and shipping details during checkout.
+10. **Order Notes:** Add or retrieve notes associated with an order.
+11. **Payment Information:** Retrieve or update payment details for an order.
+12. **Shipping Methods:** Retrieve or set the available shipping methods during checkout.
+13. **Shipping Costs:** Get or set the calculated shipping costs for an order.
+14. **Tax Calculation:** Retrieve or update tax calculations for an order.
+15. **Coupon Application:** Apply or remove coupons during the checkout process.
+16. **Order Status:** Retrieve or update the status of an order.
+17. **Order Completion Date:** Get the date when an order is completed.
+18. **Customer Account Creation:** Manage customer account creation during the checkout process.
 
-These additional meta and information cover a wide range of details related to individual products, the contents of the cart, and the checkout process in a WooCommerce setup.
-
-
+43+43+23+21+18 = 148 Total 

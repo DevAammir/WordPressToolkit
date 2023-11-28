@@ -391,7 +391,13 @@ function _wpt_generate_nested_table($data) {
 }
 
 
-
+/**
+ * Converts a nested array or serialized array to a multidimensional array.
+ *
+ * @param mixed $data The array or serialized array to be converted.
+ * @throws None
+ * @return array The converted multidimensional array.
+ */
 function _wpt_convert_to_nested_array($data) {
     // Check if $data is an array
     if (!is_array($data)) {
@@ -418,3 +424,64 @@ function _wpt_convert_to_nested_array($data) {
     return $result;
 }
 
+/**
+ * Retrieves user data with metadata.
+ *
+ * @param object $user The user object.
+ * @return array The retrieved user data with metadata.
+ */
+function _wpt_user_data_with_metadata($user_data, $return_type)
+{
+    if ($user_data) {
+        $user_data_array = [];
+        $unique_users_count = 0; // Counter for unique users
+
+        foreach ($user_data as $user) {
+            // Get user meta for the specific key
+            $user_meta_value = get_user_meta($user->ID);
+
+            // Create an array for user data
+            $user_data = [
+                'ID'                 => $user->ID,
+                'user_login'         => $user->user_login,
+                'user_pass'          => $user->user_pass,
+                'user_nicename'      => $user->user_nicename,
+                'user_email'         => $user->user_email,
+                'user_url'           => $user->user_url,
+                'user_registered'    => $user->user_registered,
+                'user_activation_key'=> $user->user_activation_key,
+                'user_status'        => $user->user_status,
+                'display_name'       => $user->display_name,
+            ];
+
+            // Merge user data and user meta data manually
+            foreach ($user_meta_value as $meta_key => $meta_values) {
+                $user_data[$meta_key] = $meta_values[0];
+            }
+
+            // Check if the user ID already exists in the result array
+            $existing_user_key = array_search($user->ID, array_column($user_data_array, 'ID'));
+
+            if ($existing_user_key === false) {
+                // Convert to the specified return type
+                $user_data_array[] = _wpt_convert_to_nested_array($user_data);
+                $unique_users_count++;
+            }
+        }
+
+        return [
+            'total'   => $unique_users_count,              
+            'result'  =>  ($return_type === 'json') ? json_encode($user_data_array) : $user_data_array,
+            'status'  => 'success',
+            'message' => 'User data retrieved successfully',
+        ];
+    }
+
+    // Return an error result if user_data is empty
+    return [
+        'result'  => 'User not found',
+        'status'  => 'error',
+        'message' => 'User not found',
+        'total'   => 0
+    ];
+}

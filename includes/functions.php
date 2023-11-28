@@ -85,12 +85,12 @@ function E_ON()
 function dd($data, $exit = null)
 {
 ?>
-    <div class="row my-4" style="z-index:99999;">
-        <pre>TESTING MODE</pre>
-        <pre>
+<div class="row my-4" style="z-index:99999;">
+    <pre>TESTING MODE</pre>
+    <pre>
         <?php print_r($data); ?> 
     </pre>
-    </div>
+</div>
 <?php
     if (isset($exit)) {
         exit;
@@ -123,24 +123,22 @@ add_action('wp_footer', function () {
     // $content = wpt_get_post_by_name('shrieker', 'html', 'test');
     // echo $content;
     ?><div id="test-321"></div>
-    <script>
+<script>
+(function($) {
+    $(document).ready(function() {
 
-		
-        (function($) {
-            $(document).ready(function() {
-                
-                // Trigger the AJAX request on document click
-                // $(document).on('click', function() {
-                    // wpt_get_post_by_id(78,  '#test', '<?php //echo WPT_AJAX;?>');
-					// wpt_get_post_by_name('home', 'page', '#test', '<?php //echo WPT_AJAX;?>');
-					// wpt_get_posts(per_page, post_type, size, target,wpt_ajax_url);
-					wpt_get_posts('-1', 'post','0','#test-321', '<?php echo WPT_AJAX;?>');
-				
-                // });
+        // Trigger the AJAX request on document click
+        // $(document).on('click', function() {
+        // wpt_get_post_by_id(78,  '#test', '<?php //echo WPT_AJAX;?>');
+        // wpt_get_post_by_name('home', 'page', '#test', '<?php //echo WPT_AJAX;?>');
+        // wpt_get_posts(per_page, post_type, size, target,wpt_ajax_url);
+        wpt_get_posts('-1', 'post', '0', '#test-321', '<?php echo WPT_AJAX;?>');
 
-            });
-        })(jQuery);
-    </script>
+        // });
+
+    });
+})(jQuery);
+</script>
 <?php
 });
 */
@@ -154,13 +152,13 @@ add_action('wp_footer', function () {
 
 
 
-    /**
-     * A description of the entire PHP function.
-     *
-     * @param array $params The array of parameters.
-     * @throws Some_Exception_Class description of exception
-     * @return void
-     */
+/**
+ * A description of the entire PHP function.
+ *
+ * @param array $params The array of parameters.
+ * @throws Some_Exception_Class description of exception
+ * @return void
+ */
 
 /**
  * Updates the user meta data with the provided arguments.
@@ -399,7 +397,8 @@ function wpt_create_post($args)
 
 
 // Helper function to set featured image by URL or attachment ID
-function _wpt_set_featured_image($post_id, $image) {
+function _wpt_set_featured_image($post_id, $image)
+{
     // If $image is a URL, try to download and set it as the featured image
     if (filter_var($image, FILTER_VALIDATE_URL)) {
         $file_array = array(
@@ -427,4 +426,177 @@ function _wpt_set_featured_image($post_id, $image) {
     }
 
     return new WP_Error('invalid_image', 'Invalid featured image provided');
+}
+
+
+
+
+
+
+
+
+
+/**
+ * Retrieves user data by ID.
+ *
+ * @param int $id The ID of the user.
+ * @param string $return_type (optional) The return type. Defaults to 'object'. Possible values are 'object', 'array', and 'json'.
+ * @return array The user data along with the status and message.
+ *     - result (mixed) The user data.
+ *     - status (string) The status of the operation ('success' or 'error').
+ *     - message (string) The message associated with the status.
+ */
+function wpt_get_user_by_id($id, $return_type = 'object')
+{
+    if (empty($id) || empty($return_type)) {
+        die("<div class='error'>Please provide a user ID and return type.</div>");
+    }
+    $user = get_user_by('ID', $id);
+    if ($user) {
+        $user_meta = get_user_meta($id);
+        $user_data = (object) array_merge((array) $user->data, $user_meta);
+        if ($return_type === 'array') {
+            $user_data = (array) $user_data;
+        } elseif ($return_type === 'json') {
+            $user_data = json_encode($user_data);
+        }
+        return [
+            'result' => $user_data,
+            'status' => 'success',
+            'message' => 'User data retrieved successfully'
+        ];
+    }
+    return [
+        'result' => 'User not found',
+        'status' => 'error',
+        'message' => 'User not found'
+    ];
+}
+
+  
+
+
+
+/**
+ * Retrieves users based on meta key and/or meta value.
+ *
+ * @param array $params The parameters for the function.
+ *                     - meta_key: (string) The meta key to search for.
+ *                     - meta_value: (string) The meta value to search for.
+ *                     - return_type: (string) The type of data to return. Default is "object".
+ * @return array The result of the function.
+ *               - result: (mixed) The retrieved user data.
+ *               - status: (string) The status of the result. Possible values are "success" or "error".
+ *               - message: (string) A message providing information about the result.
+ *               - total: (int) The total number of unique users retrieved.
+ * @throws None
+ */ 
+function wpt_get_users_by_meta($params)
+{
+    $meta_key    = isset($params['meta_key']) ? $params['meta_key'] : null;
+    $meta_value  = isset($params['meta_value']) ? $params['meta_value'] : null;
+    $return_type = isset($params['return_type']) ? $params['return_type'] : 'object';
+
+    if ((empty($meta_key) && empty($meta_value)) || empty($return_type)) {
+        die("<div class='error'>Please provide either meta key or meta value, and return type.</div>");
+    }
+
+    // Define the query args based on the provided meta key and value
+    $query_args = [];
+    if (!empty($meta_key)) {
+        $query_args['meta_key'] = $meta_key;
+    }
+    if (!empty($meta_value)) {
+        $query_args['meta_value'] = $meta_value;
+    }
+
+    // Get users with the specified meta key and/or value
+    $users = get_users($query_args);
+
+    return _wpt_user_data_with_metadata($users, $return_type);
+}
+
+
+  
+
+
+/**
+ * Retrieves the user ID associated with a given username.
+ *
+ * @param string $username The username to search for.
+ * @return int The user ID if found, or 0 if the user is not found.
+ */
+function wpt_get_user_id_by_username($username) {
+    $user = get_user_by('login', $username);
+
+    if ($user) {
+        return $user->ID;
+    } else {
+        return 0; // User not found
+    }
+}
+
+
+
+/**
+ * Retrieves the username associated with the given user ID.
+ *
+ * @param int $id The ID of the user.
+ * @return string The username of the user if found, or 'User not found!' if the user is not found.
+ */
+function wpt_get_username_by_id($id) {
+    $user = get_user_by('id', $id);
+
+    if ($user) {
+        return $user->user_login;
+    } else {
+        return 'User not found!'; // User not found
+    }
+}
+
+/**
+ * Retrieves the user ID associated with a given email address.
+ *
+ * @param string $email The email address to search for.
+ * @throws None
+ * @return int|string The user ID if found, or a string indicating that the user was not found.
+ */
+function wpt_get_user_id_by_email($email) {
+    $user = get_user_by('email', $email);
+
+    if ($user) {
+        return $user->ID;
+    } else {
+        return 'User not found!'; // User not found
+    }
+}
+
+/**
+ * Retrieves users by their role.
+ *
+ * @param string $role The role of the users to retrieve.
+ * @return array Returns an array containing the user data.
+ */
+function wpt_get_users_by_role($role, $return_type)
+{
+    // Check if the role parameter is provided
+    if (empty($role)) {
+        return [
+            'result'  => 'Role parameter is missing',
+            'status'  => 'error',
+            'message' => 'Role parameter is required',
+            'total'   => 0
+        ];
+    }
+
+    // Set up query arguments to get users by role
+    $query_args = array(
+        'role' => $role,
+    );
+
+    // Get users with the specified role
+    $users = get_users($query_args);
+
+    // Return the result of _wpt_user_data_with_metadata
+    return _wpt_user_data_with_metadata($users, $return_type);
 }
