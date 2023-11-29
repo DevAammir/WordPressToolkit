@@ -600,3 +600,54 @@ function wpt_get_users_by_role($role, $return_type)
     // Return the result of _wpt_user_data_with_metadata
     return _wpt_user_data_with_metadata($users, $return_type);
 }
+
+
+/**
+ * Retrieves the URL of the post thumbnail for a given post ID.
+ *
+ * @param int $id The ID of the post.
+ * @return string|int The URL of the post thumbnail if found, 0 otherwise.
+ */
+function wpt_get_post_thumbnail_by_post_id($id){
+    $thumbnail_url = get_the_post_thumbnail_url($id);
+    if($thumbnail_url){
+        return $thumbnail_url;
+    }else{
+        return 0;
+    }
+}
+
+
+
+/**
+ * Retrieves the URL of the post thumbnail for a given attachment ID.
+ *
+ * @param int $id The ID of the attachment.
+ * @throws None
+ * @return string|false The URL of the post thumbnail, or false if it doesn't exist.
+ */
+function wpt_get_post_thumbnail_by_attachment_id($id){
+    $thumbnail_url = wp_get_attachment_url($id);
+    if($thumbnail_url){
+        return $thumbnail_url;
+    }else{
+        return 0;
+    }
+}
+
+/**
+ * Retrieves the parent post ID of a given post ID.
+ *
+ * @param int $id The ID of the post.
+ * @return int The ID of the parent post, or 0 if there is no parent post.
+ */
+function wpt_get_post_parent_by_id($id){
+    $parent_id = wp_get_post_parent_id($id);
+    if($parent_id){
+        return $parent_id;
+    }else{
+        return 0;
+    }
+}
+
+

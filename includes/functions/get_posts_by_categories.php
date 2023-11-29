@@ -13,58 +13,65 @@
  */
 function wpt_get_posts_by_categories($params = array())
 {
-    if(empty($params) || 
-    $params['post_type']=='' || 
-    $params['size']=='' || 
-    empty($params['category']) ||
-    $params['category']=='' || 
-    empty($params['return_type']) || 
-    !isset($params['return_type']) || 
-    $params['return_type']==''){
-        echo "<div class='error'>Please provide all the required parameters: post_type, size, category and return_type</div>";
+    if (
+        empty($params) ||
+        $params['post_type'] == '' ||
+        $params['size'] == '' ||
+        empty($params['category']) ||
+        $params['category'] == '' ||
+        empty($params['return_type']) ||
+        !isset($params['return_type']) ||
+        $params['return_type'] == ''
+    ) {
+        echo "<div class='error'>Please provide all the required parameters: post_type, size, category, and return_type</div>";
         die();
-    } 
+    }
 
-    $return_type = empty($params['return_type']) || !isset($params['return_type']) ?  'html' : $params['return_type'];
-   
-    $size = empty($params['size']) ?  0 : $params['size'];
+    $return_type = empty($params['return_type']) || !isset($params['return_type']) ? 'html' : $params['return_type'];
+
+    $size = empty($params['size']) ? 0 : $params['size'];
 
     $args = array(
         'post_type'      => $params['post_type'],
-        'posts_per_page' => empty($params['per_page']) ?  -1 : $params['per_page'],
+        'posts_per_page' => empty($params['per_page']) ? -1 : $params['per_page'],
         'paged'          => get_query_var('paged') ? get_query_var('paged') : 1,
-        // 'orderby'        => 'date',
-        // 'order'          => 'DESC',
+        'orderby'        => 'post__in', // This may need adjustment based on your requirements
         'post_status'    => 'publish',
-        'excerpt_length' => empty($params['size']) ?  0 : $params['size']
+        'excerpt_length' => empty($params['size']) ? 0 : $params['size']
     );
-
 
     if (!empty($params['category'])) {
         $category = $params['category'];
     
         // Check if it's a comma-separated list
-        if (strpos($category, ',') !== false) {
+        if (is_array($category) || (is_string($category) && strpos($category, ',') !== false)) {
+            $categories = array_map('trim', is_array($category) ? $category : explode(',', $category));
+    
+            if (count($categories) > 1) {
+                $args['tax_query'] = array(
+                    'relation' => 'OR',
+                );
             
-            $categories = array_map('trim', explode(',', $category));
-    
-            // Initialize arrays for category__in and tax_query
-            $args['category__in'] = array();
-            $args['tax_query'] = array('relation' => 'OR');
-    
-            foreach ($categories as $single) {
-                if (is_numeric($single)) {
-                    
-                    $args['category__in'][] = $single; // Use 'category__in' for multiple category IDs
-                } else {
-                    $args['tax_query'][] = array(
-                        'taxonomy' => 'category',
-                        'field' => 'name',
-                        'terms' => $single,
-                    );
+                foreach ($categories as $single) {
+                    if (is_numeric($single)) {
+                        $args['tax_query'][] = array(
+                            'taxonomy' => isset($params['custom_taxonomy']) ? $params['custom_taxonomy'] : 'category',
+                            'field' => 'id',
+                            'terms' => $single,
+                        );
+                    } else {
+                        $args['tax_query'][] = array(
+                            'taxonomy' => isset($params['custom_taxonomy']) ? $params['custom_taxonomy'] : 'category',
+                            'field' => 'slug', // Change 'name' to 'slug'
+                            'terms' => $single,
+                        );
+                    }
                 }
+            } elseif (count($categories) === 1) {
+                // Use 'category__in' for a single category ID
+                $args['category__in'] = array_map('intval', $categories);
             }
-    
+            
         } else {
             // Check if it's numeric (ID) or a string (name)
             if (is_numeric($category)) {
@@ -74,28 +81,31 @@ function wpt_get_posts_by_categories($params = array())
             }
         }
     }
-        
-    // dd($args);
+
+    // Uncomment the following line for debugging purposes
+    // dd($args, true);
+
     $query = new WP_Query($args);
 
     if (!$query->have_posts()) {
         $response = _wpt_handle_no_posts($params);
     } else {
-        $status = 200;
+        $status  = 200;
         $message = 'success';
 
-        if ($params['return_type'] === 'html') {
+        if ($return_type === 'html') {
             $response = _wpt_generate_html_response_for_posts($query, $params);
-        } elseif ($params['return_type'] === 'json') {
-            $response = _wpt_generate_json_response_for_posts($query, $status, $message);
-        }elseif ($return_type === 'array') {
-            $response = _wpt_generate_array_response_for_posts($query, $status, $message);
+        } elseif ($return_type === 'json') {
+            $response = _wpt_generate_json_response_for_posts($query,  $params, $status, $message);
+        } elseif ($return_type === 'array') {
+            $response = _wpt_generate_array_response_for_posts($query,  $params, $status, $message);
         }
     }
 
     wp_reset_postdata();
     return $response;
-    }
+}
+
     /**
      * Retrieves posts by categories using an endpoint.
      *

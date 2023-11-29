@@ -24,11 +24,12 @@ GET
 	21. get post by name/slug = 1
 	22. get posts by author = 1
 	23. get users by role  = 1
-	24. get post thumbnail by post_id
-	25. get post thumbnail by thumbnail_id 
+	24. get post thumbnail url by post_id = 1
+	25. get post thumbnail url by thumbnail_id  = 1
 	26. Get users by email. = 1
 	27. Get posts with a certain tag.
 	28. Get posts by custom taxonomy.
+	29. post parent id = 1
 	**WOO:**
 29. Get products by price range.
 30. Get products by stock status.

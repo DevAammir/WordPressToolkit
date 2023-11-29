@@ -12,7 +12,7 @@
  * @throws Some_Exception_Class Description of the exception.
  * @return string The JSON-encoded response.
  */
-function _wpt_generate_json_response_for_posts($query, $status, $message)
+function _wpt_generate_json_response_for_posts($query,  $params, $status, $message)
 {
     $num = 0;
     $posts = array();
@@ -29,6 +29,10 @@ function _wpt_generate_json_response_for_posts($query, $status, $message)
             'categories'   => get_the_category_list(', '),
             'tags'         => get_the_tag_list('', ', '),
         );
+
+        if(isset($params['custom_taxonomy']) && $params['custom_taxonomy']!=''){
+            $post_data['custom_taxonomy'] = get_the_terms(get_the_ID(), $params['custom_taxonomy']);
+        }
 
         if (!empty($params['size']) && $params['size'] == 'full') {
             $post_data['content'] = get_the_content();
@@ -82,7 +86,7 @@ function _wpt_generate_json_response_for_posts($query, $status, $message)
  * @param mixed $message The message of the response.
  * @return array The generated array response.
  */
-function _wpt_generate_array_response_for_posts($query, $status, $message)
+function _wpt_generate_array_response_for_posts($query,  $params, $status, $message)
 {
     $num = 0;
     $posts = array();
@@ -99,6 +103,11 @@ function _wpt_generate_array_response_for_posts($query, $status, $message)
             'categories'   => get_the_category_list(', '),
             'tags'         => get_the_tag_list('', ', '),
         );
+
+
+        if(isset($params['custom_taxonomy']) && $params['custom_taxonomy']!=''){
+            $post_data['custom_taxonomy'] = get_the_terms(get_the_ID(), $params['custom_taxonomy']);
+        }
 
         if (!empty($params['size']) && $params['size'] == 'full') {
             $post_data['content'] = get_the_content();
@@ -223,24 +232,24 @@ function _wpt_handle_no_posts($params)
 {
     if (isset($params['return_type'])) :
         if ($params['return_type'] === 'html') {
-            echo '<div class="error">No posts found</div>';
+            return '<div class="error">No posts found</div>';
         } elseif ($params['return_type'] === 'json') {
-            echo json_encode(array(
+            return json_encode(array(
                 'result'  => 'No posts found',
                 'status'  => 404,
                 'message' => 'No posts found'
             ));
         } elseif ($params['return_type'] === 'array') {
-            echo  array(
+            return  array(
                 'result'  => 'No posts found',
                 'status'  => 404,
                 'message' => 'No posts found'
             );
         } else {
-            echo 'No post found';
+            return 'No post found';
         }
     else :
-        echo 'No post found';
+        return 'No post found';
     endif;
 }
 
@@ -356,7 +365,8 @@ function _wpt_generate_array_response_for_posts_for_single_post($post)
  * @throws Exception If an error occurs during the generation process.
  * @return string The generated HTML table.
  */
-function _wpt_generate_nested_table($data) {
+function _wpt_generate_nested_table($data)
+{
     // Check if $data is an array
     if (!is_array($data)) {
         // If not an array, treat it as a string and return a single row table
@@ -398,7 +408,8 @@ function _wpt_generate_nested_table($data) {
  * @throws None
  * @return array The converted multidimensional array.
  */
-function _wpt_convert_to_nested_array($data) {
+function _wpt_convert_to_nested_array($data)
+{
     // Check if $data is an array
     if (!is_array($data)) {
         // If not an array, treat it as a string and return it
@@ -449,7 +460,7 @@ function _wpt_user_data_with_metadata($user_data, $return_type)
                 'user_email'         => $user->user_email,
                 'user_url'           => $user->user_url,
                 'user_registered'    => $user->user_registered,
-                'user_activation_key'=> $user->user_activation_key,
+                'user_activation_key' => $user->user_activation_key,
                 'user_status'        => $user->user_status,
                 'display_name'       => $user->display_name,
             ];
@@ -470,8 +481,8 @@ function _wpt_user_data_with_metadata($user_data, $return_type)
         }
 
         return [
-            'total'   => $unique_users_count,              
-            'result'  =>  ($return_type === 'json') ? json_encode($user_data_array) : $user_data_array,
+            'total'   => $unique_users_count,
+            'result'  => ($return_type === 'json') ? json_encode($user_data_array) : $user_data_array,
             'status'  => 'success',
             'message' => 'User data retrieved successfully',
         ];
@@ -484,4 +495,21 @@ function _wpt_user_data_with_metadata($user_data, $return_type)
         'message' => 'User not found',
         'total'   => 0
     ];
+}
+
+
+function _wpt_get_custom_taxonomies_by_post_id($id, $return_type)
+{
+    $custom_taxonomy_terms = get_the_terms(get_the_ID(), 'your_custom_taxonomy'); // Replace with your custom taxonomy name
+    if ($return_type == 'html') {
+        if ($custom_taxonomy_terms && !is_wp_error($custom_taxonomy_terms)) {
+            echo '<p>Custom Taxonomy Terms: ';
+            foreach ($custom_taxonomy_terms as $term) {
+                echo '<a href="' . get_term_link($term) . '">' . esc_html($term->name) . '</a> ';
+            }
+            echo '</p>';
+        }
+    } elseif ($return_type == 'array') {
+    } elseif ($return_type == 'json') {
+    }
 }
