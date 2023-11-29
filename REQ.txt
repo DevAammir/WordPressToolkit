@@ -15,7 +15,7 @@ GET
     12. usermeta by userid  ======= X
     13. usermeta by username  ======= X
 	14. get posts by categories = 1
-	15. get all catagories 
+	15. get all catagories  ========= Later
 	16. get post categories by post id ======= X
 	17. get post id by postname ======= X
 	18. get post categories by postname or postid ======= X
@@ -27,25 +27,25 @@ GET
 	24. get post thumbnail url by post_id = 1
 	25. get post thumbnail url by thumbnail_id  = 1
 	26. Get users by email. = 1
-	27. Get posts with a certain tag.
-	28. Get posts by custom taxonomy.
+	27. Get posts with a certain tag. = 1
+	28. Get posts by custom taxonomy. = 1
 	29. post parent id = 1
 	**WOO:**
-29. Get products by price range.
-30. Get products by stock status.
-31. Get orders by customer.
-32. Get orders by date range.
-33. Get orders by order status.
-34. Get customers by total spent.
-35. Get customers by registration date.
-36. Get product reviews by product.
-37. Get products with a certain attribute.
-38. Get product variations.
-39. Get shipping methods.
-40. Get payment gateways.
-41. Get coupon information.
-42. Get additional images for a product gallery.
-43. Retrieve customer reviews for a product.
+29. Get products by price range. ========= Later
+30. Get products by stock status. ========= Later
+31. Get orders by customer.  ========= Later
+32. Get orders by date range. ========= Later
+33. Get orders by order status. ========= Later
+34. Get customers by total spent. ========= Later
+35. Get customers by registration date.========= Later
+36. Get product reviews by product.========= Later
+37. Get products with a certain attribute.========= Later
+38. Get product variations.========= Later
+39. Get shipping methods.========= Later
+40. Get payment gateways.========= Later
+41. Get coupon information.========= Later
+42. Get additional images for a product gallery.========= Later
+43. Retrieve customer reviews for a product.========= Later
 */
 /*POST
 1. create post

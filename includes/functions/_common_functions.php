@@ -30,7 +30,7 @@ function _wpt_generate_json_response_for_posts($query,  $params, $status, $messa
             'tags'         => get_the_tag_list('', ', '),
         );
 
-        if(isset($params['custom_taxonomy']) && $params['custom_taxonomy']!=''){
+        if (isset($params['custom_taxonomy']) && $params['custom_taxonomy'] != '') {
             $post_data['custom_taxonomy'] = get_the_terms(get_the_ID(), $params['custom_taxonomy']);
         }
 
@@ -105,7 +105,7 @@ function _wpt_generate_array_response_for_posts($query,  $params, $status, $mess
         );
 
 
-        if(isset($params['custom_taxonomy']) && $params['custom_taxonomy']!=''){
+        if (isset($params['custom_taxonomy']) && $params['custom_taxonomy'] != '') {
             $post_data['custom_taxonomy'] = get_the_terms(get_the_ID(), $params['custom_taxonomy']);
         }
 
@@ -147,6 +147,7 @@ function _wpt_generate_array_response_for_posts($query,  $params, $status, $mess
  * @throws Exception Thrown if an error occurs.
  * @return string The generated HTML response.
  */
+
 function _wpt_generate_html_response_for_posts($query, $params)
 {
     ob_start();
@@ -174,11 +175,67 @@ function _wpt_generate_html_response_for_posts($query, $params)
                 <div class="featuerd-image-wrapper">
                     <a href="<?php the_permalink(); ?>"><?php the_post_thumbnail('full', array('class' => 'featuerd-image')); ?></a>
                 </div>
+                <?php if (isset($params['custom_taxonomy']) && $params['custom_taxonomy'] != '') {
+                    $custom_taxonomy_data = get_the_terms(get_the_ID(), $params['custom_taxonomy']);
+                } ?>
                 <div class="meta-info">
                     <p class="the-date">Date: <?php echo get_the_date('F j, Y'); ?></p>
                     <p class="the-author">Author: <?php echo get_the_author_meta('display_name'); ?></p>
                     <p class="the-categories">Categories: <?php echo get_the_category_list(', '); ?> </p>
                     <p class="the-tags">Tags: <?php echo get_the_tag_list('', ', '); ?></p>
+                    <?php if (isset($params['custom_taxonomy']) && $params['custom_taxonomy'] != '') : ?>
+                        <p class="the-custom-taxonomy">Custom Taxonomy:
+                        <ol><?php
+                            foreach ($custom_taxonomy_data as $term) {
+                                if ($term instanceof WP_Term) {
+                            ?>
+                                    <li class="custom-taxonomy-term_id">
+                                        <span class="key">Term ID:</span>
+                                        <span class="value"><?php echo $term->term_id; ?></span>
+                                    </li>
+                                    <li class="custom-taxonomy-name">
+                                        <span class="key">Name:</span>
+                                        <span class="value"><?php echo $term->name; ?></span>
+                                    </li>
+                                    <li class="custom-taxonomy-slug">
+                                        <span class="key">Slug:</span>
+                                        <span class="value"><?php echo $term->slug; ?></span>
+                                    </li>
+                                    <li class="custom-taxonomy-term_group">
+                                        <span class="key">Term Group:</span>
+                                        <span class="value"><?php echo $term->term_group; ?></span>
+                                    </li>
+                                    <li class="custom-taxonomy-term_taxonomy_id">
+                                        <span class="key">Term Taxonomy ID:</span>
+                                        <span class="value"><?php echo $term->term_taxonomy_id; ?></span>
+                                    </li>
+                                    <li class="custom-taxonomy-taxonomy">
+                                        <span class="key">Taxonomy:</span>
+                                        <span class="value"><?php echo $term->taxonomy; ?></span>
+                                    </li>
+                                    <li class="custom-taxonomy-description">
+                                        <span class="key">Description:</span>
+                                        <span class="value"><?php echo $term->description; ?></span>
+                                    </li>
+                                    <li class="custom-taxonomy-parent">
+                                        <span class="key">Parent:</span>
+                                        <span class="value"><?php echo $term->parent; ?></span>
+                                    </li>
+                                    <li class="custom-taxonomy-count">
+                                        <span class="key">Count:</span>
+                                        <span class="value"><?php echo $term->count; ?></span>
+                                    </li>
+                                    <li class="custom-taxonomy-filter">
+                                        <span class="key">Filter:</span>
+                                        <span class="value"><?php echo $term->filter; ?></span>
+                                    </li>
+                            <?php
+                                } //ends if
+                            } //ends foreach
+                            ?>
+                        </ol>
+                        </p>
+                    <?php endif; ?>
                 </div>
 
                 <?php if ($params['size'] == 'full') : ?>
@@ -221,6 +278,10 @@ function _wpt_generate_html_response_for_posts($query, $params)
     $content = ob_get_clean();
     return $content;
 }
+
+
+
+
 /**
  * Handles the case when there are no posts to display.
  *
@@ -332,7 +393,7 @@ function _wpt_generate_json_response_for_posts_for_single_post($post)
  * @param mixed $post The post data.
  * @return array The generated response array.
  */
-function _wpt_generate_array_response_for_posts_for_single_post($post)
+function _wpt_generate_array_response_for_single_post($post)
 {
     $post_data = array(
         'id'           => get_the_ID(),
@@ -497,19 +558,4 @@ function _wpt_user_data_with_metadata($user_data, $return_type)
     ];
 }
 
-
-function _wpt_get_custom_taxonomies_by_post_id($id, $return_type)
-{
-    $custom_taxonomy_terms = get_the_terms(get_the_ID(), 'your_custom_taxonomy'); // Replace with your custom taxonomy name
-    if ($return_type == 'html') {
-        if ($custom_taxonomy_terms && !is_wp_error($custom_taxonomy_terms)) {
-            echo '<p>Custom Taxonomy Terms: ';
-            foreach ($custom_taxonomy_terms as $term) {
-                echo '<a href="' . get_term_link($term) . '">' . esc_html($term->name) . '</a> ';
-            }
-            echo '</p>';
-        }
-    } elseif ($return_type == 'array') {
-    } elseif ($return_type == 'json') {
-    }
-}
+ 
