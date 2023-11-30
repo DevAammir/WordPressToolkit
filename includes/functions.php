@@ -905,7 +905,7 @@ function _wpt_upload_user_image($params)
     if (move_uploaded_file($image['tmp_name'], $new_image_path)) {
         $full_image_url = $upload_dir['baseurl'] . '/users/' . $new_image_name;
         update_user_meta($user->ID, 'wpt_profile_image', $full_image_url);
-        return $full_image_url;
+        return 1;
     } else {
         // Handle upload error
         return "Error uploading image.";
@@ -944,3 +944,302 @@ function image_upload_test_cb()
     </form>
 <?php
 }
+
+
+
+function wpt_create_custom_role($role_name, $display_name, $capabilities = array()) {
+    // Attempt to add the custom role
+    $result = add_role($role_name, $display_name, $capabilities);
+
+    // Check if an error occurred
+    if (is_wp_error($result)) {
+        // Handle the error
+
+        error_log('Error creating custom role: ' . $result->get_error_message());
+
+        // wp_mail('admin@example.com', 'Custom Role Creation Error', 'Error: ' . $result->get_error_message());
+
+        // wp_die('Error creating custom role. Please try again or contact support.');
+
+        // Return the WP_Error object to the calling code
+        return $result->get_error_message();
+    }else{
+
+        // If the role is created successfully, return the WP_Role object
+        return 1;
+    }
+
+}
+
+
+
+
+
+
+
+/**
+ * Function to add a custom field to a post and create a metabox for it in the admin.
+ *
+ * @param int    $post_id       The ID of the post to which the custom field should be added.
+ * @param string $field_key     The key of the custom field.
+ * @param mixed  $field_value   The value of the custom field.
+ *
+ * @return bool|int             Returns the custom field ID on success, false on failure.
+ */
+function add_custom_field_to_post($post_id, $field_key, $field_value) {
+    // Check if the post ID is valid.
+    if (!is_numeric($post_id) || $post_id <= 0) {
+        // Invalid post ID.
+        return false;
+    }
+
+    // Check if the post exists.
+    if (!get_post($post_id)) {
+        // Post does not exist.
+        return false;
+    }
+
+    // Validate field key and value (you may customize these checks based on your requirements).
+    if (empty($field_key) || empty($field_value)) {
+        // Invalid field key or value.
+        return false;
+    }
+
+    // Try to add/update the custom field.
+    $result = update_post_meta($post_id, $field_key, $field_value);
+
+    // Check if the operation was successful.
+    if ($result === false) {
+        // Error adding/updating custom field.
+        return false;
+    }
+
+    // Register the metabox for the custom field.
+    add_action('add_meta_boxes', function () use ($field_key) {
+        add_meta_box(
+            'custom_field_metabox',
+            'Custom Field',
+            function ($post) use ($field_key) {
+                $value = get_post_meta($post->ID, $field_key, true);
+                ?>
+                <label for="custom_field"><?php echo esc_html('Custom Field:'); ?></label>
+                <input type="text" id="custom_field" name="custom_field" value="<?php echo esc_attr($value); ?>">
+                <?php
+            },
+            'post',
+            'normal',
+            'default'
+        );
+    });
+
+    // Save the custom field value when the post is saved.
+    add_action('save_post', function ($post_ID) use ($field_key) {
+        if (isset($_POST['custom_field'])) {
+            $custom_field_value = sanitize_text_field($_POST['custom_field']);
+            update_post_meta($post_ID, $field_key, $custom_field_value);
+        }
+    });
+
+    // Return the custom field ID.
+    return $result;
+}
+
+
+
+
+/**
+ * Update User by ID with Error Handling
+ *
+ * @param int    $user_id     The ID of the user to update.
+ * @param array  $user_data   An associative array of user data to update.
+ *
+ * @return bool|WP_Error      True on success, WP_Error on failure.
+ */
+function wpt_update_user_by_id($user_id, $user_data) {
+    // Ensure user ID and data are provided
+    if (empty($user_id) || empty($user_data)) {
+        return new WP_Error('invalid_params', 'Invalid parameters provided.');
+    }
+
+    // Check if password is provided and update it separately
+    if (isset($user_data['password'])) {
+        wp_set_password($user_data['password'], $user_id);
+        unset($user_data['password']); // Remove password from user data array
+    }
+
+    // Update user data
+    $updated = wp_update_user(array_merge(['ID' => $user_id], $user_data));
+
+    // Check for errors during update
+    if (is_wp_error($updated)) {
+        return $updated; // Return WP_Error on failure
+    }
+
+    // Check if user was successfully updated
+    if ($updated > 0) {
+        return 1; // Return true on success
+    } else {
+        return new WP_Error('update_failed', 'User update failed.');
+    }
+}
+
+
+
+/**
+ * Update Post by ID with Error Handling
+ *
+ * @param int $post_id    Post ID to update.
+ * @param array $post_data Data to update in the post.
+ *
+ * @return bool|int        Returns post ID on success, false on failure.
+ */
+function wpt_update_post($post_id, $post_data) {
+    // Check if the post ID is valid.
+    if (!$post_id || !is_numeric($post_id)) {
+        // Handle invalid post ID error.
+        return false;
+    }
+
+    // Check if the post exists.
+    if (!get_post($post_id)) {
+        // Handle non-existent post error.
+        return false;
+    }
+
+    // Update the post.
+    $updated = wp_update_post(array_merge(['ID' => $post_id], $post_data), true);
+
+    // Check if the update was successful.
+    if (is_wp_error($updated)) {
+        // Handle update error.
+        return false;
+    }
+
+    // Return the updated post ID on success.
+    return $updated;
+}
+
+/*
+
+=============  ||========  ==============  =================
+    ||         ||           ||                      ||
+    ||         ||========   =============           ||
+    ||         ||                       ||          ||
+    ||         ||========= ===============          ||
+*/
+
+
+function delete_user_by_id($user_id) {
+    if (!is_numeric($user_id)) {
+        // Handle error: Invalid user ID
+        return false;
+    }
+
+    $deleted = wp_delete_user($user_id);
+
+    if (is_wp_error($deleted)) {
+        // Handle error: User deletion failed
+        return false;
+    }
+
+    // User deleted successfully
+    return true;
+}
+
+
+function delete_post_by_id($post_id) {
+    if (!is_numeric($post_id)) {
+        // Handle error: Invalid post ID
+        return false;
+    }
+
+    $deleted = wp_delete_post($post_id, true); // Set the second parameter to true to force delete
+
+    if (!$deleted) {
+        // Handle error: Post deletion failed
+        return false;
+    }
+
+    // Post deleted successfully
+    return true;
+}
+
+
+function delete_category_by_id($category_id) {
+    if (!is_numeric($category_id)) {
+        // Handle error: Invalid category ID
+        return false;
+    }
+
+    $deleted = wp_delete_category($category_id);
+
+    if (is_wp_error($deleted)) {
+        // Handle error: Category deletion failed
+        return false;
+    }
+
+    // Category deleted successfully
+    return true;
+}
+
+
+function delete_tag_by_id($tag_id) {
+    if (!is_numeric($tag_id)) {
+        // Handle error: Invalid tag ID
+        return false;
+    }
+
+    $deleted = wp_delete_term($tag_id, 'post_tag');
+
+    if (is_wp_error($deleted)) {
+        // Handle error: Tag deletion failed
+        return false;
+    }
+
+    // Tag deleted successfully
+    return true;
+}
+
+
+function delete_taxonomy_term_by_id($term_id, $taxonomy) {
+    if (!is_numeric($term_id) || empty($taxonomy)) {
+        // Handle error: Invalid term ID or taxonomy
+        return false;
+    }
+
+    $deleted = wp_delete_term($term_id, $taxonomy);
+
+    if (is_wp_error($deleted)) {
+        // Handle error: Term deletion failed
+        return false;
+    }
+
+    // Term deleted successfully
+    return true;
+}
+
+
+
+function remove_featured_image($post_id) {
+    if (!is_numeric($post_id)) {
+        // Handle error: Invalid post ID
+        return false;
+    }
+
+    $removed = delete_post_thumbnail($post_id);
+
+    if (!$removed) {
+        // Handle error: Featured image removal failed
+        return false;
+    }
+
+    // Featured image removed successfully
+    return true;
+}
+
+
+/*****************
+ * NOTE: TEST ABOVE FOR DELETION AND ALSO UPDATE ALMOST ALL FUNCTIONS ESPACIALLY UPDATE FUNCTINOS 
+ *       FOR HELP IF A PARAM OR ARRAY HAS THE VALUE OF HELP I.E help=1 or help=true or just help
+ *       IT WILL RETURN THE HELP DISPLAY ALL POSSIBLE PARAMETERS PLUS TELLS WHAT IT RETURNS
+ * *******************/

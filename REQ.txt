@@ -60,19 +60,19 @@ GET
 10. add user with usermeta--| =1
 11. add usermeta  = 1
 12. add user profile image = 1
-13. delet post
+13. delete post
 14. delete postmeta
 15. delete user
 16. delete usermeta 
 17. delete option = 1
 18. update postmeta = 1
 19. update usermeta  = 1 
-20. Create a custom user role.
-21. Create a user with custom role.
-22. Create a new category.
-23. Create a new tag. 
-24. Add a custom post status.
-25. Add a custom field to a post.
+20. Create a custom user role. = 1
+21. Create a user with custom role.========= Later
+22. Create a new category.========= Later
+23. Create a new tag. ========= Later
+24. Add a custom post status.========= Later
+25. Add a custom field to a post.========= Later
 **WOO:**
 26. Create a new product.========= Later
 27. Create a product variation.========= Later
@@ -81,7 +81,7 @@ GET
 30. Create a new order.========= Later
 31. Create a customer account.========= Later
 32. Create a coupon.========= Later
-33. Add a product to the cart.
+33. Add a product to the cart.========= Later
 34. Add a product variation to the cart.========= Later
 35. Add a coupon to the cart.========= Later
 36. Add a custom field to a product.========= Later
@@ -96,30 +96,30 @@ GET
 
 
 **UPDATE:**
-1. Update user information.
-2. Update user role.
-3. Update post content.
-4. Update post status.
-5. Update post title.
-6. Update post author.
-7. Update post category.
-8. Update post tags.
+1. Update user information. =1
+2. Update user role. = 1
+3. Update post content.-----|
+4. Update post status.		|
+5. Update post title.		| = 1
+6. Update post author.		|
+7. Update post category.----|
+8. Update post tags. ========= Later
 **WOO:**
-9. Update product information.
-10. Update product price.
-11. Update product stock quantity.
-12. Update product category.
-13. Update product tags.
-14. Update order status.
-15. Update customer information.
-16. Update customer billing and shipping addresses.
-17. Update coupon information.
-18. Update product variations.
-19. Update product attributes.
-20. Update cart contents.
-21. Update product reviews.
-22. Update shipping information for an order.
-23. Update payment information for an order. 
+9. Update product information.========= Later
+10. Update product price.========= Later
+11. Update product stock quantity.========= Later
+12. Update product category.========= Later
+13. Update product tags.========= Later
+14. Update order status.========= Later
+15. Update customer information.========= Later
+16. Update customer billing and shipping addresses.========= Later
+17. Update coupon information.========= Later
+18. Update product variations.========= Later
+19. Update product attributes.========= Later
+20. Update cart contents.========= Later
+21. Update product reviews.========= Later
+22. Update shipping information for an order.========= Later
+23. Update payment information for an order. ========= Later
 
 
 
@@ -130,24 +130,26 @@ GET
 4. Delete a tag by ID.
 5. Delete a custom taxonomy term by ID.  
 6. Remove a featured image from a post.
-**WOO:**
-7. Delete a product by ID.
-8. Delete a product variation by ID.
-9. Delete a product category by ID.
-10. Delete a product tag by ID.
-11. Delete an order by ID.
-12. Delete a customer by ID.
-13. Delete a coupon by ID.
-14. Remove a product from the cart.
-15. Remove a coupon from the cart.
-16. Delete a product from a wishlist.
-17. Delete a custom field from a product.
-18. Delete a custom field from an order.
-19. Delete a custom field from a customer.
-20. Delete a custom field from a coupon.
-21. Cancel an order.
 
-===================================================================
+
+**WOO:**
+7. Delete a product by ID.========= Later
+8. Delete a product variation by ID.========= Later
+9. Delete a product category by ID.========= Later
+10. Delete a product tag by ID.========= Later
+11. Delete an order by ID.========= Later
+12. Delete a customer by ID.========= Later
+13. Delete a coupon by ID.========= Later
+14. Remove a product from the cart.========= Later
+15. Remove a coupon from the cart.========= Later
+16. Delete a product from a wishlist.========= Later
+17. Delete a custom field from a product.========= Later
+18. Delete a custom field from an order.========= Later
+19. Delete a custom field from a customer.========= Later
+20. Delete a custom field from a coupon.========= Later
+21. Cancel an order.========= Later
+
+=========================WOOCOMMERCE IN LATER VERSIONS=======================================
 
 **Cart Meta:**
 1. **Cart Subtotal:** Retrieve the subtotal of items in the cart.
