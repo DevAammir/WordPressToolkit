@@ -310,7 +310,7 @@ function wpt_set_meta($args)
  * @throws WP_Error Throws a WP_Error if there is an error adding the post or setting the featured image.
  * @return array An associative array with the result, status, message, and post_id of the created post.
  */
-function wpt_create_post($args)
+function wpt_create_post_beta($args)
 {
     // Check if required arguments are present
     if (empty($args['post_type']) || empty($args['post_title']) || empty($args['post_content'])) {
@@ -396,37 +396,6 @@ function wpt_create_post($args)
 
 
 
-// Helper function to set featured image by URL or attachment ID
-function _wpt_set_featured_image($post_id, $image)
-{
-    // If $image is a URL, try to download and set it as the featured image
-    if (filter_var($image, FILTER_VALIDATE_URL)) {
-        $file_array = array(
-            'name' => basename($image),
-            'tmp_name' => download_url($image),
-        );
-
-        $attachment_id = media_handle_sideload($file_array, $post_id, '', array('test_form' => false));
-
-        // Check for errors
-        if (is_wp_error($attachment_id)) {
-            return $attachment_id;
-        }
-
-        // Set the post thumbnail
-        set_post_thumbnail($post_id, $attachment_id);
-
-        return $attachment_id;
-    }
-
-    // If $image is an attachment ID, set it as the featured image
-    if (is_numeric($image)) {
-        set_post_thumbnail($post_id, $image);
-        return $image;
-    }
-
-    return new WP_Error('invalid_image', 'Invalid featured image provided');
-}
 
 
 
@@ -755,3 +724,124 @@ function wpt_get_posts_by_tags($params = array())
     wp_reset_postdata();
     return $response;
 }
+
+
+
+/**
+ * Creates a new post in WordPress.
+ *
+ * @param array $params An associative array containing the parameters for the new post.
+ *                     - title: The title of the post. Required.
+ *                     - content: The content of the post. Required.
+ *                     - post_status: The status of the post. Default is 'publish'.
+ *                     - post_type: The type of the post. Default is 'post'.
+ *                     - post_meta: An associative array of post meta data. Optional.
+ * @throws None
+ * @return int Returns the ID of the newly created post on success, or 0 on failure.
+ */
+function wpt_create_post($params) {
+    // Check if required parameters are provided
+    if (empty($params['title']) || empty($params['content'])) {
+        return 'Error: Title and content are required.';
+    }
+
+    // Set default post status if not provided
+    $post_status = isset($params['post_status']) ? $params['post_status'] : 'publish';
+
+    // Prepare post data
+    $post_data = array(
+        'post_title'   => $params['title'],
+        'post_content' => $params['content'],
+        'post_status'  => $post_status,
+        'post_type'    => isset($params['post_type']) ? $params['post_type'] : 'post',
+    );
+
+    // Insert the post into the database
+    $post_id = wp_insert_post($post_data);
+
+    // Check for errors during post creation
+    if (is_wp_error($post_id)) {
+        // return 'Error: ' . $post_id->get_error_message();
+        return 0;
+    }
+
+    // Check if post meta is provided
+    if (isset($params['post_meta']) && is_array($params['post_meta'])) {
+        foreach ($params['post_meta'] as $meta_key => $meta_value) {
+            // Add post meta for each key-value pair
+            add_post_meta($post_id, $meta_key, $meta_value, true);
+        }
+    }
+
+    // Success message
+    // return 'Post created successfully with ID ' . $post_id;
+    return  $post_id;
+}
+
+
+
+
+
+
+
+
+
+
+
+function wpt_create_user($params) {
+    $username = sanitize_text_field($params['username']);
+    $email = sanitize_text_field($params['email']);
+    $password = sanitize_text_field($params['password']);
+    $default_role = !empty($params['role']) ? $params['role'] : 'subscriber'; // You can change this to the default role you prefer
+
+    $data["username"] = $username;
+    $data["email"] = $email;
+    $data["password"] = $password;
+    $errors = array();
+
+    if (empty($username) || empty($email) || empty($password)) {
+        $errors[] = 'EMPTY_FIELDS';
+    }
+
+    if (!empty($username)) {
+        if (username_exists($username)) {
+            $errors[] = 'USERNAME_ALREADY_EXIST';
+        }
+    }
+
+    if (!empty($email)) {
+        if (!is_email($email)) {
+            $errors[] = 'NOT_A_VALID_EMAIL_ADDRESS';
+        } else {
+            if (email_exists($email)) {
+                $errors[] = 'EMAIL_ADDRESS_ALREADY_EXIST';
+            }
+        }
+    }
+
+    if (!empty($password) && strlen($password) < 5) {
+        $errors[] = 'PASSWORD_LENGTH_IS_TOO_SHORT';
+    }
+
+    if (count($errors)) {
+        $data["errors"] = $errors;
+        $data["result"] = 'FAIL';
+    } else {
+        $random_password = wp_generate_password($length = 12, $include_standard_special_chars = false);
+        $user_id = wp_create_user($username, $random_password, $email);
+
+        if (!is_wp_error($user_id)) {
+            // Set the default role for the new user
+            $user = new WP_User($user_id);
+            $user->set_role($default_role);
+
+            wp_set_password($password, $user_id);
+            $data["result"] = $user_id;
+        } else {
+            $data["result"] = 'FAIL';
+        }
+    }
+
+    return $data;
+}
+

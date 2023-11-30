@@ -48,18 +48,18 @@ GET
 43. Retrieve customer reviews for a product.========= Later
 */
 /*POST
-1. create post
-2. create post with postmeta
+1. create post----------------
+2. create post with postmeta--|=1
 3. add postmeta = 1
-4. add replace post featured image
-5. add category to a post
-6. add tag to a post
-7. add custom taxonomy to a post
-8. Add a media attachment to a post.
-9. add user 
-10. add user with usermeta
+4. add replace post featured image = 1
+5. add category to a post = 1
+6. add tag to a post= 1
+7. add custom taxonomy to a post= 1
+8. Add a media attachment to a post.========= Later
+9. add user ----------------
+10. add user with usermeta--| =1
 11. add usermeta  = 1
-12. add user gravatar
+12. add user gravatar 
 13. delet post
 14. delete postmeta
 15. delete user
@@ -74,24 +74,24 @@ GET
 24. Add a custom post status.
 25. Add a custom field to a post.
 **WOO:**
-26. Create a new product.
-27. Create a product variation.
-28. Create a new product category.
-29. Create a new product tag.
-30. Create a new order.
-31. Create a customer account.
-32. Create a coupon.
+26. Create a new product.========= Later
+27. Create a product variation.========= Later
+28. Create a new product category.========= Later
+29. Create a new product tag.========= Later
+30. Create a new order.========= Later
+31. Create a customer account.========= Later
+32. Create a coupon.========= Later
 33. Add a product to the cart.
-34. Add a product variation to the cart.
-35. Add a coupon to the cart.
-36. Add a custom field to a product.
-37. Add a custom field to an order.
-38. Add a custom field to a customer.
-39. Add a custom field to a coupon.
-40. Add a product to a wishlist.
+34. Add a product variation to the cart.========= Later
+35. Add a coupon to the cart.========= Later
+36. Add a custom field to a product.========= Later
+37. Add a custom field to an order.========= Later
+38. Add a custom field to a customer.========= Later
+39. Add a custom field to a coupon.========= Later
+40. Add a product to a wishlist.========= Later
 41. Set additional images for a product gallery.
-42. Manage customer reviews for a product.
-43. Set a schedule for when a product is available for purchase.
+42. Manage customer reviews for a product.========= Later
+43. Set a schedule for when a product is available for purchase.========= Later
 */
 
 
