@@ -59,7 +59,7 @@ GET
 9. add user ----------------
 10. add user with usermeta--| =1
 11. add usermeta  = 1
-12. add user gravatar 
+12. add user profile image = 1
 13. delet post
 14. delete postmeta
 15. delete user

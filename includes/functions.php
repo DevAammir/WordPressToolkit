@@ -85,13 +85,13 @@ function E_ON()
 function dd($data, $exit = null)
 {
 ?>
-<div class="row my-4" style="z-index:99999;">
-    <pre>TESTING MODE</pre>
-    <pre>
+    <div class="row my-4" style="z-index:99999;">
+        <pre>TESTING MODE</pre>
+        <pre>
         <?php print_r($data); ?> 
     </pre>
-</div>
-<?php
+    </div>
+    <?php
     if (isset($exit)) {
         exit;
     }
@@ -442,7 +442,7 @@ function wpt_get_user_by_id($id, $return_type = 'object')
     ];
 }
 
-  
+
 
 
 
@@ -459,7 +459,7 @@ function wpt_get_user_by_id($id, $return_type = 'object')
  *               - message: (string) A message providing information about the result.
  *               - total: (int) The total number of unique users retrieved.
  * @throws None
- */ 
+ */
 function wpt_get_users_by_meta($params)
 {
     $meta_key    = isset($params['meta_key']) ? $params['meta_key'] : null;
@@ -486,7 +486,7 @@ function wpt_get_users_by_meta($params)
 }
 
 
-  
+
 
 
 /**
@@ -495,7 +495,8 @@ function wpt_get_users_by_meta($params)
  * @param string $username The username to search for.
  * @return int The user ID if found, or 0 if the user is not found.
  */
-function wpt_get_user_id_by_username($username) {
+function wpt_get_user_id_by_username($username)
+{
     $user = get_user_by('login', $username);
 
     if ($user) {
@@ -513,7 +514,8 @@ function wpt_get_user_id_by_username($username) {
  * @param int $id The ID of the user.
  * @return string The username of the user if found, or 'User not found!' if the user is not found.
  */
-function wpt_get_username_by_id($id) {
+function wpt_get_username_by_id($id)
+{
     $user = get_user_by('id', $id);
 
     if ($user) {
@@ -530,7 +532,8 @@ function wpt_get_username_by_id($id) {
  * @throws None
  * @return int|string The user ID if found, or a string indicating that the user was not found.
  */
-function wpt_get_user_id_by_email($email) {
+function wpt_get_user_id_by_email($email)
+{
     $user = get_user_by('email', $email);
 
     if ($user) {
@@ -577,11 +580,12 @@ function wpt_get_users_by_role($role, $return_type)
  * @param int $id The ID of the post.
  * @return string|int The URL of the post thumbnail if found, 0 otherwise.
  */
-function wpt_get_post_thumbnail_by_post_id($id){
+function wpt_get_post_thumbnail_by_post_id($id)
+{
     $thumbnail_url = get_the_post_thumbnail_url($id);
-    if($thumbnail_url){
+    if ($thumbnail_url) {
         return $thumbnail_url;
-    }else{
+    } else {
         return 0;
     }
 }
@@ -595,11 +599,12 @@ function wpt_get_post_thumbnail_by_post_id($id){
  * @throws None
  * @return string|false The URL of the post thumbnail, or false if it doesn't exist.
  */
-function wpt_get_post_thumbnail_by_attachment_id($id){
+function wpt_get_post_thumbnail_by_attachment_id($id)
+{
     $thumbnail_url = wp_get_attachment_url($id);
-    if($thumbnail_url){
+    if ($thumbnail_url) {
         return $thumbnail_url;
-    }else{
+    } else {
         return 0;
     }
 }
@@ -610,11 +615,12 @@ function wpt_get_post_thumbnail_by_attachment_id($id){
  * @param int $id The ID of the post.
  * @return int The ID of the parent post, or 0 if there is no parent post.
  */
-function wpt_get_post_parent_by_id($id){
+function wpt_get_post_parent_by_id($id)
+{
     $parent_id = wp_get_post_parent_id($id);
-    if($parent_id){
+    if ($parent_id) {
         return $parent_id;
-    }else{
+    } else {
         return 0;
     }
 }
@@ -739,7 +745,8 @@ function wpt_get_posts_by_tags($params = array())
  * @throws None
  * @return int Returns the ID of the newly created post on success, or 0 on failure.
  */
-function wpt_create_post($params) {
+function wpt_create_post($params)
+{
     // Check if required parameters are provided
     if (empty($params['title']) || empty($params['content'])) {
         return 'Error: Title and content are required.';
@@ -788,7 +795,18 @@ function wpt_create_post($params) {
 
 
 
-function wpt_create_user($params) {
+
+
+
+
+
+
+
+
+
+
+function wpt_create_user($params)
+{
     $username = sanitize_text_field($params['username']);
     $email = sanitize_text_field($params['email']);
     $password = sanitize_text_field($params['password']);
@@ -845,3 +863,84 @@ function wpt_create_user($params) {
     return $data;
 }
 
+
+
+/**
+ * Uploads a user image to the server.
+ *
+ * @param array $params An array containing the user identifier and the image data.
+ *                     - user_identifier: The identifier of the user (either an ID or a username).
+ *                     - image: The image data to be uploaded.
+ * @return string|false The URL of the uploaded image on success, or false on failure.
+ */
+function _wpt_upload_user_image($params)
+{
+    $user_identifier = $params['user_identifier'];
+    $image = $params['image'];
+
+    // Use wp_upload_dir() to get the correct upload directory
+    $upload_dir = wp_upload_dir();
+    $upload_directory = $upload_dir['basedir'] . '/users/';
+
+    if (is_numeric($user_identifier)) {
+        $user = get_user_by('id', $user_identifier);
+    } else {
+        // If $user_identifier is not numeric, assume it's a username
+        $user = get_user_by('login', $user_identifier);
+    }
+
+    // Ensure the directory exists or create it
+    if (!file_exists($upload_directory)) {
+        mkdir($upload_directory, 0777, true);
+    }
+
+    $image_extension = pathinfo($image['name'], PATHINFO_EXTENSION);
+
+    $new_image_name = $user->user_login . '_' . uniqid() . '.' . $image_extension;
+
+    // Set the full path for the new image
+    $new_image_path = $upload_directory . $new_image_name;
+
+    // Check if the file was successfully moved
+    if (move_uploaded_file($image['tmp_name'], $new_image_path)) {
+        $full_image_url = $upload_dir['baseurl'] . '/users/' . $new_image_name;
+        update_user_meta($user->ID, 'wpt_profile_image', $full_image_url);
+        return $full_image_url;
+    } else {
+        // Handle upload error
+        return "Error uploading image.";
+    }
+}
+
+
+
+
+
+add_shortcode('image_upload_test', 'image_upload_test_cb');
+function image_upload_test_cb()
+{
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_POST["user_name"]) && isset($_FILES["user_profile_image"])) {
+            $user_name = $_POST["user_name"];
+            $image = $_FILES['user_profile_image'];
+
+            // Call the uploadImage function
+            $result = _wpt_upload_user_image(['user_identifier' => 'joe', 'image' => $image]);
+
+            echo $result;
+        } else {
+            echo "Please provide both user name and image.";
+        }
+    }
+    ?>
+    <form action="" method="post" enctype="multipart/form-data">
+        <label for="user_name">User Name:</label>
+        <input type="text" name="user_name"><br>
+
+        <label for="image">Choose Image:</label>
+        <input type="file" name="user_profile_image" accept="image/*"><br>
+
+        <input type="submit" value="Upload Image">
+    </form>
+<?php
+}
