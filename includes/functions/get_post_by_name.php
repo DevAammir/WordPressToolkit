@@ -5,11 +5,15 @@
  * @param array $args An array of arguments:
  *     - post_name (string): The name of the post.
  *     - post_type (string): The type of the post.
- *     - return_type (string): The type of the response (html or json).
+ *     - return_type (string): The type of the response ('html','array' or 'json').
  * @return string The response containing the post information.
+ * @additional it has a corresponding ajax function and a shortcode
+ *      - [wpt_get_post_by_name name="post_name" post_type="post_name"]
+ *      - wpt_get_post_by_name(post_name, post_type,target,wpt_ajax_url);
  */
 function wpt_get_post_by_name($args = array())
 {
+    if($args == 'help'){wpt_get_post_by_name_help();die();}
     if(empty($args) || !isset($args['post_name'])  || $args['post_name']=='' || !isset($args['post_type'])  || $args['post_type']=='' ||empty($args['return_type']) || !isset($args['return_type']) || $args['return_type']==''){
         echo "<div class='error'>Please provide required parameters that are: post_name, post_type and return_type</div>";
         die();
@@ -83,4 +87,39 @@ function get_post_by_name_shortcode($atts)
         'return_type'   => 'html'
     );
     return wpt_get_post_by_name($args);
+}
+
+
+
+function wpt_get_post_by_name_help()
+{
+?>
+  <h3>wpt_get_post_by_name() help</h3>
+  <code>
+    $args = [
+      'post_name'   => '',
+      'post_type'   => '',
+      'return_type' => ''
+    ];<br/><br/>
+    wpt_get_post_by_name($args);<br/>
+  </code><br/><br/>
+  <p>Retrieves a post by its name.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <ul>
+    <li><code>post_name</code> (string) - The name of the post.</li>
+    <li><code>post_type</code> (string) - The type of the post.</li>
+    <li><code>return_type</code> (string) - The type of the response ('html','array' or 'json').</li>
+  </ul>
+
+  <p><strong>Returns:</strong></p>
+  <p>The response containing the post information.</p>
+
+  <p><strong>Additional:</strong></p>
+  <p>It has a corresponding ajax function and a shortcode:</p>
+  <ul>
+    <li><code>[wpt_get_post_by_name name="post_name" post_type="post"]</code></li>
+    <li><code>wpt_get_post_by_name(post_name, post_type, target, wpt_ajax_url);</code></li>
+  </ul>
+<?php
 }

@@ -10,9 +10,13 @@
  *              - 'return_type' (string): The type of response to return. Either 'html' or 'json'.
  * @return mixed The response based on the specified return type.
  * @throws Some_Exception_Class A description of the exception that can be thrown.
+ * @additional it has a corresponding ajax function and a shortcode
+ *  - wpt_get_posts_by_categories(category, post_type, size, target, wpt_ajax_url);
+ *  - [wpt_get_posts_by_categories per_page="10" post_type="post" size="0" category="1,2,3"]
  */
 function wpt_get_posts_by_categories($params = array())
 {
+    if($params == 'help'){wpt_get_posts_by_categories_help();die();}
     if (
         empty($params) ||
         $params['post_type'] == '' ||
@@ -146,7 +150,7 @@ function wpt_get_posts_by_categories($params = array())
 
     function wpt_get_posts_by_categories_shortcode($atts)
     {
-        // dd($atts);
+        // dd($atts); [wpt_get_posts_by_categories per_page="10" post_type="post" size="0" category="1,2,3"]
         return wpt_get_posts_by_categories([
             'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
             'post_type'   => $atts['post_type'],
@@ -155,3 +159,42 @@ function wpt_get_posts_by_categories($params = array())
             'category'  => $atts['category'],
         ]);
     }
+
+
+
+function wpt_get_posts_by_categories_help()
+{
+?>
+  <h3>wpt_get_posts_by_categories() help</h3>
+  <code>
+    $params = [
+      'size'       => 0,
+      'post_type'  => '',
+      'per_page'   => -1,
+      'category'   => '',
+      'return_type' => ''
+    ];<br/><br/>
+    wpt_get_posts_by_categories($params);<br/>
+  </code><br/><br/>
+  <p>Retrieves posts from the WordPress database based on specified categories.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <ul>
+    <li><code>'size'</code> (int) - The size of the posts to retrieve. Default is 0.</li>
+    <li><code>'post_type'</code> (string) - The type of posts to retrieve.</li>
+    <li><code>'per_page'</code> (int) - The number of posts to retrieve per page. Default is -1.</li>
+    <li><code>'category'</code> (string) - The category or categories to filter the posts by.</li>
+    <li><code>'return_type'</code> (string) - The type of response to return. Either 'html' or 'json'.</li>
+  </ul>
+
+  <p><strong>Returns:</strong></p>
+  <p>The response based on the specified return type.  ('html','array','json')</p>
+
+  <p><strong>Additional:</strong></p>
+  <p>It has a corresponding ajax function and a shortcode:</p>
+  <ul>
+    <li><code>wpt_get_posts_by_categories(category, post_type, size, target, wpt_ajax_url);</code></li>
+    <li><code>[wpt_get_posts_by_categories per_page="10" post_type="post" size="0" category="1,2,3"]</code></li>
+  </ul>
+<?php
+}

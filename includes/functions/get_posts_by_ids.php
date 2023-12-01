@@ -11,10 +11,13 @@
  *   - return_type (string): The type of response to return. Default is 'html'.
  * @throws Some_Exception_Class Description of exception (if applicable)
  * @return mixed The response generated based on the return type.
+ * @additional it has a corresponding ajax function and a shortcode
+ * - wpt_get_posts_by_ids(post_ids, size, target, wpt_ajax_url);
+ * - [wpt_get_posts_by_ids per_page="-1" posts_ids="1,5,2"  return_type="html" size="0"]
  */
 function wpt_get_posts_by_ids($params = array())
 {
-
+    if($params == 'help'){wpt_get_posts_by_ids_help();die();}
     if(empty($params) || 
     $params['size']=='' || 
     empty($params['posts_ids']) ||
@@ -114,6 +117,7 @@ function wpt_get_posts_by_ids($params = array())
 
     function wpt_get_posts_by_ids_shortcode($atts)
     {
+        // [wpt_get_posts_by_ids per_page="-1" posts_ids="1,5,2"  return_type="html" size="0"] 
         $args = [
             'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
             'posts_ids'   => $atts['posts_ids'],
@@ -122,3 +126,39 @@ function wpt_get_posts_by_ids($params = array())
         ];
         return wpt_get_posts_by_ids($args);
     }
+
+
+function wpt_get_posts_by_ids_help()
+{
+?>
+  <h3>wpt_get_posts_by_ids() help</h3>
+  <code>
+    $params = [
+      'size'       => 0,
+      'posts_ids'  => '',
+      'per_page'   => -1,
+      'return_type'=> 'html'
+    ];<br/><br/>
+    wpt_get_posts_by_ids($params);<br/>
+  </code><br/><br/>
+  <p>Retrieves posts by their IDs.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <ul>
+    <li><code>'size'</code> (int) - The size of the posts. Default is 0.</li>
+    <li><code>'posts_ids'</code> (array|string) - The IDs of the posts.</li>
+    <li><code>'per_page'</code> (int) - The number of posts to display per page. Default is -1 (all posts).</li>
+    <li><code>'return_type'</code> (string) - The type of response to return. Default is 'html'.</li>
+  </ul>
+
+  <p><strong>Returns:</strong></p>
+  <p>The response based on the specified return type.  ('html','array','json')</p>
+
+  <p><strong>Additional:</strong></p>
+  <p>It has a corresponding ajax function and a shortcode:</p>
+  <ul>
+    <li><code>wpt_get_posts_by_ids(post_ids, size, target, wpt_ajax_url);</code></li>
+    <li><code>[wpt_get_posts_by_ids per_page="-1" posts_ids="1,5,2" return_type="html" size="0"]</code></li>
+  </ul>
+<?php
+}

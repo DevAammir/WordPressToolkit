@@ -561,73 +561,6 @@ function _wpt_user_data_with_metadata($user_data, $return_type)
  
 
 
-/**
- * Sets the featured image for a WordPress post.
- *
- * If the provided image is a URL, it will attempt to download the image and set it as the featured image for the specified post.
- * If the provided image is an attachment ID, it will set that image as the featured image for the specified post.
- *
- * @param int|string $post_id The ID or slug of the post for which to set the featured image.
- * @param mixed $image The image to set as the featured image. This can be a URL or an attachment ID.
- * @throws Exception If there is an error downloading or uploading the image, or if an invalid image is provided.
- * @return string A message indicating if the featured image was set successfully, along with the attachment ID if applicable.
- */
-function _wpt_set_featured_image($post_id, $image)
-{
-// Include necessary files
-require_once ABSPATH . 'wp-admin/includes/file.php';
-require_once ABSPATH . 'wp-admin/includes/media.php';
-require_once ABSPATH . 'wp-admin/includes/image.php';
-
- 
-
-    // If $image is a URL, try to download and set it as the featured image
-    if (filter_var($image, FILTER_VALIDATE_URL)) {
-        $response = wp_remote_get($image);
-
-        // Check for errors
-        if (is_wp_error($response)) {
-            return 'Error downloading image: ' . $response->get_error_message();
-        }
-
-        $body = wp_remote_retrieve_body($response);
-
-        // Extract the file extension from the URL
-        $file_extension = pathinfo(parse_url($image, PHP_URL_PATH), PATHINFO_EXTENSION);
-
-        // Create a temporary file with a specific extension
-        $upload = wp_upload_bits(basename($image), null, $body, $file_extension);
-
-        if (!$upload['error']) {
-            $file_array = array(
-                'name'     => $upload['file'],
-                'tmp_name' => $upload['file'],
-            );
-
-            $attachment_id = media_handle_sideload($file_array, $post_id, '', array('test_form' => false));
-
-            // Check for errors
-            if (is_wp_error($attachment_id)) {
-                return 'Error uploading image: ' . $attachment_id->get_error_message();
-            }
-
-            // Set the post thumbnail
-            set_post_thumbnail($post_id, $attachment_id);
-
-            return 'Featured image set successfully. Attachment ID: ' . $attachment_id;
-        } else {
-            return 'Error uploading image: ' . $upload['error'];
-        }
-    }
-
-    // If $image is an attachment ID, set it as the featured image
-    if (is_numeric($image)) {
-        set_post_thumbnail($post_id, $image);
-        return 'Featured image set successfully. Attachment ID: ' . $image;
-    }
-
-    return 'Invalid featured image provided';
-}
 
 
 
@@ -769,14 +702,81 @@ function _wpt_set_custom_taxonomy_to_post($post_id, $terms, $taxonomy) {
 }
 
 
+function _wpt_set_featured_image_via_image_url($post_id, $image)
+{
+// Include necessary files
+require_once ABSPATH . 'wp-admin/includes/file.php';
+require_once ABSPATH . 'wp-admin/includes/media.php';
+require_once ABSPATH . 'wp-admin/includes/image.php';
+
+ 
+
+    // If $image is a URL, try to download and set it as the featured image
+    if (filter_var($image, FILTER_VALIDATE_URL)) {
+        $response = wp_remote_get($image);
+
+        // Check for errors
+        if (is_wp_error($response)) {
+            return 'Error downloading image: ' . $response->get_error_message();
+        }
+
+        $body = wp_remote_retrieve_body($response);
+
+        // Extract the file extension from the URL
+        $file_extension = pathinfo(parse_url($image, PHP_URL_PATH), PATHINFO_EXTENSION);
+
+        // Create a temporary file with a specific extension
+        $upload = wp_upload_bits(basename($image), null, $body, $file_extension);
+
+        if (!$upload['error']) {
+            $file_array = array(
+                'name'     => $upload['file'],
+                'tmp_name' => $upload['file'],
+            );
+
+            $attachment_id = media_handle_sideload($file_array, $post_id, '', array('test_form' => false));
+
+            // Check for errors
+            if (is_wp_error($attachment_id)) {
+                return 'Error uploading image: ' . $attachment_id->get_error_message();
+            }
+
+            // Set the post thumbnail
+            set_post_thumbnail($post_id, $attachment_id);
+
+            return 'Featured image set successfully. Attachment ID: ' . $attachment_id;
+        } else {
+            return 'Error uploading image: ' . $upload['error'];
+        }
+    }
+
+    // If $image is an attachment ID, set it as the featured image
+    if (is_numeric($image)) {
+        set_post_thumbnail($post_id, $image);
+        return 'Featured image set successfully. Attachment ID: ' . $image;
+    }
+
+    return 'Invalid featured image provided';
+}
 
 
+/**
+ * Set featured image for a post.
+ *
+ * @param int $post_id       Post ID.
+ * @param int $attachment_id Attachment ID.
+ *
+ * @return bool              True on success, false on failure.
+ */
+function _wpt_set_featured_image($post_id, $attachment_id) {
+    // Check if the post ID and attachment ID are valid.
+    if (empty($post_id) || empty($attachment_id)) {
+        return 0;
+    }
 
+    // Set the featured image.
+    $result = set_post_thumbnail($post_id, $attachment_id);
 
-
-
-
-
-
-
-
+    // Return the result.
+    return 1;
+}

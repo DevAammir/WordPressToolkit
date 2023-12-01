@@ -60,10 +60,10 @@ GET
 10. add user with usermeta--| =1
 11. add usermeta  = 1
 12. add user profile image = 1
-13. delete post
-14. delete postmeta
-15. delete user
-16. delete usermeta 
+13. delete post  = 1
+14. delete postmeta = 1
+15. delete user = 1
+16. delete usermeta  = 1
 17. delete option = 1
 18. update postmeta = 1
 19. update usermeta  = 1 
@@ -124,12 +124,12 @@ GET
 
 
 **DELETE:**
-1. Delete a specific user by ID.
-2. Delete a post by ID. 
-3. Delete a category by ID.
-4. Delete a tag by ID.
-5. Delete a custom taxonomy term by ID.  
-6. Remove a featured image from a post.
+1. Delete a specific user by ID. = 1
+2. Delete a post by ID.  = 1
+3. Delete a category by ID. = 1
+4. Delete a tag by ID. = 1
+5. Delete a custom taxonomy term by ID.   = 1
+6. Remove a featured image from a post. = 1
 
 
 **WOO:**

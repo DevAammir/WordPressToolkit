@@ -13,10 +13,15 @@
  * @throws WP_Error If an error occurs while querying the posts
  *
  * @return string The retrieved posts in the specified format
+ * 
+ * @additional it has a shortcode and a callback function as well 
+ * - [wpt_get_posts_shortcode per_page="10" post_type="post" size="10"]
+ * - wpt_get_post_by_id(postId, target,wpt_ajax_url) 
  */
 
 function wpt_get_posts($params = array())
 {
+    if($params=='help'){wpt_get_posts_help(); die();}
     
     $default_params = array(
         'per_page'    => -1,
@@ -92,11 +97,50 @@ function wpt_get_posts_endpoint()
 add_shortcode('wpt_get_posts', 'wpt_get_posts_shortcode');
 
 function wpt_get_posts_shortcode($atts)
-{
+{ //[wpt_get_posts_shortcode per_page="10" post_type="post" size="10"]
     return wpt_get_posts([
         'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
         'post_type'   => $atts['post_type'],
         'return_type' => 'html',
         'size' =>   $atts['size'],
     ]);
+}
+
+
+
+
+//HELP
+function wpt_get_posts_help()
+{
+?>
+  <h3>wpt_get_posts() help</h3>
+  <code>
+    $params = [
+      'per_page'    => -1,
+      'post_type'   => 'post',
+      'return_type' => 'html',
+      'size'        => ''
+    ];<br/><br/>
+    wpt_get_posts($params);<br/>
+  </code><br/><br/>
+  <p>Retrieves posts based on the provided parameters.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <ul>
+    <li><code>'per_page'</code> (int) - The number of posts to retrieve per page (default: -1)</li>
+    <li><code>'post_type'</code> (string) - The post type to retrieve (default: 'post')</li>
+    <li><code>'return_type'</code> (string) - The type of data to return ('html' , 'array' or 'json') (default: 'html')</li>
+    <li><code>'size'</code> (mixed) - The size of the excerpt or 0 for full content (default: '')</li>
+  </ul>
+
+  <p><strong>Returns:</strong></p>
+  <p>The retrieved posts in the specified format</p>
+
+  <p><strong>Additional:</strong></p>
+  <p>It has a shortcode and a callback function as well:</p>
+  <ul>
+    <li><code>[wpt_get_posts_shortcode per_page="10" post_type="post" size="10"]</code></li>
+    <li><code>wpt_get_post_by_id(postId, target, wpt_ajax_url);</code></li>
+  </ul>
+<?php
 }

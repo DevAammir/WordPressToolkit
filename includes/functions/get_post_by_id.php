@@ -10,9 +10,13 @@
  * }
  * @throws None
  * @return string The retrieved post in the specified format.
+ * @additional it has a Corresponding ajax function and a shortcode 
+ *      - [wpt_get_post_by_id id='']
+ *      - wpt_get_post_by_id(postId, target, wpt_ajax_url);
  */
 function wpt_get_post_by_id($args = array())
 {
+    if($args == 'help'){wpt_get_post_by_id_help(); die();}
     // Check for required parameters
     if (empty($args['id']) || empty($args['return_type'])) {
         echo "<div class='error'>Please provide required parameters: id and return_type</div>";
@@ -69,13 +73,46 @@ function wpt_get_post_by_id_endpoint()
  * @throws Exception If the post cannot be found.
  * @return string The HTML content of the retrieved post.
  */
-add_shortcode('get_post_by_id', 'get_post_by_id_shortcode');
+add_shortcode('wpt_get_post_by_id', 'get_post_by_id_shortcode');
 
 function get_post_by_id_shortcode($atts)
-{
+{//[wpt_get_post_by_id id='']
     $args = array(
         'id'    => $atts['id'], //  
         'return_type'   => 'html'
     );
     return wpt_get_post_by_id($args);
+}
+
+
+
+function wpt_get_post_by_id_help()
+{
+?>
+  <h3>wpt_get_post_by_id() help</h3>
+  <code>
+    $args = [
+      'id'          => '',
+      'return_type' => ''
+    ];<br/><br/>
+    wpt_get_post_by_id($args);<br/>
+  </code><br/><br/>
+  <p>Retrieves a post by its ID and returns it in the specified format.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <ul>
+    <li><code>id</code> (int) - The ID of the post to retrieve. Default is empty.</li>
+    <li><code>return_type</code> (string) - The format in which to return the post.  'html', 'array' or 'json'. Default is empty.</li>
+  </ul>
+
+  <p><strong>Returns:</strong></p>
+  <p>The retrieved post in the specified format.</p>
+
+  <p><strong>Additional:</strong></p>
+  <p>It has a Corresponding ajax function and a shortcode:</p>
+  <ul>
+    <li><code>[wpt_get_post_by_id id='']</code></li>
+    <li><code>wpt_get_post_by_id(postId, target, wpt_ajax_url);</code></li>
+  </ul>
+<?php
 }

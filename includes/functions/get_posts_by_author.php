@@ -9,9 +9,13 @@
  *                      - author (string|int): The author's username or ID.
  * @throws Some_Exception_Class If the query fails.
  * @return mixed The response based on the return_type parameter.
+ *      * @additional it has a corresponding ajax function and a shortcode
+     *  -  wpt_get_posts_by_author(author, post_type, size, target, wpt_ajax_url);
+     * - [wpt_get_posts_by_author per_page="5" post_type="post" return_type="html" size="10" author="admin"]
  */
 function wpt_get_posts_by_author($params = array())
 {
+    if($params == 'help'){wpt_get_posts_by_author_help();die();}
     if(empty($params) || $params['post_type']=='' || $params['size']=='' || $params['author']=='' || empty($params['return_type']) || !isset($params['return_type']) || $params['return_type']==''){
         echo "<div class='error'>Please provide all the required parameters: post_type, size, author and return_type</div>";
         die();
@@ -95,7 +99,7 @@ function wpt_get_posts_by_author($params = array())
     add_shortcode('wpt_get_posts_by_author', 'wpt_get_posts_by_author_shortcode');
 
     function wpt_get_posts_by_author_shortcode($atts)
-    {
+    {//[wpt_get_posts_by_author per_page="5" post_type="post" return_type="html" size="10" author="admin"]
         return wpt_get_posts_by_author([
             'per_page'    => !empty($atts['per_page']) ? $atts['per_page'] : -1,
             'post_type'   => $atts['post_type'],
@@ -104,3 +108,42 @@ function wpt_get_posts_by_author($params = array())
             'author'    =>   $atts['author'],
         ]);
     }
+
+
+
+
+
+    function wpt_get_posts_by_author_help()
+{
+?>
+  <h3>wpt_get_posts_by_author() help</h3>
+  <code>
+    $params = [
+      'post_type' => '',
+      'per_page'  => '',
+      'size'      => '',
+      'author'    => ''
+    ];<br/><br/>
+    wpt_get_posts_by_author($params);<br/>
+  </code><br/><br/>
+  <p>Retrieves posts by author based on the given parameters.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <ul>
+    <li><code>post_type</code> (string) - The post type to filter by.</li>
+    <li><code>per_page</code> (int) - The number of posts per page.</li>
+    <li><code>size</code> (int) - The length of the excerpt.</li>
+    <li><code>author</code> (string|int) - The author's username or ID.</li>
+  </ul>
+
+  <p><strong>Returns:</strong></p>
+  <p>The response based on the specified return type.  ('html','array','json')</p>
+
+  <p><strong>Additional:</strong></p>
+  <p>It has a corresponding ajax function and a shortcode:</p>
+  <ul>
+    <li><code>wpt_get_posts_by_author(author, post_type, size, target, wpt_ajax_url);</code></li>
+    <li><code>[wpt_get_posts_by_author per_page="5" post_type="post" return_type="html" size="10" author="admin"]</code></li>
+  </ul>
+<?php
+}
