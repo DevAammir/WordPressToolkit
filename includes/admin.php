@@ -31,6 +31,7 @@ function wpt_admin_page()
 
                 <li class="tab" id="social_media_tab" onclick="showContent('tab2', this);">Social Media</li>
 
+                <li class="tab" onclick="showContent('tab3', this);">Functions List</li>
                 <!-- <li class="tab" onclick="showContent('tab3', this);">Tab 3</li> -->
             </ul>
 
@@ -46,6 +47,13 @@ function wpt_admin_page()
                 ?>
             </div>
 
+
+            <div id="tab3" class="content">
+                <h2>Available Functions List</h2>
+                <?php
+                include_once('pages/functions-list.php');
+                ?>
+            </div>
 
             <!-- <div id="tab3" class="content">
                 <h2>Content for Tab 3</h2>

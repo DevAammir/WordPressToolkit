@@ -4,7 +4,12 @@ add_action('wp_ajax_custom_pagination', 'custom_pagination');
 add_action('wp_ajax_nopriv_custom_pagination', 'custom_pagination');
 
 
-// Custom pagination function in functions.php
+/**
+ * Generates a custom pagination for displaying posts based on user input.
+ *
+ * @throws WP_Error If there is an error in the WordPress query.
+ * @return void
+ */
 function custom_pagination()
 {
     $paged = $_POST['page'];
