@@ -1,8 +1,8 @@
 <?php
 /* * * *
  * Class: FormBuilder
- * Version: 10
- * Date: 9 November, 2023
+ * Version: 11
+ * Date: 5 December, 2023
  * Description: Creates form fields, bugfixes in the version
  * Fields: 'text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image','wp_color', 'wp_upload', 'wp_upload_multiple','range', 'submit', 'button', 'reset'
  * * * * */
@@ -64,7 +64,7 @@ class FormBuilder
          /*TO AVOID ERRORS*/
          $type = isset($type) && !empty($type) ? $type :'text';
          $container_class = isset($container_class) && !empty($container_class) ? $container_class :'';
-        $placeholder = isset($args['placeholder']) && !empty($args['placeholder']) ? $args['placeholder'] :(isset($label) && !empty($label) ? $label :'');
+        @$placeholder = isset($args['placeholder']) && !empty($args['placeholder']) ? $args['placeholder'] :(isset($label) && !empty($label) ? $label :'');
         $label = isset($args['label']) && !empty($args['label']) ? $args['label'] :(isset($label) && !empty($label) ? $label :'');
         if ($type === "range") {
             if (($min == "") || ($min == "")) {
@@ -162,7 +162,7 @@ class FormBuilder
             $$k = $v;
         }
     ?>
-        <textarea class="form_builder_field <?= (@$required != "" ? 'required' : ''); ?> form-control <?= (!empty($input_class) ? $input_class : ''); ?> <?= $the_id ?> input-<?= $type; ?> field_<?= $the_id ?>" id="<?= $the_id ?>" name="<?= $the_name ?>" <?= (@$required != "" ? 'required="required"' : ''); ?> placeholder="<?= $placeholder ?>" data-id="<?= $the_id ?>" <?= (isset($readonly) && $readonly != "") ? 'readonly="readonly"' : ''; ?> <?= (isset($disabled) && $disabled != "") ? 'disabled="disabled"' : ''; ?>><?= (@$dbval != "" ? $dbval : (isset($_REQUEST[$the_name]) ? $_REQUEST[$the_name] : '')); ?></textarea>
+        <textarea class="form_builder_field <?= (@$required != "" ? 'required' : ''); ?> form-control <?= (!empty($input_class) ? $input_class : ''); ?> <?= $the_id ?> input-<?= $type; ?> field_<?= $the_id ?>" id="<?= $the_id ?>" name="<?= $the_name ?>" <?= (@$required != "" ? 'required="required"' : ''); ?> placeholder="<?=(!empty($placeholder) ? $placeholder : ''); ?>" data-id="<?= $the_id ?>" <?= (isset($readonly) && $readonly != "") ? 'readonly="readonly"' : ''; ?> <?= (isset($disabled) && $disabled != "") ? 'disabled="disabled"' : ''; ?>><?= (@$dbval != "" ? $dbval : (isset($_REQUEST[$the_name]) ? $_REQUEST[$the_name] : '')); ?></textarea>
         <small class="description response font-italic text-small text-muted pl-1"> <?php echo  !empty($description) ? $description : ''; ?></small>
     <?php
     }
@@ -303,7 +303,7 @@ class FormBuilder
 
 
 
-    /* 
+/* 
  * 9. COUNTRIES
  * * * * * * * * */
     public function countries($args)
@@ -325,7 +325,7 @@ class FormBuilder
 
 
 
-    /* 
+/* 
  * 10. PASSWORD
  * * * * * * * * */
     public function password($args)
@@ -343,7 +343,7 @@ class FormBuilder
 
 
 
-    /* 
+/* 
  * 11. DATE
  * * * * * * * * */
     public function date($args)
@@ -370,7 +370,7 @@ class FormBuilder
     }
 
 
-    /* 
+/* 
  * 12. SELECT KEY VALUE
  * * * * * * * * */
     public function kvselect($args)
@@ -391,7 +391,7 @@ class FormBuilder
 
 
 
-    /* 
+/* 
  * 13. IMAGE
  * * * * * * * * */
     public function image($args)

@@ -179,10 +179,10 @@ function _wpt_generate_html_response_for_posts($query, $params)
                     $custom_taxonomy_data = get_the_terms(get_the_ID(), $params['custom_taxonomy']);
                 } ?>
                 <div class="meta-info">
-                    <p class="the-date">Date: <?php echo get_the_date('F j, Y'); ?></p>
-                    <p class="the-author">Author: <?php echo get_the_author_meta('display_name'); ?></p>
-                    <p class="the-categories">Categories: <?php echo get_the_category_list(', '); ?> </p>
-                    <p class="the-tags">Tags: <?php echo get_the_tag_list('', ', '); ?></p>
+                    <p class="the-date"><label>Date:</label> <?php echo _wpt_display_date($post->ID); ?></p>
+                    <p class="the-author"><label> Author:</label> <?php echo _wpt_author_info(); ?></p>
+                    <p class="the-categories"><label> Categories:</label> <?php echo get_the_category_list(', ', '', $post->ID); ?> </p>
+                    <p class="the-tags"><label> Tags:</label> <?php echo get_the_tag_list('', ', ', '', $post->ID); ?></p>
                     <?php if (isset($params['custom_taxonomy']) && $params['custom_taxonomy'] != '') : ?>
                         <p class="the-custom-taxonomy">Custom Taxonomy:
                         <ol><?php
@@ -314,6 +314,28 @@ function _wpt_handle_no_posts($params)
     endif;
 }
 
+
+function _wpt_display_date($id)
+{
+    $post_date = get_the_date('j F, Y', $id);
+    $day_link = get_day_link(get_post_time('Y'), get_post_time('m'), get_post_time('j'));
+    $month_link = get_month_link(get_post_time('Y'), get_post_time('m'));
+    $year_link = get_year_link(get_post_time('Y')); ?>
+    <span class="date-full"><a class="date-day" href="<?php echo esc_url($day_link); ?>"> <?php echo get_the_date('j'); ?> </a> <a class="date-month" href="<?php echo esc_url($month_link); ?>"> <?php echo get_the_date('F'); ?></a>, <a class="date-year" href="<?php echo esc_url($year_link); ?>"> <?php echo get_the_date('Y'); ?></a> </span>
+<?php
+}
+
+function _wpt_author_info()
+{
+    // Get author information
+    $author_id = get_the_author_meta('ID');
+    $author_name = get_the_author();
+    $author_email = get_the_author_meta('user_email');
+    $author_description = get_the_author_meta('description');
+    $author_url = get_author_posts_url($author_id);
+    echo '<a class="the_author" href="' . esc_url($author_url) . '">' . esc_html($author_name) . '</a>';
+}
+
 /**
  * Generates an HTML response for a single post.
  *
@@ -335,10 +357,10 @@ function _wpt_generate_html_response_for_posts_for_single_post($post)
             <img src="<?php echo get_the_post_thumbnail_url($post->ID, 'full'); ?>" class="featuerd-image" />
         </div>
         <div class="meta-info">
-            <p class="the-date">Date: <?php echo get_the_date('F j, Y', $post->ID); ?></p>
-            <p class="the-author">Author: <?php echo get_the_author_meta('display_name', $post->post_author); ?></p>
-            <p class="the-categories">Categories: <?php echo get_the_category_list(', ', '', $post->ID); ?> </p>
-            <p class="the-tags">Tags: <?php echo get_the_tag_list('', ', ', '', $post->ID); ?></p>
+            <p class="the-date"><label>Date:</label> <?php echo _wpt_display_date($post->ID); ?></p>
+            <p class="the-author"><label> Author:</label> <?php echo _wpt_author_info(); ?></p>
+            <p class="the-categories"><label> Categories:</label> <?php echo get_the_category_list(', ', '', $post->ID); ?> </p>
+            <p class="the-tags"><label> Tags:</label> <?php echo get_the_tag_list('', ', ', '', $post->ID); ?></p>
         </div>
         <div class="post-content">
             <?php echo $post->post_content; ?>
@@ -558,7 +580,7 @@ function _wpt_user_data_with_metadata($user_data, $return_type)
     ];
 }
 
- 
+
 
 
 
@@ -572,7 +594,8 @@ function _wpt_user_data_with_metadata($user_data, $return_type)
  * @param int|string $post_id Post ID or post name.
  * @param array|int|string $categories Categories IDs or names.
  */
-function _wpt_set_categories_to_post($post_id, $categories) {
+function _wpt_set_categories_to_post($post_id, $categories)
+{
     // Convert category names or a single ID to an array.
     $categories = is_array($categories) ? $categories : array_map('trim', explode(',', $categories));
 
@@ -627,7 +650,8 @@ function _wpt_set_categories_to_post($post_id, $categories) {
  * @throws Exception If the post ID is invalid or if a tag is not found.
  * @return void
  */
-function _wpt_add_tags_to_post($post_id, $tags) {
+function _wpt_add_tags_to_post($post_id, $tags)
+{
     // Convert tag names or a single ID to an array.
     $tags = is_array($tags) ? $tags : array_map('trim', explode(',', $tags));
 
@@ -660,7 +684,8 @@ function _wpt_add_tags_to_post($post_id, $tags) {
 
 
 
-function _wpt_set_custom_taxonomy_to_post($post_id, $terms, $taxonomy) {
+function _wpt_set_custom_taxonomy_to_post($post_id, $terms, $taxonomy)
+{
     // Convert terms to an array.
     $terms = is_array($terms) ? $terms : array_map('trim', explode(',', $terms));
 
@@ -704,12 +729,12 @@ function _wpt_set_custom_taxonomy_to_post($post_id, $terms, $taxonomy) {
 
 function _wpt_set_featured_image_via_image_url($post_id, $image)
 {
-// Include necessary files
-require_once ABSPATH . 'wp-admin/includes/file.php';
-require_once ABSPATH . 'wp-admin/includes/media.php';
-require_once ABSPATH . 'wp-admin/includes/image.php';
+    // Include necessary files
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/media.php';
+    require_once ABSPATH . 'wp-admin/includes/image.php';
 
- 
+
 
     // If $image is a URL, try to download and set it as the featured image
     if (filter_var($image, FILTER_VALIDATE_URL)) {
@@ -768,7 +793,8 @@ require_once ABSPATH . 'wp-admin/includes/image.php';
  *
  * @return bool              True on success, false on failure.
  */
-function _wpt_set_featured_image($post_id, $attachment_id) {
+function _wpt_set_featured_image($post_id, $attachment_id)
+{
     // Check if the post ID and attachment ID are valid.
     if (empty($post_id) || empty($attachment_id)) {
         return 0;

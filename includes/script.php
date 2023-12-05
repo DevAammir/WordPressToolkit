@@ -1,19 +1,19 @@
 <script>
-    admin_ajax_url = "<?php echo WPT_AJAX; ?>";
+    admin_ajax_url = "<?php echo WPL_AJAX; ?>";
 
 
     (function($) {
         $(document).ready(function() {
             console.log('Welcome to WordPress Toolkit!');
 
-            <?php $page = WPT_URL . 'includes/page.php'; ?>
+            <?php //$page = wpl_URL . 'includes/page.php'; ?>
 
-            $(document).on('click', '#wpt_save_settings', function(e) {
+            $(document).on('click', '#wpl_save_settings', function(e) {
                 e.preventDefault();
-                let form_data = $('#wpt_save_settings_form').serialize();
+                let form_data = $('#wpl_save_settings_form').serialize();
                 console.log(form_data);
-                _AJAX_function_1('#target', admin_ajax_url, 'wpt_save_settings', 'POST', form_data, 'json');
-                if ($('#wpt_enable_social_media').prop('checked')) {
+                _AJAX_function_1('#target', admin_ajax_url, 'wpl_save_settings', 'POST', form_data, 'json');
+                if ($('#wpl_enable_social_media').prop('checked')) {
                     $('#social_media_tab').show();
                     $('#social_media_tab_content').show();
                 } else {

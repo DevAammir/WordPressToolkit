@@ -35,11 +35,22 @@ function wpt_disable_gutenburg_everywhere()
  */
 function wpt_woocommerce_support()
 {
-    function add_woo_support()
-    {
-        add_theme_support('woocommerce');
+    function mytheme_add_woocommerce_support() {
+        add_theme_support( 'woocommerce', array(
+            'thumbnail_image_width' => 150,
+            'single_image_width'    => 300,
+    
+            'product_grid'          => array(
+                'default_rows'    => 3,
+                'min_rows'        => 2,
+                'max_rows'        => 8,
+                'default_columns' => 4,
+                'min_columns'     => 2,
+                'max_columns'     => 5,
+            ),
+        ) );
     }
-    add_action('after_setup_theme', 'add_woo_support');
+    add_action( 'after_setup_theme', 'mytheme_add_woocommerce_support' );
 }
 
 /**
@@ -53,9 +64,42 @@ function wpt_add_css_classes_to_body()
     function wpt_body_classes($classes)
     {
         global $post;
-        $post_slug = $post->post_name;
-        $classes[] = $post_slug;
 
+        // Add post type and post name
+        if (isset($post)) {
+            $classes[] = $post->post_type . '-' . $post->post_name;
+        }
+    
+        // Add category IDs
+        foreach ((get_the_category($post->ID)) as $category) {
+            $classes[] = 'cat-' . $category->cat_ID . '-id';
+        }
+    
+        // Add custom post type
+        if (is_singular() && get_post_type() !== 'post') {
+            $classes[] = 'post-type-' . get_post_type();
+        }
+    
+        // Add taxonomy
+        $taxonomies = get_post_taxonomies($post->ID);
+        foreach ($taxonomies as $taxonomy) {
+            $terms = get_the_terms($post->ID, $taxonomy);
+            if ($terms) {
+                foreach ($terms as $term) {
+                    $classes[] = 'taxonomy-' . $taxonomy . '-' . $term->slug;
+                }
+            }
+        }
+    
+        // Check if it's a custom page template
+        $page_template = get_page_template_slug();
+        if ($page_template) {
+            $template_name = pathinfo($page_template, PATHINFO_FILENAME);
+            $classes[] = 'page-template-' . sanitize_html_class($template_name);
+        }
+    
+        // Add other checks as needed
+    
         return $classes;
     }
     add_filter('body_class', 'wpt_body_classes');
