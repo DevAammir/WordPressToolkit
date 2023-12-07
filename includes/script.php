@@ -1,5 +1,5 @@
 <script>
-    admin_ajax_url = "<?php echo WPL_AJAX; ?>";
+    admin_ajax_url = "<?php echo WPT_AJAX; ?>";
 
 
     (function($) {

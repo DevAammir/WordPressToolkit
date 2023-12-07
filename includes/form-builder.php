@@ -1,8 +1,8 @@
 <?php
 /* * * *
  * Class: FormBuilder
- * Version: 11
- * Date: 5 December, 2023
+ * Version: 12
+ * Date: 7 December, 2023
  * Description: Creates form fields, bugfixes in the version
  * Fields: 'text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image','wp_color', 'wp_upload', 'wp_upload_multiple','range', 'submit', 'button', 'reset'
  * * * * */
@@ -142,7 +142,7 @@ class FormBuilder
         name="<?= $the_name ?>" 
         value="<?php echo (!empty(@$dbval) ? $dbval : (isset($_REQUEST[$the_name]) ? $_REQUEST[$the_name] : '')); ?>" 
         <?= (@$required != "" ? 'required="required"' : ''); ?> 
-        placeholder="<?= $placeholder ?>" 
+        placeholder="<?php echo !empty($placeholder) ? ucfirst($placeholder) : ''; ?>" 
         data-id="<?= $the_id ?>" 
         minlength="<?= (isset($min) && $min != "") ? $min : ''; ?>" 
         maxlength="<?= (isset($max) && $max != "") ? $max : ''; ?>" 
@@ -180,7 +180,7 @@ class FormBuilder
         <input type="email" 
         class="form_builder_field 
         <?= (@$required != "" ? 'required' : ''); ?>
-         form-control <?= !empty($input_class) ? $input_class : ''; ?> <?= $the_id ?> input-<?= $type; ?> field_<?= $the_id ?>" id="<?= $the_id ?>" name="<?= $the_name ?>" value="<?= (@$dbval != "" ? $dbval : (isset($_REQUEST[$the_name]) ? $_REQUEST[$the_name] : '')); ?>" <?= (@$required != "" ? 'required="required"' : ''); ?> placeholder="<?= $placeholder ?>" data-id="<?= $the_id ?>" <?= (isset($readonly) && $readonly != "") ? 'readonly="readonly"' : ''; ?> <?= (isset($disabled) && $disabled != "") ? 'disabled="disabled"' : ''; ?>>
+         form-control <?= !empty($input_class) ? $input_class : ''; ?> <?= $the_id ?> input-<?= $type; ?> field_<?= $the_id ?>" id="<?= $the_id ?>" name="<?= $the_name ?>" value="<?= (@$dbval != "" ? $dbval : (isset($_REQUEST[$the_name]) ? $_REQUEST[$the_name] : '')); ?>" <?= (@$required != "" ? 'required="required"' : ''); ?> placeholder="<?php echo !empty($placeholder) ? ucfirst($placeholder) : ''; ?>" data-id="<?= $the_id ?>" <?= (isset($readonly) && $readonly != "") ? 'readonly="readonly"' : ''; ?> <?= (isset($disabled) && $disabled != "") ? 'disabled="disabled"' : ''; ?>>
         <small class="description response font-italic text-small text-muted pl-1"> <?php echo  !empty($description) ? ucfirst($description) : ''; ?></small>
     <?php
     }
@@ -336,7 +336,7 @@ class FormBuilder
     ?>
         <input type="password" class="<?= isset($type_class) && $type_class != "" ? $type_class : ''; ?><?= (@$required != "" ? 'required' : ''); ?> 
   form_builder_field form-control <?= !empty($input_class) ? $input_class : ''; ?> <?= $the_id ?> 
-  input-<?= $type; ?> field_<?= $the_id ?>" id="<?= $the_id ?>" name="<?= $the_name ?>" value="<?= (@$dbval != "" ? $dbval : (isset($_REQUEST[$the_name]) ? $_REQUEST[$the_name] : '')); ?>" <?= (@$required != "" ? 'required="required"' : ''); ?> placeholder="<?= $placeholder ?>" data-id="<?= $the_id ?>" minlength="<?= (isset($min) && $min != "") ? $min : ''; ?>" maxlength="<?= (isset($max) && $max != "") ? $max : ''; ?>" <?= (isset($readonly) && $readonly != "") ? 'readonly="readonly"' : ''; ?> <?= (isset($disabled) && $disabled != "") ? 'disabled="disabled"' : ''; ?>>
+  input-<?= $type; ?> field_<?= $the_id ?>" id="<?= $the_id ?>" name="<?= $the_name ?>" value="<?= (@$dbval != "" ? $dbval : (isset($_REQUEST[$the_name]) ? $_REQUEST[$the_name] : '')); ?>" <?= (@$required != "" ? 'required="required"' : ''); ?> placeholder="<?php echo !empty($placeholder) ? ucfirst($placeholder) : ''; ?>" data-id="<?= $the_id ?>" minlength="<?= (isset($min) && $min != "") ? $min : ''; ?>" maxlength="<?= (isset($max) && $max != "") ? $max : ''; ?>" <?= (isset($readonly) && $readonly != "") ? 'readonly="readonly"' : ''; ?> <?= (isset($disabled) && $disabled != "") ? 'disabled="disabled"' : ''; ?>>
         <small class="description response font-italic text-small text-muted pl-1"> <?php echo  !empty($description) ? ucfirst($description) : ''; ?></small>
     <?php
     }

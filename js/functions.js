@@ -7,36 +7,85 @@ function isValidEmail(email) {
     return EmailRegex.test(email);
 }
 
-$('.alpha_only, .alpha').bind('keyup blur', function () {
-    var node = $(this);
-    node.val(node.val().replace(/[^a-z]/g, ''));
-}
-);
-$('.alpha_space_only, .alpha_space').bind('keyup blur', function () {
-    var node = $(this);
-    node.val(node.val().replace(/[^a-z ]/g, ''));
-}
-);
-$('.alpha_space_dash_only, .alpha-space').bind('keyup blur', function () {
-    var node = $(this);
-    node.val(node.val().replace(/[^a-z -]/g, ''));
-}
-);
-$('.numeric_only, .numeric, .numbers_only').bind('keyup blur', function () {
-    var node = $(this);
-    node.val(node.val().replace(/[^0-9]/g, ''));
-}
-);
-$('.alpha_numeric_only, .alpha_numeric').bind('keyup blur', function () {
-    var node = $(this);
-    node.val(node.val().replace(/[^a-z0-9]/g, ''));
-}
-);
-$('.alpha_numeric_dash, .no_special_chars').bind('keyup blur', function () {
-    var node = $(this);
-    node.val(node.val().replace(/[^a-z0-9 -]/g, ''));
-}
-);
+
+// Function for '.alpha_only, .alpha'
+document.querySelectorAll('.alpha_only, .alpha').forEach(function (element) {
+    element.addEventListener('keyup', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z]/g, '');
+    });
+
+    element.addEventListener('blur', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z]/g, '');
+    });
+});
+
+// Function for '.alpha_space_only, .alpha_space'
+document.querySelectorAll('.alpha_space_only, .alpha_space').forEach(function (element) {
+    element.addEventListener('keyup', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z ]/g, '');
+    });
+
+    element.addEventListener('blur', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z ]/g, '');
+    });
+});
+
+// Function for '.alpha_space_dash_only, .alpha-space'
+document.querySelectorAll('.alpha_space_dash_only, .alpha-space').forEach(function (element) {
+    element.addEventListener('keyup', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z -]/g, '');
+    });
+
+    element.addEventListener('blur', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z -]/g, '');
+    });
+});
+
+// Function for '.numeric_only, .numeric, .numbers_only'
+document.querySelectorAll('.numeric_only, .numeric, .numbers_only').forEach(function (element) {
+    element.addEventListener('keyup', function () {
+        var node = this;
+        node.value = node.value.replace(/[^0-9]/g, '');
+    });
+
+    element.addEventListener('blur', function () {
+        var node = this;
+        node.value = node.value.replace(/[^0-9]/g, '');
+    });
+});
+
+// Function for '.alpha_numeric_only, .alpha_numeric'
+document.querySelectorAll('.alpha_numeric_only, .alpha_numeric').forEach(function (element) {
+    element.addEventListener('keyup', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z0-9]/g, '');
+    });
+
+    element.addEventListener('blur', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z0-9]/g, '');
+    });
+});
+
+// Function for '.alpha_numeric_dash, .no_special_chars'
+document.querySelectorAll('.alpha_numeric_dash, .no_special_chars').forEach(function (element) {
+    element.addEventListener('keyup', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z0-9 -]/g, '');
+    });
+
+    element.addEventListener('blur', function () {
+        var node = this;
+        node.value = node.value.replace(/[^a-z0-9 -]/g, '');
+    });
+});
+
 
 /**
 SCOLL TO MIDDLE(Insted of all the way to top)
@@ -54,20 +103,33 @@ function scroll_middle(id) {
 
 /* *
 *JAVASCRIPT: CLONE DIV WITH BUTTON CLICK
-* */
-function clone_html(to_clone) {// ADD THIS TO BUTTON NOCLICK
-    // var button = document.getElementById(btn);
-    // var button = this;
-    var elementToClone = document.getElementsByClassName(to_clone)[0];
 
-    var newElement = elementToClone.cloneNode(true);
-    elementToClone.parentNode.appendChild(newElement);
-    console.log('cloned');
-    // Add the click event listener to the button
-    // button.addEventListener("click", cloneElement);
-    let the_inputs = newElement.querySelector('input');
-    the_inputs.value = "";
+How to Use:
+To use this function, you would call it and provide the class name of the element you want to clone
+ as an argument. For example:
+clone_html('elementToCloneClass');
+
+What It Does:
+This function clones the first element found in the document with the specified class (to_clone). It then appends the cloned element after the original in the DOM. Finally, it clears the value of the first input element within the cloned element and logs "cloned" to the console.
+
+* */
+function clone_html(to_clone) {
+    var elementsToClone = document.getElementsByClassName(to_clone);
+
+    if (elementsToClone.length > 0) {
+        var elementToClone = elementsToClone[0];
+
+        var newElement = elementToClone.cloneNode(true);
+        elementToClone.parentNode.appendChild(newElement);
+        console.log('Cloned:', to_clone);
+
+        let theInputs = newElement.querySelectorAll('input');
+        theInputs.forEach(input => input.value = "");
+    } else {
+        console.error('No element found with class:', to_clone);
+    }
 }
+
 
 
 
@@ -107,19 +169,13 @@ function current_page_is(the_page) {
     }
 }
 
-
-
-
-/* * * ====================================================================================================
- * * * * JQUERY
- * * ======================================================================================================*/
-
-
-
 /***
 * HACK FOR BS5 TO WP NAV MENU
 * **/
-$('.current-menu-item').addClass('active');
+document.querySelectorAll('.current-menu-item').forEach(function (element) {
+    element.classList.add('active');
+});
+
 
 /***
  * AJAX FUNCTION FOR ONE RESPONSE
@@ -146,7 +202,7 @@ function _AJAX_function_1(target, admin_ajax_url, action, type, data, data_type)
             $('input').attr('disabled', false);
             $(target).html(response.result);
         } else {
-            $(target).html('<div class="error">'+response.message+"</div>");
+            $(target).html('<div class="error">' + response.message + "</div>");
         }
     }); //ajax done
 }
@@ -207,7 +263,13 @@ function _AJAX_function_3(target_1, target_2, target_3, admin_ajax_url, action, 
 /* *
 * AJAX FUNCTION TO INCLUDE PAGE
 * */
-
+/**
+ * Fetches a page and updates the content of a specified section.
+ *
+ * @param {string} page - The URL of the page to fetch.
+ * @param {string} section - The selector of the section to update.
+ * @return {undefined} This function does not return a value.
+ */
 function include_page(page, section) {
     $.ajax({
         url: page,
@@ -223,278 +285,93 @@ function include_page(page, section) {
     });
 }
 
-/* *
-* AJAX FUNCTION TO GET DATA FROM SERVER AND FILL FORM FIELDS ====COMING SOON
-* */
-
-
-/* *
-* SELF PROVOKING CLONE/REMOVE DIV WITH BUTTON CLICK
-* */
-(function clone_and_remove() {
+/**
+ * cloneAndRemove - Sets up event listeners to clone and remove elements based on click events.
+ *
+ * @function
+ * @name cloneAndRemove
+ * @memberof global
+ *
+ * @description
+ * This function initializes event listeners for click events on the document. When an element with
+ * the class 'clone_trigger' is clicked, it clones its closest ancestor with the class
+ * 'clone_remove_this' and inserts the clone after the original. Additionally, when an element with
+ * the class 'remove_trigger' is clicked, it removes its closest ancestor with the class
+ * 'clone_remove_this', but only if there is more than one such element in the document.
+ */
+(function cloneAndRemove() {
     console.log('HELP:: parent: .clone_remove_this, add_remove: .clone_trigger, .remove_trigger');
-    $(document).on('click', '.clone_trigger', function () {
-        let its_parent = $(this).closest('.clone_remove_this');
-        its_parent.clone().insertAfter(its_parent).find("input[type=text], textarea").val("");
-    });
 
-    $(document).on('click', '.remove_trigger', function () {
-        let its_parent = $(this).closest('.clone_remove_this');
-        if ($('.clone_remove_this').length > 1) {
-            its_parent.remove();
+    document.addEventListener('click', function (event) {
+        var target = event.target;
+
+        if (target.classList.contains('clone_trigger')) {
+            var itsParent = findClosestParent(target, '.clone_remove_this');
+            if (itsParent) {
+                var clone = itsParent.cloneNode(true);
+                itsParent.parentNode.insertBefore(clone, itsParent.nextSibling);
+                clearInputValues(clone);
+            }
+        }
+
+        if (target.classList.contains('remove_trigger')) {
+            var itsParent = findClosestParent(target, '.clone_remove_this');
+            if (itsParent && document.querySelectorAll('.clone_remove_this').length > 1) {
+                itsParent.parentNode.removeChild(itsParent);
+            }
         }
     });
-})();
-
-
-
-
-
-/***|Apply CSS Class 'active' to current menu item in Bootstrap5|***/
-document.addEventListener('DOMContentLoaded', function () {
-    var currentItem = document.querySelector('li.current-menu-item');
-    if (currentItem !== null) {
-        currentItem.classList.add('active');
-    }
 });
+    /***|Apply CSS Class 'active' to current menu item in Bootstrap5|***/
+    document.addEventListener('DOMContentLoaded', function () {
+        var currentItem = document.querySelector('li.current-menu-item');
+        if (currentItem !== null) {
+            currentItem.classList.add('active');
+        }
+    });
 
-/******
- * HELPER FUNCTIONS
- * *******/
-/* Corresponding to wpt_get_post_by_id()*/
-function wpt_get_post_by_id(postId, target,wpt_ajax_url) {
-    // AJAX request
-    $.ajax({
-        url: wpt_ajax_url,
-        dataType: 'html',
-        type: 'POST',
-        data: {
-            action: 'wpt_get_post_by_id_endpoint',
-            id: postId, 
-        },
-        beforeSend: function(xhr) {
-            // Update the content of the target div
-            $(target).html('<div id="loading"> Please wait... </div>');
-        },
-        success: function(response) {
-            // Update the content of the target div
-            $(target).html(response);
-        },
-        error: function(error) {
-            console.error('Request failed: ', error);
-        }
-    });
-}
-/* Corresponding to wpt_get_post_by_name()*/
-function wpt_get_post_by_name(post_name, post_type,target,wpt_ajax_url) {
-    // AJAX request
-    $.ajax({
-        url: wpt_ajax_url,
-        dataType: 'html',
-        type: 'POST',
-        data: {
-            action: 'wpt_get_post_by_name_endpoint',
-            post_name: post_name, 
-            post_type: post_type
-        },
-        beforeSend: function(xhr) {
-            // Update the content of the target div
-            $(target).html('<div id="loading"> Please wait... </div>');
-        },
-        success: function(response) {
-            // Update the content of the target div
-            $(target).html(response);
-        },
-        error: function(error) {
-            console.error('Request failed: ', error);
-        }
-    });
-}
-/* Corresponding to wpt_get_posts()*/
-function wpt_get_posts(post_type, size, target, wpt_ajax_url) {
-    // AJAX request
-    $.ajax({
-        url: wpt_ajax_url,
-        dataType: 'html',
-        type: 'POST',
-        data: {
-            action: 'wpt_get_posts_endpoint',
-            // per_page: per_page,
-            post_type: post_type,
-            size: size
-        },
-        beforeSend: function (xhr) {
-            // Update the content of the target div
-            $(target).html('<div id="loading"> Please wait... </div>');
-        },
-        success: function (response) {
-            // Update the content of the target div
-            $(target).html(response);
-        },
-        error: function (error) {
-            console.error('Request failed: ', error);
-        },
-        complete: function (xhr, status) {
-            // Log additional information in the console
-            console.log('Status:', status);
-            // console.log('Response:', xhr.responseText);
-        }
-    });
-}
-/* Corresponding to wpt_get_posts_by_ids()*/
-function wpt_get_posts_by_ids(post_ids, size, target, wpt_ajax_url) {
-    // AJAX request
-    $.ajax({
-        url: wpt_ajax_url,
-        dataType: 'html',
-        type: 'POST',
-        data: {
-            action: 'wpt_get_posts_by_ids_endpoint',
-            // per_page: per_page,
-            posts_ids: post_ids,
-            size: size
-        },
-        beforeSend: function (xhr) {
-            // Update the content of the target div
-            $(target).html('<div id="loading"> Please wait... </div>');
-        },
-        success: function (response) {
-            // Update the content of the target div
-            $(target).html(response);
-        },
-        error: function (error) {
-            console.error('Request failed: ', error);
-        },
-        complete: function (xhr, status) {
-            // Log additional information in the console
-            console.log('Status:', status);
-            // console.log('Response:', xhr.responseText);
-        }
-    });
-}
-/* Corresponding to wpt_get_posts_by_meta()*/
-function wpt_get_posts_by_meta(meta_key, meta_value, size, target, wpt_ajax_url) {
-    // AJAX request
-    $.ajax({
-        url: wpt_ajax_url,
-        dataType: 'html',
-        type: 'POST',
-        data: {
-            action: 'wpt_get_posts_by_meta_endpoint',
-            // per_page: per_page,
-            meta_key: meta_key,
-            meta_value: meta_value,
-            size: size
-        },
-        beforeSend: function (xhr) {
-            // Update the content of the target div
-            $(target).html('<div id="loading"> Please wait... </div>');
-        },
-        success: function (response) {
-            // Update the content of the target div
-            $(target).html(response);
-        },
-        error: function (error) {
-            console.error('Request failed: ', error);
-        },
-        complete: function (xhr, status) {
-            // Log additional information in the console
-            console.log('Status:', status);
-            // console.log('Response:', xhr.responseText);
-        }
-    });
-}
+    /******
+     * HELPER FUNCTIONS
+     * *******/
 
-/* Corresponding to wpt_get_posts_by_categories()*/
-function wpt_get_posts_by_categories(category, post_type, size, target, wpt_ajax_url) {
-    // AJAX request
-    $.ajax({
-        url: wpt_ajax_url,
-        dataType: 'html',
-        type: 'POST',
-        data: {
-            action: 'wpt_get_posts_by_categories_endpoint', 
-            category: category,
-            size: size,
-            post_type: post_type
-        },
-        beforeSend: function (xhr) {
-            // Update the content of the target div
-            $(target).html('<div id="loading"> Please wait... </div>');
-        },
-        success: function (response) {
-            // Update the content of the target div
-            $(target).html(response);
-        },
-        error: function (error) {
-            console.error('Request failed: ', error);
-        },
-        complete: function (xhr, status) {
-            // Log additional information in the console
-            console.log('Status:', status);
-            // console.log('Response:', xhr.responseText);
+    /***
+     * WOOCOMMERCE SUPPORT FOR BOOTSTRAP
+     * ***/
+    function addClassToElement(selector, ...classNames) {
+        var element = document.querySelector(selector);
+        if (element) {
+            console.log('Adding classes:', classNames, 'to element:', element);
+            element.classList.add(...classNames);
+            console.log('Classes after addition:', element.classList);
+        } else {
+            console.log('Element not found for selector:', selector);
         }
-    });
-}
-/* Corresponding to wpt_get_posts_by_author()*/
-function wpt_get_posts_by_author(author, post_type, size, target, wpt_ajax_url) {
-    // AJAX request
-    $.ajax({
-        url: wpt_ajax_url,
-        dataType: 'html',
-        type: 'POST',
-        data: {
-            action: 'wpt_get_posts_by_author_endpoint', 
-            author: author,
-            size: size,
-            post_type: post_type
-        },
-        beforeSend: function (xhr) {
-            // Update the content of the target div
-            $(target).html('<div id="loading"> Please wait... </div>');
-        },
-        success: function (response) {
-            // Update the content of the target div
-            $(target).html(response);
-        },
-        error: function (error) {
-            console.error('Request failed: ', error);
-        },
-        complete: function (xhr, status) {
-            // Log additional information in the console
-            console.log('Status:', status);
-            // console.log('Response:', xhr.responseText);
-        }
-    });
-}
+    }
 
-/* Corresponding to wpt_get_postmeta_by_id()*/
-function wpt_get_postmeta_by_id(id, return_type, target, wpt_ajax_url) {
-    // AJAX request
-    $.ajax({
-        url: wpt_ajax_url,
-        dataType: 'html',
-        type: 'POST',
-        data: {
-            action: 'wpt_get_postmeta_by_id_endpoint', 
-            id: id,
-            return_type: return_type
-        },
-        beforeSend: function (xhr) {
-            // Update the content of the target div
-            $(target).html('<div id="loading"> Please wait... </div>');
-        },
-        success: function (response) {
-            // Update the content of the target div
-            $(target).html(response);
-        },
-        error: function (error) {
-            console.error('Request failed: ', error);
-        },
-        complete: function (xhr, status) {
-            // Log additional information in the console
-            console.log('Status:', status);
-            // console.log('Response:', xhr.responseText);
+    function addClassToElements(selector, ...classNames) {
+        var elements = document.querySelectorAll(selector);
+        if (elements.length > 0) {
+            console.log('Adding classes:', classNames, 'to elements:', elements);
+            elements.forEach(function(element) {
+                element.classList.add(...classNames);
+            });
+            console.log('Classes after addition:', elements[0].classList); // Log classes of the first element
+        } else {
+            console.log('No elements found for selector:', selector);
         }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        addClassToElement('.woocommerce #primary.content-area', 'container');
+        addClassToElements('input[type="submit"]', 'btn', 'btn-primary');
+
+
+        addClassToElement('.woocommerce-MyAccount-navigation ul', 'list-group');
+        addClassToElements('.woocommerce-MyAccount-navigation li a', 'list-group-item');
+        addClassToElements('input[type="text"]', 'form-control');
+        addClassToElements('input[type="email"]', 'form-control');
+        addClassToElements('input[type="password"]', 'form-control');
+        addClassToElement('a.components-button.wc-block-components-button.wp-element-button.wc-block-cart__submit-button.contained', 'btn', 'btn-primary');
+        
+        addClassToElements('button[type="button"]', 'btn','btn-primary');
     });
-}
