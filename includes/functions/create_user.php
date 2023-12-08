@@ -68,7 +68,7 @@ function wpt_create_user($params)
             $user->set_role($default_role);
 
             wp_set_password($password, $user_id);
-            $data["result"] = $user_id;
+            $data = $user_id;
         } else {
             $data["result"] = 'FAIL';
         }

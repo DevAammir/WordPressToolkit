@@ -37,3 +37,21 @@ $wpt_settings = get_option('wpt_settings');
 $wpt_socialmedia = get_option('wpt_socialmedia');
 define('WPT_SETTINGS', $wpt_settings);
 define('WPT_SOCIALMEDIA', $wpt_socialmedia);
+
+
+
+$registration_fields = [
+    'first_name'=>'text',
+    'last_name'=>'text',
+    'email'=>'email',
+    'password'=>'password',
+    'confirm_password'=>'password',
+    'billing_phone'=>'text',
+    'billing_city'=>'text',
+    'billing_postcode'=>'text',
+    'billing_state'=>'text',
+    'billing_country'=>'countries',
+    'profile_image'=>'image',
+    'terms_agreement'=>'checkbox',
+];
+define('WPT_REGISTRATION_FIELDS', $registration_fields);

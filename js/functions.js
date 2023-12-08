@@ -260,6 +260,43 @@ function _AJAX_function_3(target_1, target_2, target_3, admin_ajax_url, action, 
     }); //ajax done
 }
 
+
+
+// Your _AJAX_function_with_CB
+function _AJAX_function_with_CB(target, admin_ajax_url, action, type, data, data_type, callback_function) {
+    jQuery.ajax({
+        url: admin_ajax_url + '?action=' + action,
+        type: type,
+        dataType: data_type,
+        data: data,
+        beforeSend: function (xhr) {
+            setTimeout(() => {
+                jQuery(target).html('<div id="loading"> Please wait... </div>');
+                jQuery(target).find('div').attr('id', 'loader').show();
+                jQuery('input').attr('disabled', 'disabled');
+            }, 1000);
+        },
+    }).done(function (response) {
+        if (response.status == 200) {
+            jQuery('input').attr('disabled', false);
+            jQuery(target).html(response.result);
+
+            // Check if the callback_function is a function before calling it
+            if (typeof callback_function === 'function') {
+                callback_function(response.redirect_url);
+            }
+
+        } else {
+            jQuery(target).html('<div class="error">' + response.message + "</div>");
+        }
+
+    });
+}
+
+function wpt_redirect(url) {
+    console.log('Redirecting to:', url);
+    window.location.href = url;
+}
 /* *
 * AJAX FUNCTION TO INCLUDE PAGE
 * */
@@ -322,56 +359,56 @@ function include_page(page, section) {
         }
     });
 });
-    /***|Apply CSS Class 'active' to current menu item in Bootstrap5|***/
-    document.addEventListener('DOMContentLoaded', function () {
-        var currentItem = document.querySelector('li.current-menu-item');
-        if (currentItem !== null) {
-            currentItem.classList.add('active');
-        }
-    });
+/***|Apply CSS Class 'active' to current menu item in Bootstrap5|***/
+document.addEventListener('DOMContentLoaded', function () {
+    var currentItem = document.querySelector('li.current-menu-item');
+    if (currentItem !== null) {
+        currentItem.classList.add('active');
+    }
+});
 
-    /******
-     * HELPER FUNCTIONS
-     * *******/
+/******
+ * HELPER FUNCTIONS
+ * *******/
 
-    /***
-     * WOOCOMMERCE SUPPORT FOR BOOTSTRAP
-     * ***/
-    function addClassToElement(selector, ...classNames) {
-        var element = document.querySelector(selector);
-        if (element) {
-            console.log('Adding classes:', classNames, 'to element:', element);
+/***
+ * WOOCOMMERCE SUPPORT FOR BOOTSTRAP
+ * ***/
+function addClassToElement(selector, ...classNames) {
+    var element = document.querySelector(selector);
+    if (element) {
+        console.log('Adding classes:', classNames, 'to element:', element);
+        element.classList.add(...classNames);
+        console.log('Classes after addition:', element.classList);
+    } else {
+        console.log('Element not found for selector:', selector);
+    }
+}
+
+function addClassToElements(selector, ...classNames) {
+    var elements = document.querySelectorAll(selector);
+    if (elements.length > 0) {
+        console.log('Adding classes:', classNames, 'to elements:', elements);
+        elements.forEach(function (element) {
             element.classList.add(...classNames);
-            console.log('Classes after addition:', element.classList);
-        } else {
-            console.log('Element not found for selector:', selector);
-        }
+        });
+        console.log('Classes after addition:', elements[0].classList); // Log classes of the first element
+    } else {
+        console.log('No elements found for selector:', selector);
     }
+}
 
-    function addClassToElements(selector, ...classNames) {
-        var elements = document.querySelectorAll(selector);
-        if (elements.length > 0) {
-            console.log('Adding classes:', classNames, 'to elements:', elements);
-            elements.forEach(function(element) {
-                element.classList.add(...classNames);
-            });
-            console.log('Classes after addition:', elements[0].classList); // Log classes of the first element
-        } else {
-            console.log('No elements found for selector:', selector);
-        }
-    }
-    
-    document.addEventListener('DOMContentLoaded', function () {
-        addClassToElement('.woocommerce #primary.content-area', 'container');
-        addClassToElements('input[type="submit"]', 'btn', 'btn-primary');
+document.addEventListener('DOMContentLoaded', function () {
+    addClassToElement('.woocommerce #primary.content-area', 'container');
+    addClassToElements('input[type="submit"]', 'btn', 'btn-primary');
 
 
-        addClassToElement('.woocommerce-MyAccount-navigation ul', 'list-group');
-        addClassToElements('.woocommerce-MyAccount-navigation li a', 'list-group-item');
-        addClassToElements('input[type="text"]', 'form-control');
-        addClassToElements('input[type="email"]', 'form-control');
-        addClassToElements('input[type="password"]', 'form-control');
-        addClassToElement('a.components-button.wc-block-components-button.wp-element-button.wc-block-cart__submit-button.contained', 'btn', 'btn-primary');
-        
-        addClassToElements('button[type="button"]', 'btn','btn-primary');
-    });
+    addClassToElement('.woocommerce-MyAccount-navigation ul', 'list-group');
+    addClassToElements('.woocommerce-MyAccount-navigation li a', 'list-group-item');
+    addClassToElements('input[type="text"]', 'form-control');
+    addClassToElements('input[type="email"]', 'form-control');
+    addClassToElements('input[type="password"]', 'form-control');
+    addClassToElement('a.components-button.wc-block-components-button.wp-element-button.wc-block-cart__submit-button.contained', 'btn', 'btn-primary');
+
+    addClassToElements('button[type="button"]', 'btn', 'btn-primary');
+});
