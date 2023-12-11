@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WordPress Toolkit
  * Description: WordPress Toolkit 
- * Version: 1.5
+ * Version: 1.6
  * Author: Aammir
  * Author URI: https://127.0.0.1
  * Text Domain: wpt
@@ -17,8 +17,11 @@ if (!defined('ABSPATH')) {
 define('WPT_URL', plugin_dir_url(__FILE__)); // Get the plugin URL 
 define('WPT_DIR', dirname(__FILE__) . '/'); // Get the plugin directory path that is wp-content/plugins/wp-toolkit
 define('WPT_AJAX', admin_url('admin-ajax.php'));
+$current_theme = get_stylesheet();
 
-require_once WPT_DIR . 'includes/form-builder.php';
+if ($current_theme !== 'wp-lite') {
+    require_once WPT_DIR . 'includes/form-builder.php';
+} 
 require_once WPT_DIR . 'includes/config.php';
 /**
  * Sets up the WPT AJAX functionality.
@@ -86,5 +89,3 @@ register_uninstall_hook(__FILE__, 'uninstall_func');
 require_once WPT_DIR . 'includes/admin.php';
 require_once WPT_DIR . 'includes/functions.php';
 require_once WPT_DIR . 'includes/actions.php';
-
-
