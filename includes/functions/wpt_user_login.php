@@ -35,7 +35,7 @@ function user_login_cb()
 
     <script>
         jQuery(document).ready(function($) {
-            let WPT_AJAX = '<?php echo admin_url('admin-ajax.php'); ?>';
+            let WPT_AJAX = '<?php echo WPT_AJAX; ?>';
 
             // Attach a click event handler to the login button
             $('#wpt_user_login_button').on('click', function(e) {
@@ -71,13 +71,13 @@ function user_login_cb()
                     // Redirect if login was successful
                     if (result.status === 200) {
                         window.location.href = result.redirect;
-                    }else{
+                    } else {
                         $('.error a').attr('href', '<?php echo home_url(); ?>/lost-password/');
                     }
                 });
             });
 
-            
+
 
         });
     </script>
@@ -109,13 +109,17 @@ function wpt_login_user()
             $status = 400;
         } else {
             $user = wp_signon(['user_login' => $username, 'user_password' => $password], false);
-
+            $user_id = $user->ID;
             // Check if the login was successful
             if (is_wp_error($user)) {
                 $message = '<div class="error">' . $user->get_error_message() . '</div>';
                 $status = 400;
             } else {
                 $status = 200;
+                $current_time = current_time('mysql');
+
+                update_user_meta($user_id, $meta_key, $current_time);
+
                 $message = 'Successfully logged in. Redirecting...';
                 $redirect = home_url();
             }

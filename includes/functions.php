@@ -177,7 +177,9 @@ include_once 'functions/update_post.php';
 include_once 'functions/update_user_by_id.php';
 include_once 'functions/create_custom_role.php';
 include_once 'functions/_wpt_upload_user_image.php';
-//  include_once 'functions/wpt_user_login.php'; CROSS-CHECK THIS
-//  include_once 'functions/wpt_user_register.php'; CROSS-CHECK THIS ONE AS WELL ALSO DISPLAY THIS IN USERS ADMIN PANEL
+ include_once 'functions/wpt_user_login.php'; 
+ include_once 'functions/wpt_user_register.php'; // 
+ include_once 'functions/wpt_user_activation.php'; //  
+ include_once 'functions/wpt_forgot_password.php'; //  ADJUST THIS ONE  
 // include_once 'functions/xxxx.php';
 // include_once 'functions/xxxx.php';

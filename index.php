@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WordPress Toolkit
  * Description: WordPress Toolkit 
- * Version: 1.4
+ * Version: 1.5
  * Author: Aammir
  * Author URI: https://127.0.0.1
  * Text Domain: wpt
@@ -17,9 +17,28 @@ if (!defined('ABSPATH')) {
 define('WPT_URL', plugin_dir_url(__FILE__)); // Get the plugin URL 
 define('WPT_DIR', dirname(__FILE__) . '/'); // Get the plugin directory path that is wp-content/plugins/wp-toolkit
 define('WPT_AJAX', admin_url('admin-ajax.php'));
+
 require_once WPT_DIR . 'includes/form-builder.php';
 require_once WPT_DIR . 'includes/config.php';
-
+/**
+ * Sets up the WPT AJAX functionality.
+ *
+ *  adding the WPT_AJAX meta tag.
+ */
+add_action('wp_footer', 'setting_wpt_ajax');
+add_action('addmin_footer', 'setting_wpt_ajax');
+function setting_wpt_ajax()
+{ ?>
+    <script>
+        jQuery(document).ready(function($) {
+            $('head').append('<meta name="WPT_AJAX" content="<?php echo WPT_AJAX; ?>">');
+            console.log('WPT_AJAX added!');
+            // const WPT_AJAX = jQuery('meta[name="WPT_AJAX"]').attr('content');//DOESN'T WORK!
+            //  console.log(WPT_AJAX);
+        });
+    </script>
+<?php
+}
 function add_custom_script()
 {
     // Check if we are in the admin section
@@ -65,5 +84,7 @@ function uninstall_func()
 register_uninstall_hook(__FILE__, 'uninstall_func');
 
 require_once WPT_DIR . 'includes/admin.php';
+require_once WPT_DIR . 'includes/functions.php';
 require_once WPT_DIR . 'includes/actions.php';
+
 

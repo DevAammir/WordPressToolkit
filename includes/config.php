@@ -55,3 +55,12 @@ $registration_fields = [
     'terms_agreement'=>'checkbox',
 ];
 define('WPT_REGISTRATION_FIELDS', $registration_fields);
+
+
+$wpt_config = [
+    'wpt_user_activation_link' => site_url('/actiavate-account'),
+    'wpt_reset_password_link' => site_url('/reset-password'),
+];
+
+define('WPT_CONFIG', $wpt_config);
+update_option('WPT_CONFIG',WPT_CONFIG);

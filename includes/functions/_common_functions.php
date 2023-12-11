@@ -806,3 +806,40 @@ function _wpt_set_featured_image($post_id, $attachment_id)
     // Return the result.
     return 1;
 }
+
+
+
+
+
+
+// Add a filter to check user activation status
+add_filter('wp_authenticate_user', 'custom_check_user_activation_status', 10, 2);
+
+function custom_check_user_activation_status($user, $password) {
+    // Check if the user exists
+    if ($user instanceof WP_User) {
+        // Check if the user has the activation status meta field
+        $activation_status = get_user_meta($user->ID, 'wpt_user_status', true);
+
+        // Check if the activation status is 'disabled'
+        if ($activation_status === 'disabled' || $activation_status === 0) {
+            // Display a message and prevent login
+            return new WP_Error('account_disabled', __('Your account is disabled. Please activate your account to log in.<br>Check your inbox for activation code.'));
+        }
+    }
+
+    // If everything is okay, return the user
+    return $user;
+}
+
+
+function _wpt_generate_random_string($length = 5) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $randomString = '';
+
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, strlen($characters) - 1)];
+    }
+
+    return $randomString;
+}
