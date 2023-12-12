@@ -33,26 +33,29 @@ function wpt_disable_gutenburg_everywhere()
  * @throws Some_Exception_Class description of exception
  * @return void
  */
-function wpt_woocommerce_support()
-{
-    function mytheme_add_woocommerce_support() {
-        add_theme_support( 'woocommerce', array(
-            'thumbnail_image_width' => 150,
-            'single_image_width'    => 300,
-    
-            'product_grid'          => array(
-                'default_rows'    => 3,
-                'min_rows'        => 2,
-                'max_rows'        => 8,
-                'default_columns' => 4,
-                'min_columns'     => 2,
-                'max_columns'     => 5,
-            ),
-        ) );
-    }
-    add_action( 'after_setup_theme', 'mytheme_add_woocommerce_support' );
-}
+if ($current_theme == 'wp-lite') {
+} else {
+    function wpt_woocommerce_support()
+    {
+        function wpt_add_woocommerce_support()
+        {
+            add_theme_support('woocommerce', array(
+                'thumbnail_image_width' => 150,
+                'single_image_width'    => 300,
 
+                'product_grid'          => array(
+                    'default_rows'    => 3,
+                    'min_rows'        => 2,
+                    'max_rows'        => 8,
+                    'default_columns' => 4,
+                    'min_columns'     => 2,
+                    'max_columns'     => 5,
+                ),
+            ));
+        }
+        add_action('after_setup_theme', 'wpt_add_woocommerce_support');
+    }
+}
 /**
  * Generates the CSS classes to be added to the body element.
  *
@@ -69,17 +72,17 @@ function wpt_add_css_classes_to_body()
         if (isset($post)) {
             $classes[] = $post->post_type . '-' . $post->post_name;
         }
-    
+
         // Add category IDs
         foreach ((get_the_category($post->ID)) as $category) {
             $classes[] = 'cat-' . $category->cat_ID . '-id';
         }
-    
+
         // Add custom post type
         if (is_singular() && get_post_type() !== 'post') {
             $classes[] = 'post-type-' . get_post_type();
         }
-    
+
         // Add taxonomy
         $taxonomies = get_post_taxonomies($post->ID);
         foreach ($taxonomies as $taxonomy) {
@@ -90,16 +93,16 @@ function wpt_add_css_classes_to_body()
                 }
             }
         }
-    
+
         // Check if it's a custom page template
         $page_template = get_page_template_slug();
         if ($page_template) {
             $template_name = pathinfo($page_template, PATHINFO_FILENAME);
             $classes[] = 'page-template-' . sanitize_html_class($template_name);
         }
-    
+
         // Add other checks as needed
-    
+
         return $classes;
     }
     add_filter('body_class', 'wpt_body_classes');
@@ -135,7 +138,7 @@ function dd($data, $exit = null)
         <?php print_r($data); ?> 
     </pre>
     </div>
-    <?php
+<?php
     if (isset($exit)) {
         exit;
     }
@@ -177,9 +180,9 @@ include_once 'functions/update_post.php';
 include_once 'functions/update_user_by_id.php';
 include_once 'functions/create_custom_role.php';
 include_once 'functions/_wpt_upload_user_image.php';
- include_once 'functions/wpt_user_login.php'; 
- include_once 'functions/wpt_user_register.php'; // 
- include_once 'functions/wpt_user_activation.php'; //  
- include_once 'functions/wpt_forgot_password.php'; //  ADJUST THIS ONE  
+include_once 'functions/wpt_user_login.php';
+include_once 'functions/wpt_user_register.php'; // 
+include_once 'functions/wpt_user_activation.php'; //  
+include_once 'functions/wpt_forgot_password.php'; //  ADJUST THIS ONE  
 // include_once 'functions/xxxx.php';
 // include_once 'functions/xxxx.php';

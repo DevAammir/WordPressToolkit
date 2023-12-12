@@ -8,18 +8,18 @@
 
             <?php //$page = wpl_URL . 'includes/page.php'; ?>
 
-            $(document).on('click', '#wpl_save_settings', function(e) {
+            $(document).on('click', '#wpt_save_settings', function(e) {
                 e.preventDefault();
-                let form_data = $('#wpl_save_settings_form').serialize();
-                console.log(form_data);
-                _AJAX_function_1('#target', admin_ajax_url, 'wpl_save_settings', 'POST', form_data, 'json');
-                if ($('#wpl_enable_social_media').prop('checked')) {
-                    $('#social_media_tab').show();
-                    $('#social_media_tab_content').show();
-                } else {
-                    $('#social_media_tab').hide();
-                    $('#social_media_tab_content').hide();
-                }
+                let form_data = $('#wpt_save_settings_form').serialize();
+                // debugger;
+                _AJAX_function_1('#target', admin_ajax_url, 'wpt_save_settings', 'POST', form_data, 'json');
+                // if ($('#wpl_enable_social_media').prop('checked')) {
+                //     $('#social_media_tab').show();
+                //     $('#social_media_tab_content').show();
+                // } else {
+                //     $('#social_media_tab').hide();
+                //     $('#social_media_tab_content').hide();
+                // }
             });
 
 

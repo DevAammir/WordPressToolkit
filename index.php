@@ -18,30 +18,38 @@ define('WPT_URL', plugin_dir_url(__FILE__)); // Get the plugin URL
 define('WPT_DIR', dirname(__FILE__) . '/'); // Get the plugin directory path that is wp-content/plugins/wp-toolkit
 define('WPT_AJAX', admin_url('admin-ajax.php'));
 $current_theme = get_stylesheet();
+define('CURRENT_THEME', $current_theme);
 
-if ($current_theme !== 'wp-lite') {
+if (CURRENT_THEME !== 'wp-lite') {
     require_once WPT_DIR . 'includes/form-builder.php';
-} 
-require_once WPT_DIR . 'includes/config.php';
-/**
- * Sets up the WPT AJAX functionality.
- *
- *  adding the WPT_AJAX meta tag.
- */
-add_action('wp_footer', 'setting_wpt_ajax');
-add_action('addmin_footer', 'setting_wpt_ajax');
-function setting_wpt_ajax()
-{ ?>
-    <script>
-        jQuery(document).ready(function($) {
-            $('head').append('<meta name="WPT_AJAX" content="<?php echo WPT_AJAX; ?>">');
-            console.log('WPT_AJAX added!');
-            // const WPT_AJAX = jQuery('meta[name="WPT_AJAX"]').attr('content');//DOESN'T WORK!
-            //  console.log(WPT_AJAX);
-        });
-    </script>
+
+    add_action('wp_footer', 'setting_wpt_ajax');
+    add_action('addmin_footer', 'setting_wpt_ajax');
+    add_action('admin_head', 'add_custom_script', 10);
+    add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
+    /**
+     * Sets up the WPT AJAX functionality.
+     *
+     *  adding the WPT_AJAX meta tag.
+     */
+
+
+
+    function setting_wpt_ajax()
+    { ?>
+        <script>
+            jQuery(document).ready(function($) {
+                $('head').append('<meta name="WPT_AJAX" content="<?php echo WPT_AJAX; ?>">');
+                console.log('WPT_AJAX added!');
+                // const WPT_AJAX = jQuery('meta[name="WPT_AJAX"]').attr('content');//DOESN'T WORK!
+                //  console.log(WPT_AJAX);
+            });
+        </script>
 <?php
+    }
 }
+require_once WPT_DIR . 'includes/config.php';
+
 function add_custom_script()
 {
     // Check if we are in the admin section
@@ -52,8 +60,6 @@ function add_custom_script()
     }
 }
 
-// Hook the function to the admin head
-add_action('admin_head', 'add_custom_script', 10);
 
 /* * *
  *  Enqueue scripts and styles
@@ -64,7 +70,7 @@ function enqueue_custom_scripts()
     wp_enqueue_script('JS-functions', WPT_URL . 'js/functions.js', array('jquery'), '1.0', true);
 }
 
-add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
+
 
 function active()
 {

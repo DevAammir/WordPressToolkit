@@ -28,9 +28,9 @@ function wpt_admin_page()
         <form method="post" action="#" id="wpt_save_settings_form">
             <ul class="tabs">
                 <li class="tab active" onclick="showContent('tab1', this);">Basic Settings</li>
-
-                <li class="tab" id="social_media_tab" onclick="showContent('tab2', this);">Social Media</li>
-
+                <?php if (CURRENT_THEME !== 'wp-lite') : ?>
+                    <li class="tab" id="social_media_tab" onclick="showContent('tab2', this);">Social Media</li>
+                <?php endif; ?>
                 <li class="tab" onclick="showContent('tab3', this);">Functions List</li>
                 <!-- <li class="tab" onclick="showContent('tab3', this);">Tab 3</li> -->
             </ul>
@@ -40,13 +40,13 @@ function wpt_admin_page()
                 include_once('pages/basic-settings.php');
                 ?>
             </div>
-
-            <div id="tab2" id="social_media_tab_content" class="content">
-                <?php
-                include_once('pages/social-media.php');
-                ?>
-            </div>
-
+            <?php if (CURRENT_THEME !== 'wp-lite') : ?>
+                <div id="tab2" id="social_media_tab_content" class="content">
+                    <?php
+                    include_once('pages/social-media.php');
+                    ?>
+                </div>
+            <?php endif; ?>
 
             <div id="tab3" class="content">
                 <h2>Available Functions List</h2>
@@ -101,15 +101,15 @@ function wpt_save_settings()
     update_option('wpt_settings', $wpt_settings);
     update_option('wpt_socialmedia', $wpt_socialmedia);
 ?>
-    <div id="setting-error-settings_updated" class="notice notice-success settings-error is-dismissible">
-        <p><strong>Settings updated.</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>
-    </div>
+    <!-- <div id="settings_updated" class="notice notice-alternate notice-success notice  is-dismissible"> -->
+        <p><strong>Settings updated.</strong></p>
+    <!-- </div> -->
 <?php
 
     $result = ob_get_clean();
     $status = 1;
     $message = "success";
-    $return = json_encode(array('result' => $result, 'Status' => $status, 'message' => $message, 'request' => $_REQUEST, 'args' => $args));
+    $return = json_encode(array('result' => $result, 'status' => $status, 'message' => $message, 'request' => $_REQUEST, 'args' => $args));
     echo $return;
     exit;
 }

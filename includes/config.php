@@ -20,16 +20,19 @@ $available_social_media_platforms = [
 define('AVAILABLE_SOCIAL_MEDIA_PLATFORMS', $available_social_media_platforms);
 
 
-$available_options_array = [
-    'wpt_disable_gutenburg' => 'Disable Gutenburg',
-    'wpt_enable_social_media' => 'Enable Social Media',
-    'wpt_add_woocommerce_support' => 'Add Woocommerce Support',
-    'wpt_add_classes_body' => 'Add CSS Classes to body',
+$available_options_array = [ 
     'wpt_error_reporting' => 'Turn error reporting on',
 ];
 
+if (CURRENT_THEME != 'wp-lite') {
+    $available_options_array['wpt_enable_social_media'] = 'Enable Social Media';
+    $available_options_array['wpt_add_woocommerce_support'] = 'Add Woocommerce Support';
+    $available_options_array['wpt_add_classes_body'] = 'Add CSS Classes to body';
+    $available_options_array['wpt_disable_gutenburg'] = 'Disable Gutenburg';
+}
+
 define('AVAILABLE_OPTIONS', $available_options_array);
-if ($current_theme == 'wp-lite') {
+if (CURRENT_THEME == 'wp-lite') {
 }else{
     
     $fb = new FormBuilder();
