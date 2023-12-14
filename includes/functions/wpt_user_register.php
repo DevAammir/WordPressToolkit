@@ -4,12 +4,13 @@ function user_register_cb()
     ob_start();
 
     // Add nonce field to the form
-    wp_nonce_field('wpt_login_nonce', 'wpt_login_nonce_field');
+    
 ?>
-    <form action="#" method="post" id="wpt-user-register-form" enctype="multipart/form-data">
-        <div id="response"></div>
-        <?php foreach (WPT_REGISTRATION_FIELDS as $key => $value) : ?>
-            <?php FORMBUILDER->field([
+<form action="#" method="post" id="wpt-user-register-form" enctype="multipart/form-data">
+    <?php wp_nonce_field('wpt_register_nonce', 'wpt_register_nonce'); ?>
+    <div id="response"></div>
+    <?php foreach (WPT_REGISTRATION_FIELDS as $key => $value) : ?>
+    <?php FORMBUILDER->field([
                 'type'  => $value,
                 'label' => str_replace('_', ' ', ucfirst($key)),
                 'placeholder' => str_replace('_', ' ', ucfirst($key)),
@@ -17,109 +18,201 @@ function user_register_cb()
                 'id'    => $key,
                 'class' => 'form-control',
             ]); ?>
-        <?php endforeach; ?>
+    <?php endforeach; ?>
 
-        <input type="hidden" name="wpt_user_activation_link" value="<?php echo WPT_CONFIG['wpt_user_activation_link']; ?>">
+    <input type="hidden" name="wpt_user_activation_link" value="<?php echo WPT_CONFIG['wpt_user_activation_link']; ?>">
 
-        <?php FORMBUILDER->field([
+    <?php FORMBUILDER->field([
             'type'  => 'submit',
             'label' => 'Register',
             'name'  => 'wpt_user_register_button',
             'id'    => 'wpt_user_register_button',
-            'class' => 'button button-primary',
+            'class' => 'button button-primary btn btn-primary',
         ]); ?>
-    </form>
-    <div id="wpt-user-register-success" style="display:none;">
-        <?php $activation_link = "<a href='" . WPT_CONFIG['wpt_user_activation_link'] . "'>Here.</a>"; ?>
-        <h3>Registration Successful</h3>
-        <p>Thank you for registering with us.</p>
-        <p>Please check your email for activation code.</p>
-        <p>You can activate your account by clicking on the link in the email. <?php echo $activation_link; ?></p>
-        <p>You can now log in with your new account.</p>
-        <p><br/><h4>Email</h4><br/></p>
-        <div id="test_email"></div>
-    </div>
-    <script>
-        jQuery(document).ready(function($) {
-            $(document).on('click', '#wpt_user_register_button', function(event) {
-                event.preventDefault();
+</form>
+<div id="wpt-user-register-success" style="display:none;">
+    <?php $activation_link = "<a href='" . WPT_CONFIG['wpt_user_activation_link'] . "'>Here.</a>"; ?>
+    <h3>Registration Successful</h3>
+    <p>Thank you for registering with us.</p>
+    <p>Please check your email for activation code.</p>
+    <p>You can activate your account by clicking on the link in the email. <?php echo $activation_link; ?></p>
+    <p>You can now log in with your new account.</p>
+    <p><br />
+    <h4>Email</h4><br /></p>
+    <div id="test_email"></div>
+</div>
+<script>
+jQuery(document).ready(function($) {
+    $(document).on('click', '#wpt_user_register_button', function(event) {
+        event.preventDefault();
 
-                // Clear previous error messages
-                $('#response').html('');
+        // Clear previous error messages
+        $('#response').html('');
 
-                // Validate each field
-                var valid = true;
+        // Validate each field
+        var valid = true;
 
-                // Validation for first_name
-                var first_name = $('#first_name').val().trim();
-                if (first_name === '') {
-                    displayErrorMessage('Please enter your first name.');
-                    valid = false;
-                }
+        // Validation for first_name
+        var first_name = $('#first_name').val().trim();
+        if (first_name === '') {
+            displayErrorMessage('Please enter your first name.');
+            valid = false;
+        }
 
-                // Validation for last_name
-                var last_name = $('#last_name').val().trim();
-                if (last_name === '') {
-                    displayErrorMessage('Please enter your last name.');
-                    valid = false;
-                }
+        // Validation for last_name
+        var last_name = $('#last_name').val().trim();
+        if (last_name === '') {
+            displayErrorMessage('Please enter your last name.');
+            valid = false;
+        }
 
-                // Other field validations...
+        // Validation for email
+        var email = $('#email').val().trim();
+        if (email === '') {
+            displayErrorMessage('Please enter your email.');
+            valid = false;
+        } else if (!isValidEmail(email)) {
+            displayErrorMessage('Please enter a valid email address.');
+            valid = false;
+        }
 
-                // If all validations pass, proceed with AJAX submission
-                if (valid) {
-                    var formData = new FormData($('#wpt-user-register-form')[0]);
-                    let WPT_AJAX = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>';
-                    // Add nonce to the data
-                    formData.append('action', 'wpt_register_user');
-                    formData.append('wpt_register_nonce', '<?php echo wp_create_nonce("wpt_register_nonce"); ?>');
+        // Validation for password
+        var password = $('#password').val();
+        if (password === '') {
+            displayErrorMessage('Please enter your password.');
+            valid = false;
+        } else if (password.length < 8) {
+            displayErrorMessage('Password must be at least 8 characters.');
+            valid = false;
+        }
 
-                    // Your AJAX code
-                    $.ajax({
-                        url: WPT_AJAX,
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-    console.log('AJAX success:', response);
+        // Validation for confirm_password
+        var confirm_password = $('#confirm_password').val();
+        if (confirm_password === '') {
+            displayErrorMessage('Please confirm your password.');
+            valid = false;
+        } else if (confirm_password !== password) {
+            displayErrorMessage('Passwords do not match.');
+            valid = false;
+        }
 
-    // Parse the JSON response
-    var jsonResponse = JSON.parse(response);
+        // Validation for billing_phone
+        var billing_phone = $('#billing_phone').val().trim();
+        if (billing_phone === '') {
+            displayErrorMessage('Please enter your billing phone number.');
+            valid = false;
+        }
 
-    // Check the response and display messages accordingly
-    if (jsonResponse && jsonResponse.status == 200) {
-        console.log('Registration successful');
-        $('#response').html('<div class="success">' + jsonResponse.message + '</div>');
-        $('#wpt-user-register-form').remove();
-        $('#wpt-user-register-success').show();
-        $('#test_email').html(jsonResponse.email_body);
-    } else {
-        console.log('Registration failed:', jsonResponse.message);
-        displayErrorMessage(jsonResponse.message || 'Registration failed, please try again later.');
-    }
-},
+        // Validation for billing_city
+        var billing_city = $('#billing_city').val().trim();
+        if (billing_city === '') {
+            displayErrorMessage('Please enter your billing city.');
+            valid = false;
+        }
 
-                        error: function(xhr, textstatus, error) {
-                            console.error('AJAX error:', error);
-                            displayErrorMessage('Registration failed, please try again later.');
-                        },
-                    });
-                }
+        // Validation for billing_postcode
+        var billing_postcode = $('#billing_postcode').val().trim();
+        if (billing_postcode === '') {
+            displayErrorMessage('Please enter your billing postcode.');
+            valid = false;
+        }
+
+        // Validation for billing_state
+        var billing_state = $('#billing_state').val().trim();
+        if (billing_state === '') {
+            displayErrorMessage('Please enter your billing state.');
+            valid = false;
+        }
+
+        // Validation for billing_country
+        var billing_country = $('#billing_country').val();
+        if (billing_country === '') {
+            displayErrorMessage('Please select your billing country.');
+            valid = false;
+        }
+
+        // Validation for profile_image
+        var profile_image = $('#profile_image').val();
+        if (profile_image === '') {
+            displayErrorMessage('Please upload your profile image.');
+            valid = false;
+        }
+
+        // Validation for terms_agreement
+        var terms_agreement = $('#terms_agreement').prop('checked');
+        if (!terms_agreement) {
+            displayErrorMessage('Please agree to the terms.');
+            valid = false;
+        }
+
+        // If all validations pass, proceed with AJAX submission
+        if (valid) {
+            var formData = new FormData($('#wpt-user-register-form')[0]);
+            let WPT_AJAX = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>';
+            // Add nonce to the data
+            formData.append('action', 'wpt_register_user');
+            formData.append('wpt_register_nonce',
+                '<?php echo wp_create_nonce("wpt_register_nonce"); ?>');
+
+            // Your AJAX code
+            $.ajax({
+                url: WPT_AJAX,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log('AJAX success:', response);
+
+                    // Parse the JSON response
+                    var jsonResponse = JSON.parse(response);
+
+                    // Check the response and display messages accordingly
+                    if (jsonResponse && jsonResponse.status == 200) {
+                        console.log('Registration successful');
+                        $('#response').html('<div class="success">' + jsonResponse.message +'</div>');
+                        $('#wpt-user-register-form').remove();
+                        $('#wpt-user-register-success').show();
+                        $('#test_email').html(jsonResponse.email_body);
+                    } else {
+                        console.log('Registration failed:', jsonResponse.message);
+                        displayErrorMessage(jsonResponse.message ||
+                            'Registration failed, please try again later.');
+                    }
+                },
+
+                error: function(xhr, textstatus, error) {
+                    console.error('AJAX error:', error);
+                    displayErrorMessage('Registration failed, please try again later.');
+                },
             });
+        }
+    });
 
-            // Helper function to display error messages
-            function displayErrorMessage(message) {
-                $('#response').html('<div class="error">' + message + '</div>');
-            }
+    // Helper function to display error messages
+    function displayErrorMessage(message) {
+        $('#response').html('<div class="error">' + message + '</div>');
+        // Scroll to and visually highlight the #response div
+        $('html, body').animate({
+            scrollTop: $('#response').offset().top - 50 // Adjust the offset as needed
+        }, 500);
 
-            // Helper function to check if the email is valid
-            function isValidEmail(email) {
-                // You can implement a more robust email validation if needed
-                return /\S+@\S+\.\S+/.test(email);
-            }
+
+        // Add a border or background color to make it stand out
+        $('#response').css({
+            'border': '1px dotted red',
+            'color': 'red',
+            'padding': '6px',
         });
-    </script>
+    }
+
+    // Helper function to check if the email is valid
+    function isValidEmail(email) {
+        // You can implement a more robust email validation if needed
+        return /\S+@\S+\.\S+/.test(email);
+    }
+});
+</script>
 <?php
 
     $return = ob_get_clean();
@@ -209,8 +302,8 @@ function wpt_register_user()
                 }
                 $website = get_bloginfo('name');
                 // $activation_link = "<a href='".site_url('/activate')."'>This link</a>";
-                $wpt_config = get_option('WPT_CONFIG'); 
-                $email_body =  "Hello ".$first_name." ".$last_name. " and Welcome to  $website  <br /><br />
+                $wpt_config = get_option('WPT_CONFIG');
+                $email_body =  "Hello " . $first_name . " " . $last_name . " and Welcome to  $website  <br /><br />
                 You have successfully registered with us.<br />
                  $wpt_activation_code is your code for activation.<br />
                 You can activate your account <a href='$wpt_user_activation_link'>Here</a> by entering this code.<br />
@@ -231,8 +324,8 @@ function wpt_register_user()
     echo json_encode(array(
         'status'   => $status,
         'message'  => $message,
-        '$activation_link' => $activation_link,
-         'email_body' => $email_body
+        'activation_link' => $activation_link,
+        'email_body' => $email_body
     ));
     wp_die();
 }
@@ -302,5 +395,3 @@ function save_custom_user_profile_fields($user_id) {
 add_action('personal_options_update', 'save_custom_user_profile_fields');
 add_action('edit_user_profile_update', 'save_custom_user_profile_fields');
 */
- 
-
