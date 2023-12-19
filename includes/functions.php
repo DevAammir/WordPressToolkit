@@ -74,7 +74,7 @@ function wpt_add_css_classes_to_body()
         }
 
         // Add category IDs
-        foreach ((get_the_category($post->ID)) as $category) {
+        foreach ((@get_the_category($post->ID)) as $category) {
             $classes[] = 'cat-' . $category->cat_ID . '-id';
         }
 
@@ -84,7 +84,7 @@ function wpt_add_css_classes_to_body()
         }
 
         // Add taxonomy
-        $taxonomies = get_post_taxonomies($post->ID);
+        $taxonomies = @get_post_taxonomies($post->ID);
         foreach ($taxonomies as $taxonomy) {
             $terms = get_the_terms($post->ID, $taxonomy);
             if ($terms) {
@@ -180,9 +180,9 @@ include_once 'functions/update_post.php';
 include_once 'functions/update_user_by_id.php';
 include_once 'functions/create_custom_role.php';
 include_once 'functions/_wpt_upload_user_image.php';
-include_once 'functions/wpt_user_login.php';
-include_once 'functions/wpt_user_register.php'; // 
-include_once 'functions/wpt_user_activation.php'; //  
-include_once 'functions/wpt_forgot_password.php'; //  ADJUST THIS ONE  
-// include_once 'functions/xxxx.php';
-// include_once 'functions/xxxx.php';
+// include_once 'functions/wpt_user_login.php';
+// include_once 'functions/wpt_user_register.php'; // 
+// include_once 'functions/wpt_user_activation.php'; //  
+// include_once 'functions/wpt_forgot_password.php'; //  ADJUST THIS ONE  
+// // include_once 'functions/xxxx.php';
+// // include_once 'functions/xxxx.php';
