@@ -3,11 +3,7 @@
 /**
  * Plugin Name: WordPress Toolkit
  * Description: WordPress Toolkit 
-<<<<<<< HEAD
  * Version: 1.8
-=======
- * Version: 1.7.1
->>>>>>> ef665b5c561a293834c1a6dfda07864abfd3907a
  * Author: Aammir
  * Author URI: https://127.0.0.1
  * Text Domain: wpt
