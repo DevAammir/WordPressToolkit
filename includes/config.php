@@ -31,7 +31,7 @@ if (CURRENT_THEME != 'wp-lite') {
     $available_options_array['wpt_disable_gutenburg'] = 'Disable Gutenburg';
 }
 
-define('AVAILABLE_OPTIONS', $available_options_array);
+define('WPT_AVAILABLE_OPTIONS', $available_options_array);
 if (CURRENT_THEME == 'wp-lite') {
 }else{
     

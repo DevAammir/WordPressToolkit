@@ -1,5 +1,5 @@
 <?php
-foreach (AVAILABLE_OPTIONS as $key => $value) {
+foreach (WPT_AVAILABLE_OPTIONS as $key => $value) {
     FORMBUILDER->field([
         'type' => 'checkbox',
         'label' => $value,
